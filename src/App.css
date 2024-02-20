@@ -1,0 +1,120 @@
+/* use Alexandria font */
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100;200;300;400;500;600;700;800;900&family=Aref+Ruqaa+Ink:wght@400;700&family=Handjet:wght@600&display=swap');
+html,body {
+    font-family: 'Alexandria', sans-serif;
+}
+.dark {
+    color: #eee;    
+}
+
+
+.title-font {
+    font-family: 'Handjet', 'Alexandria', serif;
+}
+
+.gradient-border,
+.gb {
+    position: relative;
+    z-index: 1;
+}
+.gradient-border,
+.gb > * {
+    z-index: 1;
+}
+.gbz {
+    --gb-width: 0;
+}
+.gradient-border::before,
+.gb::before {
+    content: " ";
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(#fff, #f6f6f6) padding-box, linear-gradient(180deg, #eee, #ddd) border-box;
+    border: var(--gb-width,1px) solid transparent;
+    position: absolute;
+    inset: 0px;
+    pointer-events: none;
+}
+
+.dark 
+.gb::before {
+    pointer-events: none;
+    background: linear-gradient(#22283A, #22283A) padding-box, linear-gradient(180deg, #5A6574, transparent) border-box;
+}
+
+
+.product-gradient {
+    background: linear-gradient(0deg, rgb(243 244 246 / var(--tw-bg-opacity)) 50%, transparent) ;
+}
+.product-color {
+    background: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.dark .product-gradient {
+    background: linear-gradient(0deg, rgb(17 24 39 / var(--tw-bg-opacity)) 50%, transparent) ;
+}
+.dark .product-color {
+    background: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
+
+
+
+:root {
+    --p: rgb(229, 199, 2);
+}
+
+.bg-p {
+    background-color: var(--p);
+}
+.text-p {
+    color: var(--p);
+}
+
+.pulse {
+    position: relative;
+  }
+  
+.pulse::after {
+
+    pointer-events: none;
+    animation: pulse-animation 3s infinite;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    position: absolute;
+    border-radius: inherit;
+    content: ' ';
+  }
+  input:focus,textarea:focus,select:focus {
+    animation: pulse-animation 3s infinite;
+
+  }
+  
+  @keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px var(--p),  0 0 0 10px transparent;
+    }
+    10% {
+      box-shadow: 0 0 0 10px transparent, 0 0 0 0px var(--p);
+    }
+    30% {
+        box-shadow: 0 0 0 10px transparent, 0 0 0 0px var(--p);
+    }
+    40% {
+        box-shadow: 0 0 0 0px var(--p),  0 0 0 10px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 10px transparent, 0 0 0 0px var(--p);
+    }
+  }
+
+.line {
+    background-image: linear-gradient(45deg, transparent ,var(--p), transparent);
+}
+
+.prose img {
+    @apply rounded-xl
+}
+

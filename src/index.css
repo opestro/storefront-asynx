@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.container {
+    @apply max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 w-full lg:max-w-6xl;
+}
+
+.btn {
+    @apply 
+    flex
+    items-center
+    justify-center
+    dark:text-white bg-transparent 
+    dark:hover:bg-white
+    hover:bg-black
+    hover:bg-opacity-10
+    dark:hover:bg-opacity-10
+    focus:ring-2 
+    focus:outline-none 
+    focus:ring-primary   
+    focus:bg-opacity-10 
+    font-medium 
+    rounded-lg 
+    text-sm px-4
+    py-2 
+    text-center;
+}
