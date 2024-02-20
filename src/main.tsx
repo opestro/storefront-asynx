@@ -492,7 +492,7 @@ export const testStore: StoreModel = {
       description: 'معطرات ومزيلات الروائح',
     },
 
-  ],
+  ], 
   currency: 'دج',
   products: [
     {
