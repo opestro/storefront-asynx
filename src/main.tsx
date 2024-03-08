@@ -28,7 +28,7 @@ var _storesCache: { [storeId: string]: StoreModel } = {}
  */
 export const getStore = async (storeId: string): Promise<StoreModel> => {
   if (_storesCache[storeId]) return _storesCache[storeId]
-  const req = await axios.get(`/stores/${storeId}.json`)
+  const req = await axios.get(`/stores/${storeId}/${storeId}.json`)
   const store = req.data
   _storesCache[storeId] = store
   return store

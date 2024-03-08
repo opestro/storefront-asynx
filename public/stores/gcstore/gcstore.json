@@ -478,8 +478,8 @@
             "id": "1",
             "slug": "shoe1",
             "storeId": "gcstore",
-            "name": "حذاء رياضي أسود",
-            "description": "حذاء رياضي أسود مقاس 42 مريح ومناسب للرياضة والمشي",
+            "name": "حذاء FC05",
+            "description": "حذاء شبه رياضي مريح",
             "price": 3600,
             "discount": 600,
             "currency": {
@@ -489,20 +489,20 @@
             "body": "",
             "media": [
                 {
-                    "url": "https://media.cnn.com/api/v1/images/stellar/prod/comfy-shoes-nike-new-lead.jpg?c=16x9&q=h_833,w_1480,c_fill",
+                    "url": "/stores/gcstore/uploads/blue.jpeg",
                     "width": 500,
                     "height": 500,
                     "type": "image/png"
                 },
                 {
-                    "url": "https://rukminim2.flixcart.com/image/450/500/xif0q/shoe/7/z/r/8-white-leaf-8-urbanbox-white-black-original-imagvgf4cuzs2hrw.jpeg?q=90&crop=true",
+                    "url": "/stores/gcstore/uploads/brown.jpeg",
                     "width": 500,
                     "height": 500,
                     "type": "image/png"
                 }
             ],
             "image": {
-                "url": "https://media.cnn.com/api/v1/images/stellar/prod/comfy-shoes-nike-new-lead.jpg?c=16x9&q=h_833,w_1480,c_fill",
+                "url": "/stores/gcstore/uploads/blue.jpeg",
                 "width": 500,
                 "height": 500,
                 "type": "image/jpeg"
@@ -521,112 +521,141 @@
             "reviews": [],
             "rate": 5,
             "variants": {
-                "name": "المقاسات",
+                "name": "الألوان",
                 "options": [
                     {
-                        "name": "42",
-                        "type": "text",
-                        "quantity": 80,
-                        "hint": "محدود",
-                        "child": {
-                            "name": "الألوان",
-                            "options": [
-                                {
-                                    "name": "أسود",
-                                    "value": "#000000",
-                                    "type": "color",
-                                    "mediaIndex": 0,
-                                    "quantity": 80,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أبيض",
-                                    "value": "#eeeeee",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 12,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أحمر",
-                                    "value": "#ff0000",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 0,
-                                    "hint": "منتهي"
-                                }
-                            ]
-                        }
+                        "name": "أزرق",
+                        "value": "#2c00a6",
+                        "type": "color",
+                        "mediaIndex": 0,
+                        "hint": "متوفر"
                     },
                     {
-                        "name": "43",
-                        "type": "text",
-                        "quantity": 80,
-                        "hint": "محدود",
-                        "child": {
-                            "name": "الألوان",
-                            "options": [
-                                {
-                                    "name": "أسود",
-                                    "value": "#000000",
-                                    "type": "color",
-                                    "mediaIndex": 0,
-                                    "quantity": 80,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أبيض",
-                                    "value": "#eeeeee",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 12,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أحمر",
-                                    "value": "#ff0000",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 0,
-                                    "hint": "منتهي"
-                                }
-                            ]
-                        }
-                    },
+                        "name": "بني",
+                        "value": "#a64e00",
+                        "type": "color",
+                        "mediaIndex": 1,
+                        "hint": "متوفر"
+                    }
+                ]
+            },
+            "quantity": 760,
+            "type": "physical",
+            "isPreorder": false,
+            "createdAt": null,
+            "updatedAt": null,
+            "deletedAt": null
+        },
+        {
+            "ref": "stores/gcstore/products/2",
+            "id": "2",
+            "slug": "shoe2",
+            "storeId": "gcstore",
+            "name": "حذاء FC03",
+            "description": "حذاء شبه رياضي مريح",
+            "price": 3600,
+            "discount": 600,
+            "currency": {
+                "code": "DZD",
+                "symbol": "دج"
+            },
+            "body": "",
+            "media": [
+                {
+                    "url": "/stores/gcstore/uploads/FC03_white.jpeg",
+                    "width": 500,
+                    "height": 500,
+                    "type": "image/png"
+                }
+            ],
+            "image": {
+                "url": "/stores/gcstore/uploads/FC03_white.jpeg",
+                "width": 500,
+                "height": 500,
+                "type": "image/jpeg"
+            },
+            "categories": [
+                {
+                    "name": "أحذية",
+                    "description": "أحذية رجالية"
+                }
+            ],
+            "tags": [
+                "أحذية",
+                "رياضة",
+                "مشي"
+            ],
+            "reviews": [],
+            "rate": 5,
+            "variants": {
+                "name": "الألوان",
+                "options": [
                     {
-                        "name": "44",
-                        "type": "text",
-                        "quantity": 80,
-                        "hint": "محدود",
-                        "child": {
-                            "name": "الألوان",
-                            "options": [
-                                {
-                                    "name": "أسود",
-                                    "value": "#000000",
-                                    "type": "color",
-                                    "mediaIndex": 0,
-                                    "quantity": 80,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أبيض",
-                                    "value": "#eeeeee",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 12,
-                                    "hint": "متوفر"
-                                },
-                                {
-                                    "name": "أحمر",
-                                    "value": "#ff0000",
-                                    "type": "color",
-                                    "mediaIndex": 1,
-                                    "quantity": 0,
-                                    "hint": "منتهي"
-                                }
-                            ]
-                        }
+                        "name": "أبيض",
+                        "value": "#FFFFFF",
+                        "type": "color",
+                        "mediaIndex": 0,
+                        "hint": "متوفر"
+                    }
+                ]
+            },
+            "quantity": 760,
+            "type": "physical",
+            "isPreorder": false,
+            "createdAt": null,
+            "updatedAt": null,
+            "deletedAt": null
+        },
+        {
+            "ref": "stores/gcstore/products/2",
+            "id": "2",
+            "slug": "shoe2",
+            "storeId": "gcstore",
+            "name": "حذاء FC03",
+            "description": "حذاء شبه رياضي مريح",
+            "price": 3600,
+            "discount": 600,
+            "currency": {
+                "code": "DZD",
+                "symbol": "دج"
+            },
+            "body": "",
+            "media": [
+                {
+                    "url": "/stores/gcstore/uploads/FC03_white.jpeg",
+                    "width": 500,
+                    "height": 500,
+                    "type": "image/png"
+                }
+            ],
+            "image": {
+                "url": "/stores/gcstore/uploads/FC03_white.jpeg",
+                "width": 500,
+                "height": 500,
+                "type": "image/jpeg"
+            },
+            "categories": [
+                {
+                    "name": "أحذية",
+                    "description": "أحذية رجالية"
+                }
+            ],
+            "tags": [
+                "أحذية",
+                "رياضة",
+                "مشي"
+            ],
+            "reviews": [],
+            "rate": 5,
+            "variants": {
+                "name": "الألوان",
+                "options": [
+                    {
+                        "name": "أبيض",
+                        "value": "#FFFFFF",
+                        "type": "color",
+                        "mediaIndex": 0,
+                        "hint": "متوفر"
                     }
                 ]
             },
