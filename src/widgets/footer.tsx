@@ -1,6 +1,6 @@
 import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
-import { StoreModel } from "../models";
-import TextButton from "./TextButton";
+import { StoreModel } from "../pishop/logic";
+import TextButton from "./text_button";
 
 
 function Footer({ store }: { store: StoreModel | null }) {

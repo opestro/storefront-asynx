@@ -17,6 +17,7 @@ html,body {
     position: relative;
     z-index: 1;
 }
+
 .gradient-border,
 .gb > * {
     z-index: 1;
@@ -57,19 +58,30 @@ html,body {
     background: rgb(17 24 39 / var(--tw-bg-opacity));
 }
 
-
+.min-w-14 {
+    min-width: 56px;
+  }
 
 
 :root {
-    --p: rgb(229, 199, 2);
+    --p: #31E000;
+    --on-p: #000;
 }
 
-.bg-p {
+.bg-p, .bg-primary {
     background-color: var(--p);
+    color: var(--on-p);
 }
+
+.bg-on-p , .bg-on-primary {
+    background-color: var(--on-p);
+    color: var(--p);
+}
+
 .text-p {
     color: var(--p);
 }
+
 
 .pulse {
     position: relative;

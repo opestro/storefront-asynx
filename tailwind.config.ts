@@ -6,6 +6,7 @@ import typography from "@tailwindcss/typography";
 export default {
   content: [
     "./index.html",
+    "./404.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@medusajs/ui/dist/**/*.{js,jsx,ts,tsx}",
   ],
@@ -144,6 +145,7 @@ export default {
     colors: ({ colors }) => ({
       // 1abc9c
       primary: 'var(--p)',
+      onPrimary: 'var(--on-p)',
       inherit: colors.inherit,
       current: colors.current,
       transparent: colors.transparent,

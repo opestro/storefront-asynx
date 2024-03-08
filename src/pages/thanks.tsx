@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import { LocalOrder, calculateLocalOrderShipping, calculateLocalOrderTotal } from "../models";
 import AsynxWave from "../widgets/asynx_wave";
+import { LocalOrder, calculateLocalOrderTotal, calculateLocalOrderShipping } from "../pishop/logic";
+import { StoreModel } from "../pishop/models";
 
 
-export default function Thanks({ order, onDone }: { order: LocalOrder, onDone: ()=>void }) {
+export default function Thanks({ store, order, onDone }: {
+    store: StoreModel,
+    order: LocalOrder, onDone: () => void
+}) {
     return (
         <div
             className=""
@@ -25,7 +29,7 @@ export default function Thanks({ order, onDone }: { order: LocalOrder, onDone: (
             <h4 className="text-sm font-light">التفاصيل</h4>
             <div className="h-2"></div>
             {
-                order.items.map((e,i) => (
+                order.items.map((e, i) => (
                     <div key={i} className="flex items-center">
                         <div>
                             <img src={e.product.image?.url} className="border-2 border-white w-7 h-7 rounded-full" />
@@ -35,7 +39,7 @@ export default function Thanks({ order, onDone }: { order: LocalOrder, onDone: (
                             <div className="flex items-center">
                                 {e.product.name}
                                 <span dir="ltr" className="mx-2 text-sm bg-primary text-white rounded-full px-2">
-                                x{e.quantity}
+                                    x{e.quantity}
                                 </span>
                             </div>
                             <div className="text-[10px] font-light">{e.variants.join(" / ")}</div>
@@ -46,15 +50,15 @@ export default function Thanks({ order, onDone }: { order: LocalOrder, onDone: (
             <div className="my-2  h-[1px] line" />
             <h4 className="text-sm font-light">الشحن إلى</h4>
             {
-                order.shipping?.doorShipping&&order.shipping?.address.raw?
-                order.shipping?.address.raw:
-                "مكتب الولاية"
+                order.shipping?.doorShipping && order.shipping?.address.raw ?
+                    order.shipping?.address.raw :
+                    "مكتب الولاية"
             }, {order.shipping?.address.state}, {order.shipping?.address.city}
             <div className="my-2  h-[1px] line" />
-            <div className="flex text-[12px]"><h4 className="font-light">بدون شحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(order,false)}دج</div></div>
-            <div className="flex text-[12px]"><h4 className=" font-light">مبلغ الشحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderShipping(order)}دج</div></div>
+            <div className="flex text-[12px]"><h4 className="font-light">بدون شحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order, false)}دج</div></div>
+            <div className="flex text-[12px]"><h4 className=" font-light">مبلغ الشحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderShipping(store, order)}دج</div></div>
             <div className="h-1"></div>
-            <div className="flex"><h4 className="text-sm font-light">المجموع</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(order)}دج</div></div>
+            <div className="flex"><h4 className="text-sm font-light">المجموع</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order)}دج</div></div>
             <div className="h-2"></div>
             <button type="button" className="w-full pulse btn gb" onClick={onDone}>موافق</button>
             <div className="h-2"></div>

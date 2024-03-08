@@ -1,9 +1,10 @@
 {
     "ref": "stores/gcstore",
     "id": "gcstore",
-    "name": "gcstore",
-    "title": "احذية وملابس",
+    "name": "GC Store",
+    "title": "GCStore | احذية وملابس",
     "description": "تشكيلة واسعة من الأحذية والملابس الرجالية",
+    "banner": "تخفيضات على جميع المنتجات",
     "address": null,
     "domain": {
         "domain": "gcstore.vip",
@@ -413,7 +414,7 @@
         }
     ],
     "action": {
-        "name": "اتصل الآن",
+        "label": "اتصل الآن",
         "url": "tel:0556827857",
         "type": "call"
     },
@@ -467,7 +468,10 @@
             "description": "أحذية رجالية"
         }
     ],
-    "currency": "دج",
+    "currency": {
+        "code": "DZD",
+        "symbol": "دج"
+    },
     "products": [
         {
             "ref": "stores/gcstore/products/1",
@@ -633,7 +637,7 @@
             "updatedAt": null,
             "deletedAt": null
         }
-    ],  
+    ],
     "integrations": {
         "telegram": {
             "active": true,

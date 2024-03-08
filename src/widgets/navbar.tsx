@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { StoreModel } from "../models";
-import TextButton from "./TextButton";
+import TextButton from "./text_button";
 import { IconBrandInstagram, IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
+import { StoreModel } from "../pishop/models";
 
 
 function Navbar({ store }: { store: StoreModel | null }) {
@@ -10,11 +10,15 @@ function Navbar({ store }: { store: StoreModel | null }) {
 
   return (
     <>
-      <div className="h-20"></div>
-      <nav className=" backdrop-blur-xl bg-opacity-80 dark:bg-opacity-50  bg-gray-100 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b 
-    border-opacity-20
-    dark:border-opacity-30
-    border-gray-600">
+      <div className="h-16"></div>
+      <nav className=" backdrop-blur-xl bg-opacity-80 dark:bg-opacity-50 bg-gray-100 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
+
+      {
+        store?.banner &&
+        <div className="h-8 py-1 bg-primary text-center">
+          {store?.banner}
+        </div>
+      }
         <div className="container flex flex-wrap items-center justify-between mx-auto">
           <Link
             to="/"
@@ -39,12 +43,12 @@ function Navbar({ store }: { store: StoreModel | null }) {
             }
           </Link>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <button type="button" 
-            
-            onClick={() => {
-              document.body.classList.toggle("dark")
-            }}
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
+            <button type="button"
+
+              onClick={() => {
+                document.body.classList.toggle("dark")
+              }}
+              className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
               <IconBrightness size={20}></IconBrightness>
             </button>
             <a
@@ -55,12 +59,14 @@ function Navbar({ store }: { store: StoreModel | null }) {
                 ReactPixel.track('Contact');
               }}
             >
-
-              <button
-                // on click lunch url
-                type="button" className="text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary">
-                {store?.action?.name}
-              </button>
+              {
+                store?.action?.label &&
+                <button
+                  // on click lunch url
+                  type="button" className="text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary">
+                  {store.action.label}
+                </button>
+              }
             </a>
             {/* <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
             <span className="sr-only">Open main menu</span>
@@ -87,6 +93,12 @@ function Navbar({ store }: { store: StoreModel | null }) {
           </div>
         </div>
       </nav>
+
+      {
+        store?.banner &&
+        <div className="h-8">
+        </div>
+      }
     </>
   );
 }

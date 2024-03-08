@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { StoreProductModel } from "../models";
+import { StoreProductModel } from "../pishop/logic";
 
 // [ProductCard] is a component that renders a product card
 // it takes [StoreProduct] as a prop
