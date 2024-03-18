@@ -18,7 +18,7 @@ function App({ store }: { store: StoreModel}) {
   return (
     <>
 
-      <Navbar store={store}></Navbar>
+      <Navbar store={store}/>
       {/* 70px space */}
 
 

@@ -352,11 +352,13 @@ function Product({ store }: { store: StoreModel }) {
                                     <h2 className="text-xl font-semibold">الخيارات المتوفرة</h2>
                                     <div className="h-2"></div>
                                     {/* variant groups */}
-                                    <RenderVariantGroup variantGroup={product!.variants!} path={item.variants} onPathChange={(path) => {
-                                        item.variants = path
-                                        return setItem({ ...item });
-                                    }}
-
+                                    <RenderVariantGroup
+                                        variantGroup={product!.variants!}
+                                        path={item.variants}
+                                        onPathChange={(path) => {
+                                            item.variants = path
+                                            return setItem({ ...item });
+                                        }}
                                         onSelect={(variant) => {
                                             if (variant?.mediaIndex !== undefined && variant?.mediaIndex !== null) {
                                                 setSelectedMediaIndex(variant!.mediaIndex!);

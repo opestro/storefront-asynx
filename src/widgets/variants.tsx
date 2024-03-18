@@ -79,7 +79,6 @@ function ImageVariantButton({ variant, selected = false, onClick }: { variant: V
  */
 function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
     variantGroup: VariantGroup, path: string[], onPathChange: (path: string[]) => void
-
     onSelect?: (variant: VariantOption) => void
 }
 ) {
@@ -97,8 +96,8 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
         onPathChange([selected])
     }
     return (
-        <div>            <div className="h-1"></div>
-
+        <div>
+            <div className="h-1"></div>
             <h3 className="text-sm font-medium">{variantGroup.name}
                 {
                     getVariant(selected!) &&
