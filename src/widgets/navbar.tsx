@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import TextButton from "./text_button";
-import { IconBrandInstagram, IconBrightness } from "@tabler/icons-react";
+import {  IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
-import { StoreModel } from "../pishop/models";
+import { StoreEntity } from "fif_core";
 
 
-function Navbar({ store }: { store: StoreModel | null }) {
+function Navbar({ store }: { store: StoreEntity }) {
   // const location = useLocation()
 
   return (
@@ -16,29 +16,29 @@ function Navbar({ store }: { store: StoreModel | null }) {
       {
         store?.banner &&
         <div className="h-8 py-1 bg-primary text-center">
-          {store?.banner}
+          {store?.banner.title}
         </div>
       }
-        <div className="container flex flex-wrap items-center justify-between mx-auto">
+        <div className="h-16 container flex flex-wrap items-center justify-between mx-auto">
           <Link
             to="/"
             className="flex items-center space-x-3 rtl:space-x-reverse">
             {
-              store?.theme.showStoreLogoInHeader && store?.logo?.url &&
-              <img src={store?.logo?.url} className={(
-                store?.theme.logoFullHeight ? "h-16" : "h-8")
+              store?.ondarkLogoUrl &&
+              <img src={store?.ondarkLogoUrl} className={(
+                store?.decoration?.logoFullHeight ? "h-16" : "h-12")
                 + " hidden dark:block"
-              } alt={store?.name} />
+              } alt={store?.name!} />
             }
             {
-              store?.theme.showStoreLogoInHeader && (store?.darkLogo?.url || store?.logo?.url) &&
-              <img src={store?.darkLogo?.url || store?.logo?.url} className={(
-                store?.theme.logoFullHeight ? "h-16" : "h-8")
+              (store?.logoUrl || store?.ondarkLogoUrl) &&
+              <img src={store?.logoUrl || store?.ondarkLogoUrl || undefined} className={(
+                store?.decoration?.logoFullHeight ? "h-16" : "h-12")
                 + " dark:hidden block"
-              } alt={store?.name} />
+              } alt={store?.name!} />
             }
             {
-              store?.theme.showStoreNameInHeader &&
+              store?.decoration?.showStoreNameInHeader &&
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{store?.name}</span>
             }
           </Link>
@@ -85,9 +85,9 @@ function Navbar({ store }: { store: StoreModel | null }) {
                 <Link to="/" ><TextButton>المنتجات</TextButton></Link>
               </li>
               <li>
-                <TextButton href={store?.socials.instagram} target="_blank">
+                {/* <TextButton href={store?.socials.instagram} target="_blank">
                   <IconBrandInstagram size={20}></IconBrandInstagram>
-                </TextButton>
+                </TextButton> */}
               </li>
             </ul>
           </div>

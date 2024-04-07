@@ -1,9 +1,7 @@
-import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
-import TextButton from "./text_button";
-import { StoreModel } from "../pishop/models";
+import { StoreEntity } from "fif_core";
 
 
-function Footer({ store }: { store: StoreModel | null }) {
+function Footer({ store }: { store: StoreEntity }) {
   return (
     <footer className="container">
       <div className="gb rounded-t-xl max-w-screen-xl mx-auto px-4 pt-10 mt-10 sm:px-6 lg:px-8">
@@ -14,8 +12,8 @@ function Footer({ store }: { store: StoreModel | null }) {
               تابعنا
             </h4>
             <ul className="mt-4">
-              <li>
-                {/* full width */}
+              {/* 
+                            <li>
                 <TextButton href={
                   store?.socials?.facebook
                 } target='_blank'>
@@ -46,6 +44,7 @@ function Footer({ store }: { store: StoreModel | null }) {
                   Twitter
                 </TextButton>
               </li>
+ */}
 
             </ul>
           </div>
@@ -53,7 +52,7 @@ function Footer({ store }: { store: StoreModel | null }) {
             <h4 className="text-sm leading-5 font-semibold tracking-wider text-gray-400 uppercase">
               روابط أخرى
             </h4>
-            <ul className="mt-4">
+            {/* <ul className="mt-4">
               {store?.links?.map((link,index) => (
                 <li key={index}>
                   <TextButton href={link.url} target='_blank'>
@@ -61,7 +60,7 @@ function Footer({ store }: { store: StoreModel | null }) {
                   </TextButton>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
           <div className="mt-16 xl:mt-0">
             <h4 className="text-sm leading-5 font-semibold tracking-wider text-gray-400 uppercase">
@@ -72,7 +71,16 @@ function Footer({ store }: { store: StoreModel | null }) {
             </p>
             {/* logo in gray scale */}
             <center className="mt-4">
-              <img className="h-20 object-contain invert dark:invert-0 grayscale " src={store?.logo?.url} alt="" />
+              {
+                store?.ondarkLogoUrl &&
+                <img src={store?.ondarkLogoUrl} className={"h-20 hidden dark:block grayscale"
+                } alt={store?.name!} />
+              }
+              {
+                (store?.logoUrl || store?.ondarkLogoUrl) &&
+                <img src={store?.logoUrl || store?.ondarkLogoUrl || undefined} className={"h-20 dark:hidden block grayscale"
+                } alt={store?.name!} />
+              }
             </center>
           </div>
         </div>
@@ -84,10 +92,10 @@ function Footer({ store }: { store: StoreModel | null }) {
             <br />
             {/* developed by mohamadlounnas */}
             <span className="text-sm font-extralight">
-            developed by {' '}
-            <a href="https://linkedin.com/in/mohamadlounnas"
-              target='_blank' className="text-primary transition duration-150 ease-in-out">
-              {'</'}Mohamad Lounnas{'>'} </a>
+              developed by {' '}
+              <a href="https://linkedin.com/in/mohamadlounnas"
+                target='_blank' className="text-primary transition duration-150 ease-in-out">
+                {'</'}Mohamad Lounnas{'>'} </a>
             </span>
           </p>
         </div>

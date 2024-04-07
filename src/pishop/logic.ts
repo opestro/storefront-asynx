@@ -1,5 +1,6 @@
+import { StoreEntity } from "fif_core";
 import { generateOrderId } from "../pages/product";
-import { ShippingInfo, LocalOrderItem, StoreModel, StoreProductModel } from "./models";
+import { ShippingInfo, LocalOrderItem, StoreProductModel } from "./models";
 
 
 // class order
@@ -19,26 +20,27 @@ class LocalOrder {
   ref: string | null = null;
 }
 
-function calculateLocalOrderShipping(store:StoreModel, localOrder: LocalOrder) {
-  var shipping = store.shipping.find(e => e.name == localOrder.shipping?.address.state)
-  if (!shipping) {
-    return 0;
-  }
-  return !!localOrder.shipping?.doorShipping && shipping.home ?
-    shipping.home! :
-    shipping.office || 0;
+
+export function getShippingRateForState(store: StoreEntity|null, state: string|null) {
+  if (!store || !state) return null;
+  var stateIndex = parseInt(state)-1;
+   var rate = store.defaultShippingRates?.[stateIndex];
+   return {
+      desk: rate?.[0] || null,
+      home: rate?.[1] || null,
+   }
 }
 
-function calculateLocalOrderTotal(store:StoreModel,localOrder: LocalOrder, withShipping = true) {
-  var shippingPrice = 0;
+function calculateLocalOrderShipping(store:StoreEntity, localOrder: LocalOrder) {
+  var rate = getShippingRateForState(store, localOrder.shipping!.address.state);
+  return rate?.[localOrder.shipping?.doorShipping ? 'home' : 'desk'] ?? null
+}
+
+function calculateLocalOrderTotal(store:StoreEntity,localOrder: LocalOrder, withShipping = true) {
+  var shippingPrice: number|null = 0;
   if (withShipping) {
-    var shipping = store.shipping.find(e => e.name == localOrder.shipping?.address.state)
-    if (!shipping) {
-      return 0;
-    }
-    shippingPrice = !!localOrder.shipping?.doorShipping && shipping.home ?
-      shipping.home! :
-      shipping.office || 0;
+    shippingPrice = calculateLocalOrderShipping(store, localOrder);
+    if (shippingPrice == null) return null;
   }
 
   return localOrder.items.reduce((total, item) => {
@@ -54,7 +56,7 @@ function calculateLocalOrderTotal(store:StoreModel,localOrder: LocalOrder, withS
 
 function getProductPriceWithoutVariantsDiscount(product: StoreProductModel, variantPath: string[]): number {
   var price = product!.price;
-  var variant = product?.variants;
+  var variant = product?.variant;
 
   for (let i = 0; i < variantPath.length; i++) {
     var option = variant?.options.find(e => e.name == variantPath[i])!
@@ -65,7 +67,7 @@ function getProductPriceWithoutVariantsDiscount(product: StoreProductModel, vari
 }
 function getProductPriceAfterDiscount(product: StoreProductModel, variantPath: string[]): number {
   var price = product!.price - (product!.discount || 0);
-  var variant = product?.variants;
+  var variant = product?.variant;
 
   for (let i = 0; i < variantPath.length; i++) {
     var option = variant?.options.find(e => e.name == variantPath[i])!
@@ -80,12 +82,12 @@ function getProductDiscountPercentage(product: StoreProductModel, variantPath: s
   return getProductPriceAfterDiscount(product,variantPath) / price;
 }
 function getProductQuantity(product: StoreProductModel, variantPath: string[]): number {
-  var quantity = product!.quantity;
-  var variant = product?.variants;
+  var quantity = product!.stock;
+  var variant = product?.variant;
 
   for (let i = 0; i < variantPath.length; i++) {
     var option = variant?.options.find(e => e.name == variantPath[i])!
-    quantity = option.quantity || quantity;
+    quantity = option.stock || quantity;
     variant = option.child
   }
   return quantity;

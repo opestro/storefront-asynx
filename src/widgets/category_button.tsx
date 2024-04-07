@@ -25,7 +25,7 @@ const CategoryButton = ({
             {/* slot */}
             <div>
                 {
-                    category.icon && <img src={category.icon || undefined} className="w-8 h-8 dark:invert" />
+                    category.photoUrl && <img src={category.photoUrl || undefined} className="w-8 h-8 dark:invert" />
                 }
             </div>
             <div className="w-2"></div>

@@ -1,24 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { IconFlag } from '@tabler/icons-react'
 import { ProductCard } from './widgets/product_card'
 import Navbar from './widgets/navbar'
 import Footer from './widgets/footer'
 import AsynxWave from './widgets/asynx_wave'
-import { StoreCategoryModel, StoreModel } from './pishop/models'
+import { StoreCategoryModel } from './pishop/models'
 import CategoryButton from './widgets/category_button'
+import { ProductEntity, StoreEntity } from 'fif_core'
+import axios from 'axios'
 
 
-
-function App({ store }: { store: StoreModel}) {
+function App({ store }: { store: StoreEntity }) {
   const [selectedCategory, setSelectedCategory] = useState<StoreCategoryModel | null>(null)
+  const [products, setProducts] = useState<ProductEntity[]>([])
+  const [, setLoading] = useState(true)
 
-  const filteredProducts = store?.products?.filter((product) => !selectedCategory ? true : product.categories?.map((category) => category.name).includes(selectedCategory?.name || "")) || []
+  // const filteredProducts = store?.products?.filter((product) => !selectedCategory ? true : product.categories?.map((category) => category.name).includes(selectedCategory?.name || "")) || []
+  function filteredProducts() {
+    return products;
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    axios.get(`https://test.zedacademy.net/api/v1/products?store_id=${store.id}`).then((res) => {
+      setProducts(res.data)
+      setLoading(false)
+    });
+  }, [])
 
   return (
     <>
 
-      <Navbar store={store}/>
+      <Navbar store={store} />
       {/* 70px space */}
 
 
@@ -51,7 +65,7 @@ function App({ store }: { store: StoreModel}) {
       {/* categories */}
       <div className="container">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {store?.categories?.map((category,index) => (
+          {store?.categories?.map((category, index) => (
             <CategoryButton key={index} onClick={() => {
               return (selectedCategory == category) ? setSelectedCategory(null) :
                 setSelectedCategory(category)
@@ -65,14 +79,14 @@ function App({ store }: { store: StoreModel}) {
       {/* products */}
       <div className="container">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {filteredProducts.map((product,index) => (
+          {filteredProducts().map((product, index) => (
             <div key={index} >
               <ProductCard product={product}></ProductCard>
             </div>
           ))}
 
           {
-            !filteredProducts.length &&
+            !filteredProducts().length &&
             <div className="col-span-full">
               <div className="py-4 flex flex-col items-center justify-center">
                 <IconFlag></IconFlag>

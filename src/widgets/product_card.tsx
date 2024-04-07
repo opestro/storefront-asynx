@@ -11,11 +11,11 @@ export const ProductCard: React.FunctionComponent<{
 }> = (props) => {
     const { product } = props;
     return (
-        <Link to={`/product/${product.id}`}>
+        <Link to={`/products/${product.id}`}>
         <div className="gb rounded-2xl p-2">
             <div className="gb rounded-[8px] p-[1px]">
 
-                <img className="rounded-[7px] aspect-square" src={product.image?.url} alt={product.name} />
+                <img className="rounded-[7px] aspect-square" src={product.photoUrl ?? ""} alt={product.name ?? ""} />
             </div>
             <div className="h-2"></div>
             <div>
