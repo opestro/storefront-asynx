@@ -9,17 +9,29 @@ import {
 import ProductPage from './pages/product';
 // import ReactPixel from 'react-facebook-pixel';
 import axios from 'axios';
-import { StoreModel } from './pishop/models';
+import { StoreEntity } from 'feeef/src/core/core';
+import { FeeeF } from 'feeef/src/feeef/feeef';
 
+
+export const ff = new FeeeF({
+  apiKey: "API_KEY"
+});
+
+declare global {
+  interface Window {
+    ff: FeeeF;
+  }
+}
+window.ff = ff
 
 // currentStoreId from currunt url queryParam
 
-const currentStoreId = new URLSearchParams(window.location.search).get('store_slug') || "asynx"
+const currentStoreId = new URLSearchParams(window.location.search).get('store_slug') || "go"
 // alert(currentStoreId)
 
 // [getStore] a function to get store data from the server
 // by default path is "/stores/:storeId"
-var _storesCache: { [storeId: string]: StoreModel } = {}
+var _storesCache: { [storeId: string]: StoreEntity } = {}
 
 /**
  * Retrieves the store with the specified storeId.
@@ -29,10 +41,12 @@ var _storesCache: { [storeId: string]: StoreModel } = {}
  * @param storeId - The ID of the store to retrieve.
  * @returns A promise that resolves to the store object.
  */
-export const getStore = async (slug: string): Promise<StoreModel> => {
+export const getStore = async (slug: string): Promise<StoreEntity> => {
   if (_storesCache[slug]) return _storesCache[slug]
-  const req = await axios.get(`https://test.zedacademy.net/api/v1/stores/${slug}?by=slug`)
-  const store = req.data
+  const store = await ff.stores.find({
+    id: slug,
+    by: 'slug'
+  });
   _storesCache[slug] = store
   return store
 }
@@ -87,6 +101,7 @@ export const initApp = async (storeSlug: string) => {
     </React.StrictMode>,
   );
 }
+
 
 // Initialize the app with the current store ID
 initApp(currentStoreId)

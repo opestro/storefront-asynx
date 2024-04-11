@@ -1,4 +1,4 @@
-import { StoreCategoryModel } from "../pishop/models"
+import { EmbaddedCategory } from "feeef/src/core/core";
 
 // it take category form store as praameter
 /**
@@ -15,7 +15,7 @@ const CategoryButton = ({
     selected = false
 }: {
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
-    category: StoreCategoryModel,
+    category: EmbaddedCategory,
     selected: boolean
 }) => {
     return (

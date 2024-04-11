@@ -1,4 +1,4 @@
-import { ProductVariant, ProductVariantOption } from "fif_core"
+import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
 
 /**
  * Renders a variant button based on the variant type.

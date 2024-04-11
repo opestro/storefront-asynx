@@ -1,6 +1,6 @@
-import { StoreEntity } from "fif_core";
+import { ProductEntity, StoreEntity } from "feeef/src/core/core";
 import { generateOrderId } from "../pages/product";
-import { ShippingInfo, LocalOrderItem, StoreProductModel } from "./models";
+import { ShippingInfo, LocalOrderItem } from "./models";
 
 
 // class order
@@ -54,7 +54,7 @@ function calculateLocalOrderTotal(store:StoreEntity,localOrder: LocalOrder, with
   }, 0) + shippingPrice;
 }
 
-function getProductPriceWithoutVariantsDiscount(product: StoreProductModel, variantPath: string[]): number {
+function getProductPriceWithoutVariantsDiscount(product: ProductEntity, variantPath: string[]): number {
   var price = product!.price;
   var variant = product?.variant;
 
@@ -65,7 +65,7 @@ function getProductPriceWithoutVariantsDiscount(product: StoreProductModel, vari
   }
   return price;
 }
-function getProductPriceAfterDiscount(product: StoreProductModel, variantPath: string[]): number {
+function getProductPriceAfterDiscount(product: ProductEntity, variantPath: string[]): number {
   var price = product!.price - (product!.discount || 0);
   var variant = product?.variant;
 
@@ -76,12 +76,12 @@ function getProductPriceAfterDiscount(product: StoreProductModel, variantPath: s
   }
   return price;
 }
-function getProductDiscountPercentage(product: StoreProductModel, variantPath: string[]): number {
+function getProductDiscountPercentage(product: ProductEntity, variantPath: string[]): number {
   var price = getProductPriceWithoutVariantsDiscount(product,variantPath);
   if (price == 0) return 0;
   return getProductPriceAfterDiscount(product,variantPath) / price;
 }
-function getProductQuantity(product: StoreProductModel, variantPath: string[]): number {
+function getProductQuantity(product: ProductEntity, variantPath: string[]): number {
   var quantity = product!.stock;
   var variant = product?.variant;
 

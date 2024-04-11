@@ -1,4 +1,4 @@
-import { StoreEntity } from "fif_core";
+import { StoreEntity } from "feeef/src/core/core";
 
 
 function Footer({ store }: { store: StoreEntity }) {

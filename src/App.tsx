@@ -7,12 +7,13 @@ import Footer from './widgets/footer'
 import AsynxWave from './widgets/asynx_wave'
 import { StoreCategoryModel } from './pishop/models'
 import CategoryButton from './widgets/category_button'
-import { ProductEntity, StoreEntity } from 'fif_core'
+import { EmbaddedCategory, ProductEntity, StoreEntity } from 'feeef/src/core/core'
 import axios from 'axios'
+import { ff } from './main'
 
 
 function App({ store }: { store: StoreEntity }) {
-  const [selectedCategory, setSelectedCategory] = useState<StoreCategoryModel | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
   const [products, setProducts] = useState<ProductEntity[]>([])
   const [, setLoading] = useState(true)
 
@@ -23,7 +24,12 @@ function App({ store }: { store: StoreEntity }) {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`https://test.zedacademy.net/api/v1/products?store_id=${store.id}`).then((res) => {
+    ff.products.list({ 
+      params: {
+        store_id: store.id
+      }
+     })
+    .then((res) => {
       setProducts(res.data)
       setLoading(false)
     });

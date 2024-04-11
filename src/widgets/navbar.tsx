@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import TextButton from "./text_button";
 import {  IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
-import { StoreEntity } from "fif_core";
+import { StoreEntity } from "feeef/src/core/core";
 
 
 function Navbar({ store }: { store: StoreEntity }) {

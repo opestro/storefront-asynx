@@ -2,21 +2,20 @@ import { useParams } from "react-router-dom";
 import Navbar from "../widgets/navbar";
 import Footer from "../widgets/footer";
 import { useEffect, useState } from "react";
-import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser } from "@tabler/icons-react";
 import StickyBox from "react-sticky-box";
-import { states,cities } from "../cities";
+import { cities } from "../cities";
 import AsynxWave from "../widgets/asynx_wave";
 import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
-// TypeAnimation
 import { TypeAnimation } from "react-type-animation"
 import ReactPixel from 'react-facebook-pixel';
-import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount, getShippingRateForState } from "../pishop/logic";
-import { StoreModel, LocalOrderItem, ShippingInfo } from "../pishop/models";
-import RenderVariantGroup from "../widgets/variants";
-import { OrderEntity, ProductEntity, StoreEntity } from "fif_core";
-import axios from "axios";
+import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
+import { LocalOrderItem, ShippingInfo } from "../pishop/models";
+import RenderVariantGroup from "../components/variants";
+import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
+import { ff } from "../main";
+import { ShippingForm } from "../components/shipping_form";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -30,18 +29,21 @@ export function saveOrder(order: LocalOrder) {
 
 
 // ProductPage resposible for load the product
-function ProductPage({ store }: { store: StoreModel }) {
+function ProductPage({ store }: { store: StoreEntity }) {
     const { id } = useParams();
-    const [product, setProduct] = useState<ProductEntity|null>(null);
+    const [product, setProduct] = useState<ProductEntity | null>(null);
 
     useEffect(() => {
-        axios.get(`https://test.zedacademy.net/api/v1/products/${id}?by=id`).then((res) => {
-            setProduct(res.data)
+        ff.products.find({
+            id: id!,
+            by: 'slug'
+        }).then((res) => {
+            setProduct(res)
         }).catch((err) => {
             console.error(err)
         })
     }, [id])
-    
+
 
 
     if (!product) {
@@ -76,7 +78,7 @@ function ProductPage({ store }: { store: StoreModel }) {
 }
 
 
-function Product({ store,product }: { store: StoreEntity, product: ProductEntity}) {
+function Product({ store, product }: { store: StoreEntity, product: ProductEntity }) {
 
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
@@ -156,7 +158,7 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
     }
 
     function updateShippingWilaya(stateCode: string) {
-        var index = parseInt(stateCode)-1;
+        var index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
         var baladiyat = cities[index];
         shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
@@ -196,8 +198,8 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
-    
-    async function sendOrder(status:  "draft"|"pending" = "pending") {
+
+    async function sendOrder(status: "draft" | "pending" = "pending") {
         if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) return;
         var olderOrder = localStorage.getItem(`order-${product.id}`);
         if (olderOrder) {
@@ -206,7 +208,7 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
         if (status == 'draft' && olderOrder) return;
 
         setLoading(true);
-        var data:any = {
+        var data: any = {
             customerName: shipping.name,
             customerPhone: shipping.phone,
             shippingAddress: shipping.address.street,
@@ -226,9 +228,9 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
                 customerPhone: sentOrder.customerPhone,
             }
         }
-        var response = await axios.post(`https://test.zedacademy.net/api/v1/orders/send`, data);
-        localStorage.setItem(`order-${product.id}`, JSON.stringify(response.data));
-        setSentOrder(response.data);
+        var response = await ff.orders.send(data);
+        localStorage.setItem(`order-${product.id}`, JSON.stringify(response));
+        setSentOrder(response);
         setLoading(false);
     }
 
@@ -398,7 +400,7 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
                                                 path.pop();
                                             }
                                             item.variants = path
-                                            
+
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
@@ -415,7 +417,7 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
                             {/* name, phone, country|state */}
                             <div className="h-4"></div>
                             <div className="gb gbz p-4 rounded-xl border-2 border-black dark:border-gray-50">
-                                <ShippingBox store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder}/>
+                                <ShippingForm store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
                                 <div className="h-2"></div>
                                 <div className="flex flex-col md:flex-row justify-between items-center" >
                                     <button
@@ -452,27 +454,21 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
                                             </span>
                                         </div>
                                         <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
-                                        {
-                                            shipping?.address.state?
-                                            <b className="px-2 font-extrabold">{getTotal()} دج</b>
-                                            :
-                                            <b className="px-2 font-extrabold">)اختر الولاية(</b>
-                                        }
-                                            </div>
+                                            {
+                                                shipping?.address.state ?
+                                                    <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                                                    :
+                                                    <b className="px-2 font-extrabold">)اختر الولاية(</b>
+                                            }
+                                        </div>
                                     </button>
                                 </div>
-                                <div className="h-2"></div>
-                                <span>
-                                    {JSON.stringify(sentOrder)}
-                                </span>
                                 <div className="h-2"></div>
                             </div>
                             <Markdown className="p-4 prose dark:prose-invert" >{product?.body}</Markdown>
                         </div>
                     </div>
                 </div>
-
-
             </div>
             <Footer store={store}></Footer>
         </div>
@@ -480,203 +476,3 @@ function Product({ store,product }: { store: StoreEntity, product: ProductEntity
 }
 
 export default ProductPage;
-
-/**
- * Represents a component for managing shipping information.
- *
- * @component
- * @param {Object} props - The component props.
- * @param {StoreModel} props.store - The store model.
- * @param {ShippingInfo} props.shipping - The shipping information.
- * @param {Function} props.setShipping - The function to update the shipping information.
- * @returns {JSX.Element} The ShippingBox component.
- */
-function ShippingBox({ store, shipping, setShipping, sendOrder }: { store: StoreEntity, shipping: ShippingInfo, setShipping: (shipping: ShippingInfo) => void, sendOrder: (status?: "draft" | "pending")=>void }): JSX.Element {
-    function updateShippingWilaya(stateCode: string) {
-        var index = parseInt(stateCode)-1;
-        shipping!.address.state = stateCode;
-        var baladiyat = cities[index];
-        shipping!.address.city = baladiyat?.length ? (index+1).toString().padStart(2, '0') : ""
-        setShipping({ ...shipping });
-    }
-
-    function canShipToHome(): boolean {
-        return true;
-    }
-    // function canShipToOffice(): boolean {
-    //     var shippingArea = store.shipping.find(e => e.name == shipping.address.state);
-    //     return !!(shippingArea?.active && shippingArea?.office);
-    // }
-
-    return (
-        <div>
-            <h2 className="text-xl font-semibold flex">معلومات الشحن</h2>
-            <div className="h-2"></div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                <div>
-                    <label className="text-sm font-light flex items-center">الاسم</label>
-                    <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconUser className="absolute top-2 right-2 text-gray-400" />
-                        <input
-
-                            required
-                            className="bg-transparent p-2  w-full pr-10
-                                                invalid:outline-red-700 invalid:outline invalid:outline-2
-                                                
-                                                rounded-[inherit]
-                                                "
-                            type="name"
-                            placeholder="الإسم و اللقب"
-                            defaultValue={shipping!.name}
-                            onChange={(e) => {
-                                shipping!.name = e.target.value;
-                                setShipping({ ...shipping });
-                            }}
-                        />
-                    </div>
-                </div>
-                <div>
-                    <label className="text-sm font-light flex items-center">الهاتف</label>
-                    <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconPhone className="absolute top-2 right-2 text-gray-400" />
-                        <input
-                            required
-                            className="bg-transparent p-2 w-full pr-10 invalid:outline-red-700 invalid:outline invalid:outline-2 rounded-[inherit]" type="tel"
-                            placeholder="رقم الهاتف"
-                            defaultValue={shipping!.phone}
-                            onChange={(e) => {
-                                shipping!.phone = e.target.value;
-                                setShipping({ ...shipping });
-                                sendOrder("draft");
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
-                <div>
-                    <label className="text-sm font-light flex items-center">الولاية
-                    </label>
-                    <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconLocation className="absolute top-2 right-2 text-gray-400" />
-                        <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit] focus:first-letter:outline-2" required
-                            onChange={(e) => {
-                                updateShippingWilaya(e.target.value);
-                            }}
-                            defaultValue={shipping!.address.state}
-                        >
-                            {
-                                // getWilayat().map((wilaya, index) => (
-                                //     <option key={index}
-                                //         value={wilaya.en.toLocaleLowerCase()}
-                                //     >({wilaya.code}) {wilaya.ar} - {
-                                //             store.shippingMethods.find(
-                                //                 e => e.name == wilaya.en
-                                //             )?.[
-                                //             shipping.doorShipping ?
-                                //                 "home" : "office"]
-                                //         }دج
-
-                                //     </option>
-                                // ))
-                                states.map((state, index) => {
-                                    var rate = getShippingRateForState(store, (index + 1).toString().padStart(2, '0'))?.[shipping.doorShipping ? "home" : "desk"];
-                                    return (
-                                        <option
-                                        disabled={!rate}
-                                        key={index}
-                                            value={index + 1}
-                                        >{state} - {rate}{rate?'دج':'غير متوفر'}
-                                        </option>
-                                    );
-                                })
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label className="text-sm font-light flex items-center">البلدية
-                        {
-                            !shipping!.address.state &&
-                            <span className="mx-2 text-xs text-red-500"> (اختر الولاية أولاً)</span>
-                        }
-                        {
-                            shipping!.address.city &&
-                            <span className="mx-2 text-xs text-red-500"> ({shipping!.address.city})</span>
-                        }
-                    </label>
-                    <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconLocationCode className="absolute top-2 right-2 text-gray-400" />
-                        <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit]
-                                            " required
-                            onChange={(e) => {
-                                shipping!.address.city = e.target.value;
-                                setShipping({ ...shipping });
-                            }}
-                            defaultValue={shipping!.address.city}
-                            disabled={!shipping!.address.state}
-                        >
-                            {
-                                // getWilayat().find((wilaya) => wilaya.en === shipping!.address.state!)?.baladiyats?.map((baladiya, index) => (
-                                //     <option key={index}
-                                //         value={baladiya.en.toLocaleLowerCase()}
-                                //     >{baladiya.ar}</option>
-                                // ))
-                                // ||
-                                
-                                !parseInt(shipping!.address.state)? <span>لا يوجد بلديات</span> :
-                                cities[parseInt(shipping!.address.state)-1].map((city, index) => (
-                                    <option key={index}
-                                        value={(index+1).toString().padStart(2, '0')}
-                                    >{city}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {
-                shipping.doorShipping && canShipToHome() &&
-                <>
-                    <div className="h-2"></div>
-                    <div>
-                        <label className="text-sm font-light">العنوان</label>
-                        <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
-                            <IconLocationBolt className="absolute top-2 right-2 text-gray-400" />
-                            <textarea
-                                required
-                                className="bg-transparent p-2  w-full pr-10"
-                                placeholder="أدخل العنوان كاملا، توصيل لباب البيت"
-                                defaultValue={shipping!.address.street}
-                                onChange={(e) => {
-                                    shipping!.address.street = e.target.value;
-                                    setShipping({ ...shipping });
-                                }}
-                            />
-                        </div>
-                    </div></>
-            }
-            <div className="h-4"></div>
-            <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" onChange={() => {
-                    shipping.doorShipping = !shipping.doorShipping && canShipToHome();
-                    setShipping({ ...shipping })
-                }} checked={shipping.doorShipping} className="sr-only peer" />
-                <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-                <div
-                    // column
-                    className="ms-3 flex flex-col"
-                >
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                        {/* {!shipping.doorShipping && "هل تريد "}التوصيل للبيت  {!shipping.doorShipping && (<b dir="ltr">مقابل دج{((store.shippingMethods.find(e => e.name == shipping.address.state)?.home || 0) - (store.shippingMethods.find(e => e.name == shipping.address.state)?.office || 0))}</b>)} */}
-                        {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل دج{
-                            getShippingRateForState(store, shipping.address.state)?.home
-                        }</b>)}
-                    </span>
-                    {/* hint */}
-                    <span className="text-xs text-gray-500 dark:text-gray-400">التوصيل للمكتب ارخص في العادة لكن يتطلب منك التنقل لأقرب مكتب</span>
-                </div>
-            </label>
-        </div>
-    )
-}
