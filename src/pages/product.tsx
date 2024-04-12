@@ -36,7 +36,7 @@ function ProductPage({ store }: { store: StoreEntity }) {
     useEffect(() => {
         ff.products.find({
             id: id!,
-            by: 'slug'
+            by: 'id'
         }).then((res) => {
             setProduct(res)
         }).catch((err) => {

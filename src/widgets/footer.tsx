@@ -88,14 +88,9 @@ function Footer({ store }: { store: StoreEntity }) {
           <p className="text-center font-light text-base leading-6 text-gray-400 xl:text-center" dir='ltr'>
             &copy; {new Date().getFullYear()} {store?.name}. All rights reserved.
             <br />
-            Powered by PiShop
-            <br />
             {/* developed by mohamadlounnas */}
             <span className="text-sm font-extralight">
-              developed by {' '}
-              <a href="https://linkedin.com/in/mohamadlounnas"
-                target='_blank' className="text-primary transition duration-150 ease-in-out">
-                {'</'}Mohamad Lounnas{'>'} </a>
+            Powered by FeeeF Business Solutions
             </span>
           </p>
         </div>

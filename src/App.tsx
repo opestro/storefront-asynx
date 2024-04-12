@@ -5,10 +5,8 @@ import { ProductCard } from './widgets/product_card'
 import Navbar from './widgets/navbar'
 import Footer from './widgets/footer'
 import AsynxWave from './widgets/asynx_wave'
-import { StoreCategoryModel } from './pishop/models'
 import CategoryButton from './widgets/category_button'
 import { EmbaddedCategory, ProductEntity, StoreEntity } from 'feeef/src/core/core'
-import axios from 'axios'
 import { ff } from './main'
 
 
@@ -17,9 +15,8 @@ function App({ store }: { store: StoreEntity }) {
   const [products, setProducts] = useState<ProductEntity[]>([])
   const [, setLoading] = useState(true)
 
-  // const filteredProducts = store?.products?.filter((product) => !selectedCategory ? true : product.categories?.map((category) => category.name).includes(selectedCategory?.name || "")) || []
   function filteredProducts() {
-    return products;
+    return products.filter((product) => !selectedCategory ? true : product.category.name==selectedCategory?.name)
   }
 
   useEffect(() => {
@@ -68,6 +65,7 @@ function App({ store }: { store: StoreEntity }) {
           </p>
         </div>
       </div>
+      <div className="h-4"></div>
       {/* categories */}
       <div className="container">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
