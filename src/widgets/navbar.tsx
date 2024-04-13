@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import TextButton from "./text_button";
 import {  IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
 import { StoreEntity } from "feeef/src/core/core";
@@ -76,7 +75,7 @@ function Navbar({ store }: { store: StoreEntity }) {
           </button> */}
             {/* toggle dark/light */}
           </div>
-          <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+          {/* <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul className=" flex items-center flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg  md:space-x-2 rtl:space-x-reverse md:flex-row md:mt-0 ">
               <li>
                 <Link to="/"><TextButton>المعرض</TextButton></Link>
@@ -85,12 +84,12 @@ function Navbar({ store }: { store: StoreEntity }) {
                 <Link to="/" ><TextButton>المنتجات</TextButton></Link>
               </li>
               <li>
-                {/* <TextButton href={store?.socials.instagram} target="_blank">
+                <TextButton href={store?.socials.instagram} target="_blank">
                   <IconBrandInstagram size={20}></IconBrandInstagram>
-                </TextButton> */}
+                </TextButton>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </nav>
 

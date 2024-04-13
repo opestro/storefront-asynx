@@ -90,7 +90,7 @@ function Footer({ store }: { store: StoreEntity }) {
             <br />
             {/* developed by mohamadlounnas */}
             <span className="text-sm font-extralight">
-            Powered by FeeeF Business Solutions
+            Powered by <span className="text-primary">FeeeF®</span> Business Solutions
             </span>
           </p>
         </div>

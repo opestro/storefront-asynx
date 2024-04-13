@@ -16,7 +16,7 @@ import RenderVariantGroup from "../components/variants";
 import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
 import { ff } from "../main";
 import { ShippingForm } from "../components/shipping_form";
-export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)
+export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
 export function getOrders() {
@@ -43,8 +43,6 @@ function ProductPage({ store }: { store: StoreEntity }) {
             console.error(err)
         })
     }, [id])
-
-
 
     if (!product) {
         return <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -434,11 +432,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             padding={0} />
                                         <div className="flex items-center justify-center" >
                                             {/* أرسل طلبك الآن */}
-                                            <TypeAnimation cursor={false} sequence={[
-                                                "أرسل طلبك الآن",
-                                                500,
+                                            <TypeAnimation cursor={true} sequence={[
+                                                "شراء الآن",
+                                                2500,
                                                 "سنتصل بك لتأكيد الطلبية",
-                                                1500,
+                                                500,
                                                 "ماذا تنتظر؟",
                                                 500,
                                                 "إظغط هنا لإرسال الطلب",
@@ -447,7 +445,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 500,
                                             ]}
                                                 repeat={Infinity}
-                                                speed={10}
+                                                speed={50}
                                             />
                                             <span dir="ltr" className="mx-2 bg-white text-primary rounded-full px-2">
                                                 x{item.quantity}
