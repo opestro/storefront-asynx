@@ -16,9 +16,9 @@ import { getShippingRateForState } from "../pishop/logic";
  */
 export function ShippingForm({ store, shipping, setShipping, sendOrder }: { store: StoreEntity, shipping: ShippingInfo, setShipping: (shipping: ShippingInfo) => void, sendOrder: (status?: "draft" | "pending") => void }): JSX.Element {
     function updateShippingWilaya(stateCode: string) {
-        var index = parseInt(stateCode) - 1;
+        const index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
-        var baladiyat = cities[index];
+        const baladiyat = cities[index];
         shipping!.address.city = baladiyat?.length ? (index + 1).toString().padStart(2, '0') : ""
         setShipping({ ...shipping });
     }

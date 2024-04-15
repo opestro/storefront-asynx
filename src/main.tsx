@@ -51,6 +51,22 @@ export const getStore = async (slug: string): Promise<StoreEntity> => {
   return store
 }
 
+// dart color is 0xffXXXXXX
+// js color is #XXXXXXFF
+// so we need to convert the color to the js format
+// and set the css variable --p to the primary color
+// of the store
+// for example ff009688 to #009688ff in css
+export const dartColorToCss = (color: number): string => {
+  var colorAsString = color.toString(16)
+  if (color > 0xffffff) {
+    var alpha = colorAsString.slice(0, 2)
+    colorAsString = colorAsString.slice(2) + alpha
+  }
+  var colorAsHex = "#" + colorAsString
+  return colorAsHex
+}
+
 /**
  * Initializes the app with the provided store ID.
  * @param storeId - The ID of the store.
@@ -66,11 +82,12 @@ export const initApp = async (storeSlug: string) => {
     link.href = store.ondarkLogoUrl || store.logoUrl;
   }
 
-  // change the css --p: XX color
-  var colorAsDec = store!.decoration!.primaryColor
-  var colorAsHex = "#" + colorAsDec.toString(16)
-  document.body.style.setProperty("--p", colorAsHex);
-
+  if (store?.decoration?.primary) {
+    document.body.style.setProperty("--p", dartColorToCss(store!.decoration!.primary));
+    if (store?.decoration?.onPrimary) {
+      document.body.style.setProperty("--on-p", dartColorToCss(store!.decoration!.onPrimary));
+    }
+  }
   // set the title to the store name
   document.title = store.title || store.name;
 

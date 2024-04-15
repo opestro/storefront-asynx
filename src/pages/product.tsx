@@ -16,6 +16,7 @@ import RenderVariantGroup from "../components/variants";
 import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
 import { ff } from "../main";
 import { ShippingForm } from "../components/shipping_form";
+import { IconShoppingBag } from "@tabler/icons-react";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -189,7 +190,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             ref: "",
             shippingMethod: "standard",
         }
-        return calculateLocalOrderTotal(store, localOrder)?.toFixed(0);
+        return calculateLocalOrderTotal(store, localOrder);
     }
 
     function getDiscount() {
@@ -333,8 +334,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         href={`#pimage-${index}`}
                                     ><button key={index} onClick={() => setSelectedMediaIndex(index)} className={
                                         (selectedMediaIndex === index ?
-                                            "border-primary border-[3px] w-14" : " w-10 border-[2px] dark:border-white border-black border-opacity-20") +
-                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-50 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
+                                            "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
                                     }>
                                             <img src={media} className="w-full h-full object-cover " />
                                         </button></a>
@@ -414,54 +415,130 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             }
                             {/* name, phone, country|state */}
                             <div className="h-4"></div>
-                            <div className="gb gbz p-4 rounded-xl border-2 border-black dark:border-gray-50">
-                                <ShippingForm store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
-                                <div className="h-2"></div>
-                                <div className="flex flex-col md:flex-row justify-between items-center" >
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            sendOrder("pending")
-                                        }}
-                                        type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
-                                        <AsynxWave
-                                            color="white"
-                                            width="100%"
-                                            height="100%"
-                                            className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
-                                            padding={0} />
-                                        <div className="flex items-center justify-center" >
-                                            {/* أرسل طلبك الآن */}
-                                            <TypeAnimation cursor={true} sequence={[
-                                                "شراء الآن",
-                                                2500,
-                                                "سنتصل بك لتأكيد الطلبية",
-                                                500,
-                                                "ماذا تنتظر؟",
-                                                500,
-                                                "إظغط هنا لإرسال الطلب",
-                                                500,
-                                                "إظغط هنا لإرسال الطلب...",
-                                                500,
-                                            ]}
-                                                repeat={Infinity}
-                                                speed={50}
-                                            />
-                                            <span dir="ltr" className="mx-2 bg-white text-primary rounded-full px-2">
-                                                x{item.quantity}
+                            <div className="gb rounded-xl">
+                                <div className="p-4">
+                                    <ShippingForm store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
+
+                                    <div className="h-2"></div>
+                                    <div className="flex flex-col md:flex-row justify-between items-center" >
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                sendOrder("pending")
+                                            }}
+                                            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+                                            <AsynxWave
+                                                color="white"
+                                                width="100%"
+                                                height="100%"
+                                                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
+                                                padding={0} />
+                                            <div className="flex items-center justify-center" >
+                                                {/* أرسل طلبك الآن */}
+                                                <TypeAnimation cursor={true} sequence={[
+                                                    "شراء الآن",
+                                                    2500,
+                                                    "سنتصل بك لتأكيد الطلبية",
+                                                    500,
+                                                    "ماذا تنتظر؟",
+                                                    500,
+                                                    "إظغط هنا لإرسال الطلب",
+                                                    500,
+                                                    "إظغط هنا لإرسال الطلب...",
+                                                    500,
+                                                ]}
+                                                    repeat={Infinity}
+                                                    speed={50}
+                                                />
+                                                <span dir="ltr" className="mx-2 text-primary rounded-full px-2" style={{ backgroundColor: "var(--on-p)" }}>
+                                                    x{item.quantity}
+                                                </span>
+                                            </div>
+                                            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+                                                {
+                                                    shipping?.address.state ?
+                                                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                                                        :
+                                                        <b className="px-2 font-extrabold">)اختر الولاية(</b>
+                                                }
+                                            </div>
+                                            {/* the basket icon */}
+                                            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
+                                        </button>
+                                    </div>
+                                    <div className="h-2"></div>
+                                    <div className="flex items-center justify-center">
+                                        <div className="text-gray-600">
+                                            الكمية
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="flex items-center justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    // Decrease quantity
+                                                    setItem((prevItem) => ({
+                                                        ...prevItem,
+                                                        quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
+                                                    }));
+                                                }}
+                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-s-lg"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="px-3 py-1 bg-gray-200 text-gray-700">
+                                                {item.quantity}
                                             </span>
+                                            <button
+                                                onClick={() => {
+                                                    // Increase quantity
+                                                    setItem((prevItem) => ({
+                                                        ...prevItem,
+                                                        quantity: prevItem.quantity + 1,
+                                                    }));
+                                                }}
+                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
+                                            >
+                                                +
+                                            </button>
                                         </div>
-                                        <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
-                                            {
-                                                shipping?.address.state ?
-                                                    <b className="px-2 font-extrabold">{getTotal()} دج</b>
-                                                    :
-                                                    <b className="px-2 font-extrabold">)اختر الولاية(</b>
-                                            }
-                                        </div>
-                                    </button>
+                                    </div>
                                 </div>
-                                <div className="h-2"></div>
+                                {/* divider */}
+                                <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
+                                <div className="p-4">
+                                    {/* shipping */}
+                                    <div className="flex items-center justify-center">
+                                        <div className="text-gray-600">
+                                            الشحن
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">{
+                                                shipping?.address.state ?
+                                                    <span>{
+                                                        getTotal() &&
+                                                            getTotal()! - getPriceAfterDiscount() > 0 ?
+                                                            getTotal()! - getPriceAfterDiscount() + " دج"
+                                                            : "مجاني"
+                                                    }</span>
+                                                    :
+                                                    <span>اختر الولاية</span>
+                                            }</span>
+                                        </div>
+                                    </div>
+                                    <div className="h-2"></div>
+                                    {/* total */}
+                                    <div className="flex">
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">المجموع</span>
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">{getTotal()} دج</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <Markdown className="p-4 prose dark:prose-invert" >{product?.body}</Markdown>
                         </div>
