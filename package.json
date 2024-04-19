@@ -19,7 +19,7 @@
     "@vinejs/vine": "^2.0.0",
     "axios": "^1.6.2",
     "emittery": "^1.0.3",
-    "feeef": "file:../../../../ideas/fif_core",
+    "feeef": "file:../../../../ideas/packages/core",
     "grammy": "^1.19.2",
     "marked": "^10.0.0",
     "nanoid": "^5.0.3",

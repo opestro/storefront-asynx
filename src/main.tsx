@@ -26,7 +26,7 @@ window.ff = ff
 
 // currentStoreId from currunt url queryParam
 
-const currentStoreId = new URLSearchParams(window.location.search).get('store_slug') || "go"
+const currentStoreId = new URLSearchParams(window.location.search).get('store_slug') || "asynx"
 // alert(currentStoreId)
 
 // [getStore] a function to get store data from the server
