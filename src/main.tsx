@@ -14,7 +14,7 @@ import { FeeeF } from 'feeef/src/feeef/feeef';
 
 
 export const ff = new FeeeF({
-  apiKey: "API_KEY"
+  apiKey: "API_KEY",
 });
 
 declare global {
@@ -23,11 +23,6 @@ declare global {
   }
 }
 window.ff = ff
-
-// currentStoreId from currunt url queryParam
-
-const currentStoreId = new URLSearchParams(window.location.search).get('store_slug') || "asynx"
-// alert(currentStoreId)
 
 // [getStore] a function to get store data from the server
 // by default path is "/stores/:storeId"
@@ -41,13 +36,24 @@ var _storesCache: { [storeId: string]: StoreEntity } = {}
  * @param storeId - The ID of the store to retrieve.
  * @returns A promise that resolves to the store object.
  */
-export const getStore = async (slug: string): Promise<StoreEntity> => {
-  if (_storesCache[slug]) return _storesCache[slug]
+export const getStore = async (host: string): Promise<StoreEntity> => {
+  if (_storesCache[host]) return _storesCache[host]
+  var id: string | null = null
+  var by: string | null = null
+  var tokens = host.split('.')
+  // if host is subdomain, we need to get the store by slug
+  if (tokens.length > 2) {
+    id = tokens[0]
+    by = 'slug'
+  } else {
+    id = host
+    by = 'domain.name'
+  }
   const store = await ff.stores.find({
-    id: slug,
-    by: 'slug'
+    id: id,
+    by: by
   });
-  _storesCache[slug] = store
+  _storesCache[host] = store
   return store
 }
 
@@ -71,10 +77,10 @@ export const dartColorToCss = (color: number): string => {
  * Initializes the app with the provided store ID.
  * @param storeId - The ID of the store.
  */
-export const initApp = async (storeSlug: string) => {
+export const initApp = async (host: string) => {
   
   // Retrieve the store data
-  const store = await getStore(storeSlug);
+  const store = await getStore(host);
 
   // set the rel="icon" to the store logo
   if (store.logoUrl) {
@@ -120,7 +126,11 @@ export const initApp = async (storeSlug: string) => {
 }
 
 
-// Initialize the app with the current store ID
-initApp(currentStoreId)
+// Initialize the app with the current store
+var host = (new URL(
+  window.location.href
+// "http://asynx.khfif.shop"
+)).host
+initApp(host)
 
 
