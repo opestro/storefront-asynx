@@ -18,26 +18,39 @@ class LocalOrder {
   // shippingPrice: number = 0;
   // reference
   ref: string | null = null;
+
+  // computed props
+  // totla without shipping
+  // get total() {
+  //   return calculateLocalOrderTotal(this.store!, this);
+  // }
 }
 
 
-export function getShippingRateForState(store: StoreEntity|null, state: string|null) {
+export function getShippingRateForState(store: StoreEntity | null, state: string | null) {
   if (!store || !state) return null;
-  var stateIndex = parseInt(state)-1;
-   var rate = store.defaultShippingRates?.[stateIndex];
-   return {
-      desk: rate?.[0] || null,
-      home: rate?.[1] || null,
-   }
+  var stateIndex = parseInt(state) - 1;
+  var rate = store.defaultShippingRates?.[stateIndex];
+  return {
+    desk: rate?.[0] || null,
+    home: rate?.[1] || null,
+  }
 }
 
-function calculateLocalOrderShipping(store:StoreEntity, localOrder: LocalOrder) {
+function calculateLocalOrderShipping(store: StoreEntity, localOrder: LocalOrder) {
   var rate = getShippingRateForState(store, localOrder.shipping!.address.state);
   return rate?.[localOrder.shipping?.doorShipping ? 'home' : 'desk'] ?? null
 }
 
-function calculateLocalOrderTotal(store:StoreEntity,localOrder: LocalOrder, withShipping = true) {
-  var shippingPrice: number|null = 0;
+/**
+ * Calculates the total order amount for a local order, including shipping if specified.
+ * @param store - The store entity.
+ * @param localOrder - The local order object.
+ * @param withShipping - Optional parameter to include shipping cost. Default is true.
+ * @returns The total order amount, including shipping if applicable. Returns null if there is an error calculating the shipping cost.
+ */
+function calculateLocalOrderTotal(store: StoreEntity, localOrder: LocalOrder, withShipping = true) {
+  var shippingPrice: number | null = 0;
   if (withShipping) {
     shippingPrice = calculateLocalOrderShipping(store, localOrder);
     if (shippingPrice == null) return null;
@@ -48,49 +61,48 @@ function calculateLocalOrderTotal(store:StoreEntity,localOrder: LocalOrder, with
 
       (
         getProductPriceAfterDiscount(item.product, item.variants)
-)
+      )
 
       * item.quantity);
   }, 0) + shippingPrice;
 }
-
-function getProductPriceWithoutVariantsDiscount(product: ProductEntity, variantPath: string[]): number {
+function getProductPriceWithoutVariantsDiscount(product: ProductEntity, path: string[]): number {
   var price = product!.price;
   var variant = product?.variant;
 
-  for (let i = 0; i < variantPath.length; i++) {
-    var option = variant?.options.find(e => e.name == variantPath[i])!
+  for (let i = 0; i < path.length; i++) {
+    var option = variant?.options.find(e => e.name == path[i])!
     price = option.price || price;
     variant = option.child
   }
   return price;
 }
-function getProductPriceAfterDiscount(product: ProductEntity, variantPath: string[]): number {
+function getProductPriceAfterDiscount(product: ProductEntity, path: string[]): number {
   var price = product!.price - (product!.discount || 0);
   var variant = product?.variant;
 
-  for (let i = 0; i < variantPath.length; i++) {
-    var option = variant?.options.find(e => e.name == variantPath[i])!
-    price = (option.price || price)  - (option.discount || 0);
+  for (let i = 0; i < path.length; i++) {
+    var option = variant?.options.find(e => e.name == path[i])!
+    price = (option.price || price) - (option.discount || 0);
     variant = option.child
   }
   return price;
 }
-function getProductDiscountPercentage(product: ProductEntity, variantPath: string[]): number {
-  var price = getProductPriceWithoutVariantsDiscount(product,variantPath);
+function getProductDiscountPercentage(product: ProductEntity, path: string[]): number {
+  var price = getProductPriceWithoutVariantsDiscount(product, path);
   if (price == 0) return 0;
-  return getProductPriceAfterDiscount(product,variantPath) / price;
+  return getProductPriceAfterDiscount(product, path) / price;
 }
-function getProductQuantity(product: ProductEntity, variantPath: string[]): number {
+function getProductQuantity(product: ProductEntity, path: string[]): number {
   var quantity = product!.stock;
   var variant = product?.variant;
 
-  for (let i = 0; i < variantPath.length; i++) {
-    var option = variant?.options.find(e => e.name == variantPath[i])!
+  for (let i = 0; i < path.length; i++) {
+    var option = variant?.options.find(e => e.name == path[i])!
     quantity = option.stock || quantity;
     variant = option.child
   }
   return quantity;
 }
-export {calculateLocalOrderShipping, calculateLocalOrderTotal, getProductPriceWithoutVariantsDiscount, getProductPriceAfterDiscount,getProductDiscountPercentage, getProductQuantity };
+export { calculateLocalOrderShipping, calculateLocalOrderTotal, getProductPriceWithoutVariantsDiscount, getProductPriceAfterDiscount, getProductDiscountPercentage, getProductQuantity };
 export { LocalOrder };
