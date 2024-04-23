@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import AsynxWave from "../widgets/asynx_wave";
-import { OrderEntity, StoreEntity } from "fif_core";
+import { OrderEntity, StoreEntity } from "feeef/src/core/core";
 
 
 export default function Thanks({ order, onDone }: {

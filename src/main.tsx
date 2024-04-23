@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import ProductPage from './pages/product';
 // import ReactPixel from 'react-facebook-pixel';
-import axios from 'axios';
 import { StoreEntity } from 'feeef/src/core/core';
 import { FeeeF } from 'feeef/src/feeef/feeef';
 
