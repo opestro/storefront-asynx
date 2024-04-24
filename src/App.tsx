@@ -16,7 +16,7 @@ function App({ store }: { store: StoreEntity }) {
   const [, setLoading] = useState(true)
 
   function filteredProducts() {
-    return products.filter((product) => !selectedCategory ? true : product.category.name==selectedCategory?.name)
+    return products.filter((product) => !selectedCategory ? true : product.category?.name==selectedCategory?.name)
   }
 
   useEffect(() => {

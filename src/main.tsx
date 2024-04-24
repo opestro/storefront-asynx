@@ -11,6 +11,25 @@ import ProductPage from './pages/product';
 import { StoreEntity } from 'feeef/src/core/core';
 import { FeeeF } from 'feeef/src/feeef/feeef';
 
+// polyfill for Object.hasOwn
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn
+if (!Object.prototype.hasOwnProperty) {
+  Object.prototype.hasOwnProperty = function (key) {
+    return key in this;
+  };
+}
+
+declare global {
+  interface Object {
+    hasOwn?: (obj: any, key: string) => boolean;
+  }
+}
+
+if (!Object.hasOwn) {
+  Object.hasOwn = function (obj: any, key: string) {
+    return Object.prototype.hasOwnProperty.call(obj, key);
+  };
+}
 
 export const ff = new FeeeF({
   apiKey: "API_KEY",
@@ -128,8 +147,8 @@ export const initApp = async (host: string) => {
 
 // Initialize the app with the current store
 var host = (new URL(
-  window.location.href
-// "http://asynx.khfif.shop"
+  // window.location.href
+"http://asynx.khfif.shop"
 )).host
 initApp(host)
 
