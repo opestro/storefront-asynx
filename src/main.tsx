@@ -147,8 +147,8 @@ export const initApp = async (host: string) => {
 
 // Initialize the app with the current store
 var host = (new URL(
-  // window.location.href
-"http://asynx.khfif.shop"
+   window.location.href
+//"http://asynx.khfif.shop"
 )).host
 initApp(host)
 
