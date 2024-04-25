@@ -47,8 +47,7 @@ function ProductPage({ store }: { store: StoreEntity }) {
     }, [id])
 
     if (!product) {
-        return
-        <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
+        return <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
             <AsynxWave
                 className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl'
                 height="100%"
@@ -75,7 +74,8 @@ function ProductPage({ store }: { store: StoreEntity }) {
             </div>
         </div>
     }
-    return <SuperSEO
+    return <>
+    <SuperSEO
         title={store.title + "|" + (product.name || "")}
         description={product.description || undefined}
         lang="ar"
@@ -94,8 +94,9 @@ function ProductPage({ store }: { store: StoreEntity }) {
             ogLocaleAlternate: ["en_US"],
         }}
     >
-        <Product store={store} product={product}></Product>
     </SuperSEO>
+    <Product store={store} product={product}></Product>
+    </>
 }
 
 
