@@ -17,6 +17,7 @@ import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
 import { ff } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
+import { SuperSEO } from "react-super-seo";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -46,7 +47,8 @@ function ProductPage({ store }: { store: StoreEntity }) {
     }, [id])
 
     if (!product) {
-        return <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
+        return
+        <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
             <AsynxWave
                 className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl'
                 height="100%"
@@ -73,7 +75,27 @@ function ProductPage({ store }: { store: StoreEntity }) {
             </div>
         </div>
     }
-    return <Product store={store} product={product}></Product>
+    return <SuperSEO
+        title={store.title + "|" + (product.name || "")}
+        description={product.description || undefined}
+        lang="ar"
+        openGraph={{
+            ogTitle: store.title + "|" + (product.name || ""),
+            ogDescription: product.description || undefined,
+            ogUrl: window.location.href,
+            ogImage: {
+                ogImage: product.media[0],
+                ogImageAlt: product.name || product.title || store.title || "",
+            },
+            ogSiteName: store.name || store.title || undefined,
+            ogType: "product",
+            ogLocale: "ar_AR",
+            ogDeterminer: "auto",
+            ogLocaleAlternate: ["en_US"],
+        }}
+    >
+        <Product store={store} product={product}></Product>
+    </SuperSEO>
 }
 
 
@@ -82,8 +104,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
 
-    // set the title to the product name (only first time)
     useEffect(() => {
+        // set the title to the product name (only first time)
         document.title = product?.name || store.title || "";
     }, [])
 
