@@ -4,10 +4,11 @@ import './index.css'
 import App from './App'
 import {
   createBrowserRouter,
+  json,
   RouterProvider,
 } from "react-router-dom";
 import ProductPage from './pages/product';
-// import ReactPixel from 'react-facebook-pixel';
+import ReactPixel from 'react-facebook-pixel';
 import { StoreEntity } from 'feeef/src/core/core';
 import { FeeeF } from 'feeef/src/feeef/feeef';
 
@@ -97,7 +98,7 @@ export const dartColorToCss = (color: number): string => {
  * @param storeId - The ID of the store.
  */
 export const initApp = async (host: string) => {
-  
+
   // Retrieve the store data
   const store = await getStore(host);
 
@@ -118,11 +119,17 @@ export const initApp = async (host: string) => {
 
   // Initialize Facebook Pixel if it is active
   // if (store.integrations.facebookPixel?.active) {
-  //   ReactPixel.init(store.integrations.facebookPixel.id, undefined, {
-  //     autoConfig: true,
-  //     debug: true,
-  //   });
-  // }
+  console.log(store.publicIntegrations)
+  const metaPixelIntegrations = store.publicIntegrations.filter((i) => i.service === "meta_pixel");
+  const pixels: string[] | undefined = metaPixelIntegrations.length > 0 ? metaPixelIntegrations[0].pixels : undefined;
+  if (pixels){
+    for (let i = 0; i < pixels.length; i++) {
+      ReactPixel.init(pixels[i], undefined, {
+        autoConfig: true,
+        debug: true,
+      });
+    }
+  }
 
   // Create the router configuration
   const router = createBrowserRouter([

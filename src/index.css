@@ -27,3 +27,6 @@
     py-2 
     text-center;
 }
+* {
+    -webkit-tap-highlight-color: transparent;
+}

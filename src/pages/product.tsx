@@ -187,8 +187,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         setShipping({ ...shipping });
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
             localStorage.addedToCard = "true";
-
-
             ReactPixel.track('AddToCart', {
                 contents: [
                     { id: product?.id, quantity: getQuantity() }
@@ -229,7 +227,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
         if (status == 'draft' && olderOrder) return;
 
-        setLoading(true);
+        setLoading(status == 'pending');
         var data: any = {
             customerName: shipping.name,
             customerPhone: shipping.phone,
@@ -254,6 +252,27 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         localStorage.setItem(`order-${product.id}`, JSON.stringify(response));
         setSentOrder(response);
         setLoading(false);
+
+        // if draft ReactPixel checkout else purchase
+        if (status == 'draft') {
+            ReactPixel.track('InitiateCheckout', {
+                content_name: product?.name,
+                content_category: 'cloth',
+                content_ids: [product?.id, product?.slug],
+                content_type: 'product',
+                value: getPriceWithoutVariantsDiscount(),
+                currency: 'DZD'
+            });
+        } else {
+            ReactPixel.track('Purchase', {
+                content_name: product?.name,
+                content_category: 'cloth',
+                content_ids: [product?.id, product?.slug],
+                content_type: 'product',
+                value: getPriceWithoutVariantsDiscount(),
+                currency: 'DZD'
+            });
+        }
     }
 
 
