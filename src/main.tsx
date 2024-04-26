@@ -119,7 +119,6 @@ export const initApp = async (host: string) => {
 
   // Initialize Facebook Pixel if it is active
   // if (store.integrations.facebookPixel?.active) {
-  console.log(store.publicIntegrations)
   const metaPixelIntegrations = store.publicIntegrations.filter((i) => i.service === "meta_pixel");
   const pixels: string[] | undefined = metaPixelIntegrations.length > 0 ? metaPixelIntegrations[0].pixels : undefined;
   if (pixels){
@@ -157,6 +156,7 @@ var host = (new URL(
   window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" : window.location.href
   //"http://asynx.khfif.shop"
 )).host
+
 initApp(host)
 
 
