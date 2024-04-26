@@ -4,7 +4,6 @@ import './index.css'
 import App from './App'
 import {
   createBrowserRouter,
-  json,
   RouterProvider,
 } from "react-router-dom";
 import ProductPage from './pages/product';
