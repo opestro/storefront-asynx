@@ -1,4 +1,5 @@
 import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
+import { dartColorToCss } from "../main";
 
 /**
  * Renders a variant button based on the variant type.
@@ -37,7 +38,7 @@ export function VariantButton({ variant, selected = false, onClick }: { variant:
 function ColorVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
         <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 min-w-14 px-2 h-8 rounded-full  bg-opacity-5  focus:bg-opacity-100"}
-            style={{ backgroundColor: variant.name }}
+            style={{ backgroundColor: dartColorToCss(variant.value) }}
         >
         </div>)
 
@@ -130,6 +131,12 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
                                     (selected === variant.name ? "bg-primary" : "bg-gray-600") +
                                     " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
                                     <span className="px-1">{variant.hint}</span>
+                                </span>
+                                || variant.type === "color" &&variant.name &&
+                                <span dir="ltr" className={
+                                    (selected === variant.name ? "bg-primary" : "bg-gray-600") +
+                                    " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
+                                    <span className="px-1">{variant.name}</span>
                                 </span>
                             }
                             <VariantButton
