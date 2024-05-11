@@ -148,7 +148,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 lat: 0,
                 long: 0,
             },
-            state: "01",
+            state: "16",
             zip: "",
         }
     });
@@ -180,11 +180,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
     function updateShippingWilaya(stateCode: string) {
+        if (stateCode === "") return;
         var index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
         var baladiyat = cities[index];
         shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
-        setShipping({ ...shipping });
+
+        setShipping(Object.assign({}, shipping));
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
             localStorage.addedToCard = "true";
             ReactPixel.track('AddToCart', {
@@ -199,7 +201,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
     useEffect(() => {
-        updateShippingWilaya(shipping!.address.state || "01");
+        updateShippingWilaya(shipping!.address.state);
     }, [])
 
     function getTotal() {

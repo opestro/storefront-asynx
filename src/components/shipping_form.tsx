@@ -91,7 +91,7 @@ export function ShippingForm({ store, shipping, setShipping, sendOrder }: { stor
                                             disabled={!rate}
                                             key={index}
                                             value={index + 1}
-                                        >{state} - {rate}{rate ? 'دج' : 'غير متوفر'}
+                                        >{state} - {rate}{rate === null||rate === undefined ? 'غير متوفر': 'دج' }
                                         </option>
                                     );
                                 })
