@@ -33,8 +33,8 @@ if (!Object.hasOwn) {
 
 export const ff = new FeeeF({
   apiKey: "API_KEY",
-  // baseURL: "https://feeef.nestgit.com/api/v1",
-  baseURL: "http://localhost:3333/api/v1",
+  baseURL: "https://feeef.nestgit.com/api/v1",
+  // baseURL: "http://localhost:3333/api/v1",
 });
 
 declare global {
