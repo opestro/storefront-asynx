@@ -155,7 +155,7 @@ export const initApp = async (host: string) => {
 var host = (new URL(
   // window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" :
    window.location.href
-  // "http://asynx.khfif.shop"
+  // "http://elkhelwi.asynx.store"
 )).host
 
 initApp(host)

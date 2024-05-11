@@ -38,7 +38,7 @@ export function VariantButton({ variant, selected = false, onClick }: { variant:
 function ColorVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
         <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 min-w-14 px-2 h-8 rounded-full  bg-opacity-5  focus:bg-opacity-100"}
-            style={{ backgroundColor: dartColorToCss(variant.value) }}
+            style={{ backgroundColor:variant.value? dartColorToCss(variant.value) : "#000000" }}
         >
         </div>)
 
