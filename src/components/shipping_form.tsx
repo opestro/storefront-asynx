@@ -3,6 +3,7 @@ import { ShippingInfo } from "../pishop/models";
 import { cities, states } from "../cities";
 import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser } from "@tabler/icons-react";
 import { getShippingRateForState } from "../pishop/logic";
+import { ShippingMethodEntity } from "feeef/src/core/core";
 
 /**
  * Represents a component for managing shipping information.
@@ -14,12 +15,19 @@ import { getShippingRateForState } from "../pishop/logic";
  * @param {Function} props.setShipping - The function to update the shipping information.
  * @returns {JSX.Element} The ShippingBox component.
  */
-export function ShippingForm({ store, shipping, setShipping, sendOrder }: { store: StoreEntity, shipping: ShippingInfo, setShipping: (shipping: ShippingInfo) => void, sendOrder: (status?: "draft" | "pending") => void }): JSX.Element {
+export function ShippingForm({ store, shipping,shippingMethod, setShipping, sendOrder }: {
+    shippingMethod?: ShippingMethodEntity|null,
+    store: StoreEntity, shipping: ShippingInfo, setShipping: (shipping: ShippingInfo) => void, sendOrder: (status?: "draft" | "pending") => void }): JSX.Element {
     function updateShippingWilaya(stateCode: string) {
         const index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
         const baladiyat = cities[index];
-        shipping!.address.city = baladiyat?.length ? (index + 1).toString().padStart(2, '0') : ""
+        let currentCityIndex = (parseInt(shipping!.address.city) || 1)-1;
+        shipping!.address.city = (Math.min(currentCityIndex, baladiyat.length - 1)+1).toString().padStart(2, '0');
+        console.log({
+            currentCityIndex,
+            city: shipping!.address.city,
+        });
         setShipping({ ...shipping });
     }
 
@@ -85,7 +93,11 @@ export function ShippingForm({ store, shipping, setShipping, sendOrder }: { stor
                         >
                             {
                                 states.map((state, index) => {
-                                    var rate = getShippingRateForState(store, (index + 1).toString().padStart(2, '0'))?.[shipping.doorShipping ? "home" : "desk"];
+                                    var rate = getShippingRateForState({
+                                        shippingMethod,
+                                        store,
+                                        state: (index + 1).toString().padStart(2, '0')
+                                    })?.[shipping.doorShipping ? "home" : "desk"];
                                     return (
                                         <option
                                             disabled={!rate}
@@ -118,7 +130,7 @@ export function ShippingForm({ store, shipping, setShipping, sendOrder }: { stor
                                 shipping!.address.city = e.target.value;
                                 setShipping({ ...shipping });
                             }}
-                            defaultValue={shipping!.address.city}
+                            value={shipping!.address.city}
                             disabled={!shipping!.address.state}
                         >
                             {
@@ -168,7 +180,11 @@ export function ShippingForm({ store, shipping, setShipping, sendOrder }: { stor
                     <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
                         {/* {!shipping.doorShipping && "هل تريد "}التوصيل للبيت  {!shipping.doorShipping && (<b dir="ltr">مقابل دج{((store.shippingMethods.find(e => e.name == shipping.address.state)?.home || 0) - (store.shippingMethods.find(e => e.name == shipping.address.state)?.office || 0))}</b>)} */}
                         {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل دج{
-                            getShippingRateForState(store, shipping.address.state)?.home
+                            getShippingRateForState({
+                                shippingMethod,
+                                store,
+                                state: shipping.address.state
+                            })?.home
                         }</b>)}
                     </span>
                     {/* hint */}

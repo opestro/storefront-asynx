@@ -1,4 +1,4 @@
-import { ProductEntity, StoreEntity } from "feeef/src/core/core";
+import { ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef/src/core/core";
 import { generateOrderId } from "../pages/product";
 import { ShippingInfo, LocalOrderItem } from "./models";
 
@@ -27,18 +27,30 @@ class LocalOrder {
 }
 
 
-export function getShippingRateForState(store: StoreEntity | null, state: string | null) {
+export function getShippingRateForState(
+  { shippingMethod, store, state }: 
+  {
+  shippingMethod?: ShippingMethodEntity|null,
+  store: StoreEntity | null, state: string | null}) {
   if (!store || !state) return null;
   var stateIndex = parseInt(state) - 1;
-  var rate = store.defaultShippingRates?.[stateIndex];
+  var rate = shippingMethod?.rates?.[stateIndex] || store.defaultShippingRates?.[stateIndex];
   return {
     desk: rate?.[0] || null,
     home: rate?.[1] || null,
   }
 }
 
-function calculateLocalOrderShipping(store: StoreEntity, localOrder: LocalOrder) {
-  var rate = getShippingRateForState(store, localOrder.shipping!.address.state);
+function calculateLocalOrderShipping(
+  { shippingMethod, store, localOrder }: 
+  {
+  shippingMethod?: ShippingMethodEntity|null,
+  store: StoreEntity, localOrder: LocalOrder}) {
+  var rate = getShippingRateForState({
+    shippingMethod,
+    store,
+    state: localOrder.shipping!.address.state
+  });
   return rate?.[localOrder.shipping?.doorShipping ? 'home' : 'desk'] ?? null
 }
 
@@ -49,10 +61,20 @@ function calculateLocalOrderShipping(store: StoreEntity, localOrder: LocalOrder)
  * @param withShipping - Optional parameter to include shipping cost. Default is true.
  * @returns The total order amount, including shipping if applicable. Returns null if there is an error calculating the shipping cost.
  */
-function calculateLocalOrderTotal(store: StoreEntity, localOrder: LocalOrder, withShipping = true) {
+function calculateLocalOrderTotal(
+  { shippingMethod, store, localOrder, withShipping = true }:
+  {
+    shippingMethod?: ShippingMethodEntity | null;
+    store: StoreEntity; localOrder: LocalOrder; withShipping: boolean}
+
+) {
   var shippingPrice: number | null = 0;
   if (withShipping) {
-    shippingPrice = calculateLocalOrderShipping(store, localOrder);
+    shippingPrice = calculateLocalOrderShipping({
+      shippingMethod,
+      store,
+      localOrder,
+    });
     if (shippingPrice == null) return null;
   }
 

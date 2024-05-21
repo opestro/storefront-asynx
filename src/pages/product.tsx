@@ -213,7 +213,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             ref: "",
             shippingMethod: "standard",
         }
-        return calculateLocalOrderTotal(store, localOrder);
+        return calculateLocalOrderTotal({
+            shippingMethod: product.shippingMethod,
+            store, 
+            localOrder,
+            withShipping: true,
+        });
     }
 
     function getDiscount() {
@@ -461,7 +466,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             <div className="h-4"></div>
                             <div className="gb rounded-xl">
                                 <div className="p-4">
-                                    <ShippingForm store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
+                                    <ShippingForm
+                                    shippingMethod={product.shippingMethod}
+                                    store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
 
                                     <div className="h-2"></div>
                                     <div className="flex flex-col md:flex-row justify-between items-center" >
