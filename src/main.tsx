@@ -119,8 +119,8 @@ export const initApp = async (host: string) => {
 
   // Initialize Facebook Pixel if it is active
   // if (store.integrations.facebookPixel?.active) {
-  const metaPixelIntegrations = store.publicIntegrations.filter((i) => i.service === "meta_pixel");
-  const pixels: string[] | undefined = metaPixelIntegrations.length > 0 ? metaPixelIntegrations[0].pixels : undefined;
+  const metaPixelIntegration = store.integrations?.metaPixel;
+  const pixels = metaPixelIntegration?.pixels.map((e:any)=>e.id);
   if (pixels){
     for (let i = 0; i < pixels.length; i++) {
       ReactPixel.init(pixels[i], undefined, {
@@ -155,7 +155,7 @@ export const initApp = async (host: string) => {
 var host = (new URL(
   // window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" :
    window.location.href
-  // "http://elkhelwi.asynx.store"
+  // "http://asynx.khfif.shop"
 )).host
 
 initApp(host)

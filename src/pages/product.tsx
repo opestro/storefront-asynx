@@ -471,7 +471,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
 
                                     <div className="h-2"></div>
-                                    <div className="flex flex-col md:flex-row justify-between items-center" >
+                                    <div className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center" >
                                         <button
                                             onClick={(e) => {
                                                 e.preventDefault();
