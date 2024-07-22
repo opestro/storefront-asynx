@@ -24,10 +24,10 @@ export function ShippingForm({ store, shipping,shippingMethod, setShipping, send
         const baladiyat = cities[index];
         let currentCityIndex = (parseInt(shipping!.address.city) || 1)-1;
         shipping!.address.city = (Math.min(currentCityIndex, baladiyat.length - 1)+1).toString().padStart(2, '0');
-        console.log({
-            currentCityIndex,
-            city: shipping!.address.city,
-        });
+        // console.log({
+        //     currentCityIndex,
+        //     city: shipping!.address.city,
+        // });
         setShipping({ ...shipping });
     }
 

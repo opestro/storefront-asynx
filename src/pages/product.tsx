@@ -142,7 +142,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         doorShipping: true,
         address: {
             street: "",
-            city: "",
+            city: "01",
             location: {
                 geohash: "",
                 lat: 0,
@@ -227,10 +227,25 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
 
     async function sendOrder(status: "draft" | "pending" = "pending") {
-        if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) return;
-        var olderOrder = localStorage.getItem(`order-${product.id}`);
+        if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) {
+            if (status == "pending") {
+                alert("الرجاء إدخال رقم هاتف صحيح");
+            } 
+            return;
+        }
+        var localStorageKey = `order:${status}-${product.id}`;
+        // allow send orders max 1/hour
+        var olderOrder = localStorage.getItem(localStorageKey);
         if (olderOrder) {
-            setSentOrder(JSON.parse(olderOrder) as OrderEntity);
+            var orderData = JSON.parse(olderOrder) as OrderEntity;
+            var currentTime = new Date().getTime();
+            var orderTime = new Date(orderData.createdAt).getTime();
+            if (currentTime - orderTime < 3600000) {
+                // delay 1 s
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                setSentOrder(orderData);
+                return;
+            }
         }
         if (status == 'draft' && olderOrder) return;
 
@@ -256,7 +271,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             }
         }
         var response = await ff.orders.send(data);
-        localStorage.setItem(`order-${product.id}`, JSON.stringify(response));
+        localStorage.setItem(localStorageKey, JSON.stringify(response));
         setSentOrder(response);
         setLoading(false);
 
