@@ -32,13 +32,13 @@ export function saveOrder(order: LocalOrder) {
 
 // ProductPage resposible for load the product
 function ProductPage({ store }: { store: StoreEntity }) {
-    const { id } = useParams();
+    const { id, slug } = useParams();
     const [product, setProduct] = useState<ProductEntity | null>(null);
 
     useEffect(() => {
         ff.products.find({
-            id: id!,
-            by: 'id'
+            id: slug ?? id!,
+            by: slug? "slug" : 'id'
         }).then((res) => {
             setProduct(res)
         }).catch((err) => {

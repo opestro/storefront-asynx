@@ -18,7 +18,7 @@ export const ProductCard: React.FunctionComponent<{
         : null;
 
     return (
-        <Link to={`/products/${product.id}`}>
+        <Link to={`/p/${product.slug}`}>
             <div className="gb rounded-2xl p-2">
                 <div className="gb rounded-[8px] p-[1px] aspect-square">
                     <img

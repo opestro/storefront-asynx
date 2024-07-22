@@ -140,6 +140,10 @@ export const initApp = async (host: string) => {
       path: "products/:id",
       element: <ProductPage store={store} />,
     },
+    {
+      path: "p/:slug",
+      element: <ProductPage store={store} />,
+    },
   ]);
 
   // Render the app
