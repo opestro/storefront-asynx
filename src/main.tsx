@@ -93,6 +93,11 @@ export const dartColorToCss = (color: number): string => {
   return colorAsHex
 }
 
+
+
+export var setAdvancedMatching = (advancedMatching?: ReactPixel.AdvancedMatching) => {}
+export var track = (title: string, data?: ReactPixel.Data | any) => {}
+
 /**
  * Initializes the app with the provided store ID.
  * @param storeId - The ID of the store.
@@ -127,6 +132,16 @@ export const initApp = async (host: string) => {
         autoConfig: true,
         debug: true,
       });
+    }
+  }
+  setAdvancedMatching = (advancedMatching?: ReactPixel.AdvancedMatching) => {
+    if (pixels){
+      for (let i = 0; i < pixels.length; i++) {
+        ReactPixel.init(pixels[i], advancedMatching, {
+          autoConfig: true,
+          debug: true,
+        });
+      }
     }
   }
 

@@ -9,12 +9,12 @@ import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation"
-import ReactPixel from 'react-facebook-pixel';
+import ReactPixel, { AdvancedMatching, InitiateCheckout } from 'react-facebook-pixel';
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
 import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
-import { ff } from "../main";
+import { ff, setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { SuperSEO } from "react-super-seo";
@@ -250,6 +250,17 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         if (status == 'draft' && olderOrder) return;
 
         setLoading(status == 'pending');
+
+        // prepare data:
+        // fbc?: string | null
+        // fbp?: string | null
+        // eventSourceUrl?: string | null
+        let urlParams = new URLSearchParams(window.location.search);
+        let fbc = urlParams.get('fbclid');
+        let fbp = urlParams.get('_fbp') ?? document.cookie.split(';').find(c => c.trim().startsWith('_fbp'))?.split('=')[1];
+        let eventSourceUrl = window.location.href;
+  
+
         var data: any = {
             customerName: shipping.name,
             customerPhone: shipping.phone,
@@ -263,6 +274,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 quantity: item.quantity,
                 variantPath: item.variants.join("/"),
             }],
+            metadata: {
+                metaPixel: {
+                    fbc: fbc,
+                    fbp: fbp,
+                    eventSourceUrl: eventSourceUrl,
+                }
+            }
         }
         if (sentOrder?.id) {
             data.id = sentOrder.id;
@@ -275,25 +293,40 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         setSentOrder(response);
         setLoading(false);
 
+
+        var userData = {
+            country: "DZ",
+            st: shipping.address.state,
+            ct: shipping.address.city,
+            ph: shipping.phone,
+            fn: shipping.name,
+        }
+        setAdvancedMatching(userData as AdvancedMatching);
+        var eventData = {
+            content_name: product?.name,
+            content_type: 'product',
+            content_ids: [product?.id],
+            contents: [
+                {
+                    id: product?.id,
+                    quantity: item.quantity,
+                    item_price: getPriceWithoutVariantsDiscount(),
+                }
+            ],
+            currency: 'DZD',
+            num_items: 1,
+            value: getTotal() ?? 0,
+            delivery_category: shipping.doorShipping ? "home_delivery" : "in_store",
+            order_id: response.id,
+            // content_category
+        }
+
         // if draft ReactPixel checkout else purchase
         if (status == 'draft') {
-            ReactPixel.track('InitiateCheckout', {
-                content_name: product?.name,
-                content_category: 'cloth',
-                content_ids: [product?.id, product?.slug],
-                content_type: 'product',
-                value: getPriceWithoutVariantsDiscount(),
-                currency: 'DZD'
-            });
+            // InitiateCheckout
+            ReactPixel.track('InitiateCheckout', eventData);
         } else {
-            ReactPixel.track('Purchase', {
-                content_name: product?.name,
-                content_category: 'cloth',
-                content_ids: [product?.id, product?.slug],
-                content_type: 'product',
-                value: getPriceWithoutVariantsDiscount(),
-                currency: 'DZD'
-            });
+            ReactPixel.track('Lead', eventData);
         }
     }
 
@@ -467,12 +500,23 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
+                                        
                                             if (variant?.mediaIndex !== undefined && variant?.mediaIndex !== null) {
                                                 setSelectedMediaIndex(variant!.mediaIndex!);
                                                 // scroll to element ut only in x
                                                 var el = document.getElementById(`pimage-${variant!.mediaIndex!}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                                             }
+
+                                            // ViewContent
+                                            ReactPixel.track('ViewContent', {
+                                                content_name: product?.name,
+                                                // content_category: 'cloth',
+                                                content_ids: [product?.id],
+                                                content_type: 'product',
+                                                value: getPriceWithoutVariantsDiscount(),
+                                                currency: 'DZD'
+                                            });
                                         }}
                                     />
                                 </div>
