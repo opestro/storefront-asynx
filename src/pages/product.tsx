@@ -9,7 +9,7 @@ import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation"
-import ReactPixel, { AdvancedMatching, InitiateCheckout } from 'react-facebook-pixel';
+import ReactPixel, { AdvancedMatching } from 'react-facebook-pixel';
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
