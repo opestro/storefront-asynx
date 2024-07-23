@@ -114,14 +114,14 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     useEffect(() => {
         ReactPixel.pageView();
         // ViewContent
-        ReactPixel.track('ViewContent', {
-            content_name: product?.name,
-            content_category: 'cloth',
-            content_ids: [product?.id, product?.slug],
-            content_type: 'product',
-            value: getPriceWithoutVariantsDiscount(),
-            currency: 'DZD'
-        });
+        // ReactPixel.track('ViewContent', {
+        //     content_name: product?.name,
+        //     content_category: 'cloth',
+        //     content_ids: [product?.id, product?.slug],
+        //     content_type: 'product',
+        //     value: getPriceWithoutVariantsDiscount(),
+        //     currency: 'DZD'
+        // });
         // on scrol
     }, [])
 
@@ -510,7 +510,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                             // ViewContent
                                             ReactPixel.track('ViewContent', {
-                                                content_name: product?.name,
+                                                content_name: product?.name + " " + variant?.name,
                                                 // content_category: 'cloth',
                                                 content_ids: [product?.id],
                                                 content_type: 'product',
