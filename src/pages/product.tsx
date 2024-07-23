@@ -284,9 +284,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
         if (sentOrder?.id) {
             data.id = sentOrder.id;
-            data.metadata = {
-                customerPhone: sentOrder.customerPhone,
-            }
+            data.metadata.customerPhones = data.metadata.customerPhones || [];
+            data.metadata.customerPhones.push(shipping.phone);
         }
         var response = await ff.orders.send(data);
         localStorage.setItem(localStorageKey, JSON.stringify(response));
