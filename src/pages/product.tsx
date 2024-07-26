@@ -409,7 +409,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             scrollSnapAlign: "center",
                                             scrollSnapStop: "always",
                                         }}
-
+                                        alt={product.name!}
                                     />
                                 ))}
                             </div>
@@ -433,7 +433,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
                                         " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
                                     }>
-                                            <img src={media} className="w-full h-full object-cover " />
+                                            <img src={media} className="w-full h-full object-cover " 
+                                                alt={"صورة " + product?.name + " " + index}
+                                            />
                                         </button></a>
                                 ))}
                             </div>

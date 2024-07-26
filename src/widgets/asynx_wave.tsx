@@ -2,6 +2,7 @@ import { useEffect, useId } from "react"
 
 
 export default function AsynxWave(params: any) {
+    return (<div></div>)
     var id = useId()
     useEffect(() => {
         var c = document.getElementById(id) as HTMLCanvasElement|null;
