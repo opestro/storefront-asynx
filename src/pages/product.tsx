@@ -227,10 +227,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
 
     async function sendOrder(status: "draft" | "pending" = "pending") {
+        console.log("sending...");
         if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) {
             if (status == "pending") {
                 alert("الرجاء إدخال رقم هاتف صحيح");
-            } 
+            }
+            console.log("invalid phone number");
             return;
         }
         var localStorageKey = `order:${status}-${product.id}`;
@@ -247,7 +249,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 return;
             }
         }
-        if (status == 'draft' && olderOrder) return;
+        if (status == 'draft' && olderOrder) {
+            console.log("draft order already exists");
+            return;
+        }
 
         setLoading(status == 'pending');
 
@@ -327,6 +332,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         } else {
             ReactPixel.track('Lead', eventData);
         }
+        console.log("order sent", response);
     }
 
 
