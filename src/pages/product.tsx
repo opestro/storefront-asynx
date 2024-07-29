@@ -333,7 +333,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             ReactPixel.track('Lead', eventData);
         }
         // Purchase
-        ReactPixel.track('Purchase', eventData);
+        // ReactPixel.track('Purchase', eventData);
         console.log("order sent", response);
     }
 
