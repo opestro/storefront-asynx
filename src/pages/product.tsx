@@ -332,6 +332,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         } else {
             ReactPixel.track('Lead', eventData);
         }
+        // Purchase
+        ReactPixel.track('Purchase', eventData);
         console.log("order sent", response);
     }
 
