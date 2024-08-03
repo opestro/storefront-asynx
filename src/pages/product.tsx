@@ -231,25 +231,25 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
-
-    async function sendOrder(status: "draft" | "pending" = "pending") {
-        // scroll to #order-form
+    function scrollToShippingForm() {
         var el = document.getElementById("order-form");
         el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-        // add .pulse class for 3s then remove it
         el?.classList.add("pulse");
         setTimeout(() => {
             el?.classList.remove("pulse");
         }, 3000);
 
+    }
+
+    async function sendOrder(status: "draft" | "pending" = "pending") {
         console.log("sending...");
-        shipping.phone = tryFixPhoneNumber(shipping.phone);
-        var validationError = validatePhoneNumber(shipping.phone);
+        var validationError = validatePhoneNumber(tryFixPhoneNumber(shipping.phone));
         if (validationError) {
             // alert(validationError);
             console.log("invalid phone number");
             return;
         }
+        shipping.phone = tryFixPhoneNumber(shipping.phone);
         var localStorageKey = `order:${status}-${product.id}`;
         // allow send orders max 1/hour
         var olderOrder = localStorage.getItem(localStorageKey);
@@ -412,33 +412,71 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         <div className="relative">
             {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
             {
-                !isSendOrderButtonInView &&
                 <div
-                    className="fixed bottom-[10px] right-[10px] left-[10px] z-20"
-                    
+                    className="fixed text-center bottom-[10px] right-[10px] left-[10px] z-20"
+
                     style={
                         {
                             "--on-p-s": 'var(--on-p)',
                             "--p-s": 'var(--p)',
+                            transition: "all 0.5s",
+                            transform: isSendOrderButtonInView ?
+                                "translateY(100%)" : "translateY(0)",
+                            opacity: isSendOrderButtonInView ? 0 : 1,
+                            visibility: isSendOrderButtonInView ? "hidden" : "visible",
+
                         } as React.CSSProperties
                     }
-                    >
-                        <div 
+                >
+                    <div
                         className="pulse rounded-lg"
-                        
+                        // max-width: ;
 
-                        // style={
-                        //     {
-                        //         "--on-p": 'var(--p-s)',
-                        //         "--p": 'var(--on-p-s)',
-                        //     } as React.CSSProperties
-                        // }
-                        >
 
-                    <SendOrderButton
-                        id="dynamic"
-                        />
-                        </div>
+
+
+                        style={
+                            {
+                                maxWidth: '500px',
+                                margin: 'auto',
+                            } as React.CSSProperties
+                        }
+                    >
+
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                scrollToShippingForm();
+                            }}
+                            type="submit" className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+                            <AsynxWave
+                                color="white"
+                                width="100%"
+                                height="100%"
+                                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
+                                padding={0} />
+                            <div className="flex items-center justify-center" >
+                                {/* أرسل طلبك الآن */}
+                                <TypeAnimation cursor={true} sequence={[
+                                    "شراء الآن",
+                                    2500,
+                                    "سنتصل بك لتأكيد الطلبية",
+                                    500,
+                                    "ماذا تنتظر؟",
+                                    500,
+                                    "إظغط هنا لإرسال الطلب",
+                                    500,
+                                    "إظغط هنا لإرسال الطلب...",
+                                    500,
+                                ]}
+                                    repeat={Infinity}
+                                    speed={50}
+                                />
+                            </div>
+                            {/* the basket icon */}
+                            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
+                        </button>
+                    </div>
                 </div>
             }
             <h1>{isSendOrderButtonInView}</h1>

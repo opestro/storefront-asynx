@@ -17,6 +17,9 @@ export function tryFixPhoneNumber(phone: string): string {
 
 
 export function validatePhoneNumber(phone: string): string | null {
+    if (phone=="0") {
+        return "اكمل رقم الهاتف";
+    }
     // Check if the phone number is empty
     if (!phone) {
         return "رقم الهاتف لا يمكن أن يكون فارغاً.";
@@ -92,12 +95,13 @@ export function useInViewport(): { isInViewport: boolean; ref: React.RefCallback
     useEffect(() => {
         if (refElement && !isInViewport) {
             const observer = new IntersectionObserver(
-                ([entry]) => entry.isIntersecting && setIsInViewport(true)
+                ([entry]) =>  setIsInViewport(entry.isIntersecting)
             );
             observer.observe(refElement);
 
             return () => {
-                observer.disconnect();
+                // alert("unobserve")
+                // observer.disconnect();
             };
         }
     }, [isInViewport, refElement]);

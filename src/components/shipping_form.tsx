@@ -40,10 +40,10 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
     function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
         const phone = e.target.value;
         const isValid = validatePhone(phone);
-        setIsPhoneValid(isValid);
         shipping!.phone = phone;
         setShipping({ ...shipping });
         sendOrder("draft");
+        setIsPhoneValid(isValid);
     }
 
     function canShipToHome(): boolean {
