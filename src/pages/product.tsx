@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Navbar from "../widgets/navbar";
 import Footer from "../widgets/footer";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StickyBox from "react-sticky-box";
 import { cities } from "../cities";
 import AsynxWave from "../widgets/asynx_wave";
@@ -245,7 +245,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         console.log("sending...");
         shipping.phone = tryFixPhoneNumber(shipping.phone);
         var validationError = validatePhoneNumber(shipping.phone);
-        if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) {
+        if (validationError) {
             // alert(validationError);
             console.log("invalid phone number");
             return;

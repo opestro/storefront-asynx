@@ -1,8 +1,8 @@
-import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // Define regex patterns for valid phone numbers
-const mobilePattern = /^0(5|6|7)\d{8}$/; // Mobile numbers starting with 05, 06, or 07
-const landlinePattern = /^0(2)\d{7}$/; // Landline numbers starting with 02
+// const mobilePattern = /^0(5|6|7)\d{8}$/; // Mobile numbers starting with 05, 06, or 07
+// const landlinePattern = /^0(2)\d{7}$/; // Landline numbers starting with 02
 
 export function tryFixPhoneNumber(phone: string): string {
     phone = phone.trim()
