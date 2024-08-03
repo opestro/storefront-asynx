@@ -73,7 +73,19 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </div>
                 </div>
                 <div>
-                    <label className="text-sm font-light flex items-center">الهاتف</label>
+                    <label className="text-sm font-light flex items-center">الهاتف
+                        {
+                            !isPhoneValid
+                            &&
+                            tryFixPhoneNumber(shipping.phone) != "0"
+                            &&
+                            <span className="mx-2 text-xs text-p">
+                                {
+                                    tryFixPhoneNumber(shipping.phone)
+                                }
+                            </span>
+                        }
+                    </label>
                     <div className={
                         
                         "relative border border-gray-500 border-opacity-20 rounded-lg "
