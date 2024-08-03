@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Navbar from "../widgets/navbar";
 import Footer from "../widgets/footer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StickyBox from "react-sticky-box";
 import { cities } from "../cities";
 import AsynxWave from "../widgets/asynx_wave";
@@ -18,6 +18,7 @@ import { ff, setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { SuperSEO } from "react-super-seo";
+import { tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -38,7 +39,7 @@ function ProductPage({ store }: { store: StoreEntity }) {
     useEffect(() => {
         ff.products.find({
             id: slug ?? id!,
-            by: slug? "slug" : 'id'
+            by: slug ? "slug" : 'id'
         }).then((res) => {
             setProduct(res)
         }).catch((err) => {
@@ -75,27 +76,27 @@ function ProductPage({ store }: { store: StoreEntity }) {
         </div>
     }
     return <>
-    <SuperSEO
-        title={store.title + "|" + (product.name || "")}
-        description={product.description || undefined}
-        lang="ar"
-        openGraph={{
-            ogTitle: store.title + "|" + (product.name || ""),
-            ogDescription: product.description || undefined,
-            ogUrl: window.location.href,
-            ogImage: {
-                ogImage: product.media[0],
-                ogImageAlt: product.name || product.title || store.title || "",
-            },
-            ogSiteName: store.name || store.title || undefined,
-            ogType: "product",
-            ogLocale: "ar_AR",
-            ogDeterminer: "auto",
-            ogLocaleAlternate: ["en_US"],
-        }}
-    >
-    </SuperSEO>
-    <Product store={store} product={product}></Product>
+        <SuperSEO
+            title={store.title + "|" + (product.name || "")}
+            description={product.description || undefined}
+            lang="ar"
+            openGraph={{
+                ogTitle: store.title + "|" + (product.name || ""),
+                ogDescription: product.description || undefined,
+                ogUrl: window.location.href,
+                ogImage: {
+                    ogImage: product.media[0],
+                    ogImageAlt: product.name || product.title || store.title || "",
+                },
+                ogSiteName: store.name || store.title || undefined,
+                ogType: "product",
+                ogLocale: "ar_AR",
+                ogDeterminer: "auto",
+                ogLocaleAlternate: ["en_US"],
+            }}
+        >
+        </SuperSEO>
+        <Product store={store} product={product}></Product>
     </>
 }
 
@@ -129,6 +130,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
 
     const [sentOrder, setSentOrder] = useState<OrderEntity | null>(null);
+
+    // isSendOrderButtonInView
+    const isInView = useInViewport();
+    const sendOrderButtonRef = isInView.ref
+    const isSendOrderButtonInView = isInView.isInViewport
 
     const [item, setItem] = useState<LocalOrderItem>({
         product: product!,
@@ -215,7 +221,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
         return calculateLocalOrderTotal({
             shippingMethod: product.shippingMethod,
-            store, 
+            store,
             localOrder,
             withShipping: true,
         });
@@ -227,11 +233,20 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
 
     async function sendOrder(status: "draft" | "pending" = "pending") {
+        // scroll to #order-form
+        var el = document.getElementById("order-form");
+        el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        // add .pulse class for 3s then remove it
+        el?.classList.add("pulse");
+        setTimeout(() => {
+            el?.classList.remove("pulse");
+        }, 3000);
+
         console.log("sending...");
+        shipping.phone = tryFixPhoneNumber(shipping.phone);
+        var validationError = validatePhoneNumber(shipping.phone);
         if (!shipping.phone.match(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/)) {
-            if (status == "pending") {
-                alert("الرجاء إدخال رقم هاتف صحيح");
-            }
+            // alert(validationError);
             console.log("invalid phone number");
             return;
         }
@@ -264,7 +279,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         let fbc = urlParams.get('fbclid');
         let fbp = urlParams.get('_fbp') ?? document.cookie.split(';').find(c => c.trim().startsWith('_fbp'))?.split('=')[1];
         let eventSourceUrl = window.location.href;
-  
+
 
         var data: any = {
             customerName: shipping.name,
@@ -338,10 +353,95 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
 
+    function SendOrderButton({
+        id,
+        ref
+    }: {
+        id: string
+        ref?: React.LegacyRef<HTMLButtonElement> | undefined
+    }): JSX.Element {
+        return <button
+            ref={ref}
+            id={"send-order-btn-" + id}
+            onClick={(e) => {
+                e.preventDefault();
+                sendOrder("pending")
+            }}
+            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+            <AsynxWave
+                color="white"
+                width="100%"
+                height="100%"
+                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
+                padding={0} />
+            <div className="flex items-center justify-center" >
+                {/* أرسل طلبك الآن */}
+                <TypeAnimation cursor={true} sequence={[
+                    "شراء الآن",
+                    2500,
+                    "سنتصل بك لتأكيد الطلبية",
+                    500,
+                    "ماذا تنتظر؟",
+                    500,
+                    "إظغط هنا لإرسال الطلب",
+                    500,
+                    "إظغط هنا لإرسال الطلب...",
+                    500,
+                ]}
+                    repeat={Infinity}
+                    speed={50}
+                />
+                <span dir="ltr" className="mx-2 text-primary rounded-full px-2" style={{ backgroundColor: "var(--on-p)" }}>
+                    x{item.quantity}
+                </span>
+            </div>
+            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+                {
+                    shipping?.address.state ?
+                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                        :
+                        <b className="px-2 font-extrabold">)اختر الولاية(</b>
+                }
+            </div>
+            {/* the basket icon */}
+            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
+        </button>
+    }
 
     return (
         <div className="relative">
+            {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
+            {
+                !isSendOrderButtonInView &&
+                <div
+                    className="fixed bottom-[10px] right-[10px] left-[10px] z-20"
+                    
+                    style={
+                        {
+                            "--on-p-s": 'var(--on-p)',
+                            "--p-s": 'var(--p)',
+                        } as React.CSSProperties
+                    }
+                    >
+                        <div 
+                        className="pulse rounded-lg"
+                        
 
+                        // style={
+                        //     {
+                        //         "--on-p": 'var(--p-s)',
+                        //         "--p": 'var(--on-p-s)',
+                        //     } as React.CSSProperties
+                        // }
+                        >
+
+                    <SendOrderButton
+                        id="dynamic"
+                        />
+                        </div>
+                </div>
+            }
+            <h1>{isSendOrderButtonInView}</h1>
             {
                 loading &&
                 <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -390,7 +490,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 {/* row, 1 col for images, other for detail; all sticky */}
                 <div className="flex flex-col md:flex-row">
                     {/* images */}
-                    <StickyBox offsetTop={78} className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
+
+                    <StickyBox offsetTop={
+                        78
+                        + (store?.banner?.enabled ? 40 : 0)
+                    } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
                         {/* image */}
                         <div className="relative">
                             {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
@@ -441,7 +545,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
                                         " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
                                     }>
-                                            <img src={media} className="w-full h-full object-cover " 
+                                            <img src={media} className="w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
                                             />
                                         </button></a>
@@ -509,7 +613,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
-                                        
+
                                             if (variant?.mediaIndex !== undefined && variant?.mediaIndex !== null) {
                                                 setSelectedMediaIndex(variant!.mediaIndex!);
                                                 // scroll to element ut only in x
@@ -532,58 +636,15 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             }
                             {/* name, phone, country|state */}
                             <div className="h-4"></div>
-                            <div className="gb rounded-xl">
+                            <div id="order-form" className="gb rounded-xl">
                                 <div className="p-4">
                                     <ShippingForm
-                                    shippingMethod={product.shippingMethod}
-                                    store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
+                                        shippingMethod={product.shippingMethod}
+                                        store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
 
                                     <div className="h-2"></div>
-                                    <div className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center" >
-                                        <button
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                sendOrder("pending")
-                                            }}
-                                            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
-                                            <AsynxWave
-                                                color="white"
-                                                width="100%"
-                                                height="100%"
-                                                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
-                                                padding={0} />
-                                            <div className="flex items-center justify-center" >
-                                                {/* أرسل طلبك الآن */}
-                                                <TypeAnimation cursor={true} sequence={[
-                                                    "شراء الآن",
-                                                    2500,
-                                                    "سنتصل بك لتأكيد الطلبية",
-                                                    500,
-                                                    "ماذا تنتظر؟",
-                                                    500,
-                                                    "إظغط هنا لإرسال الطلب",
-                                                    500,
-                                                    "إظغط هنا لإرسال الطلب...",
-                                                    500,
-                                                ]}
-                                                    repeat={Infinity}
-                                                    speed={50}
-                                                />
-                                                <span dir="ltr" className="mx-2 text-primary rounded-full px-2" style={{ backgroundColor: "var(--on-p)" }}>
-                                                    x{item.quantity}
-                                                </span>
-                                            </div>
-                                            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
-                                                {
-                                                    shipping?.address.state ?
-                                                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
-                                                        :
-                                                        <b className="px-2 font-extrabold">)اختر الولاية(</b>
-                                                }
-                                            </div>
-                                            {/* the basket icon */}
-                                            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
-                                        </button>
+                                    <div ref={sendOrderButtonRef} className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center" >
+                                        <SendOrderButton id="fixed" />
                                     </div>
                                     <div className="h-2"></div>
                                     <div className="flex items-center justify-center">

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import {  IconBrightness } from "@tabler/icons-react";
+import { IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
 import { StoreEntity } from "feeef/src/core/core";
 
@@ -11,12 +11,12 @@ function Navbar({ store }: { store: StoreEntity }) {
     <>
       <div className="h-16"></div>
       <nav className="backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
-      {
-        store?.banner?.enabled &&
-        <a className="h-8 block py-1 bg-primary text-center" href={store!.banner!.url || "#!"}>
-          {store?.banner.title}
-        </a>
-      }
+        {
+          store?.banner?.enabled &&
+          <a className="h-8 block py-1 bg-primary text-center" href={store!.banner!.url || "#!"}>
+            {store?.banner.title}
+          </a>
+        }
         <div className="h-16 container flex flex-wrap items-center justify-between mx-auto">
           <Link
             to="/"

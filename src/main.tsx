@@ -42,7 +42,6 @@ declare global {
     ff: FeeeF;
   }
 }
-window.ff = ff
 
 // [getStore] a function to get store data from the server
 // by default path is "/stores/:storeId"
@@ -173,8 +172,8 @@ export const initApp = async (host: string) => {
 // Initialize the app with the current store
 var host = (new URL(
   // window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" :
-   window.location.href
-  // "http://asynx.khfif.shop"
+  //  window.location.href
+  "http://afar.khfif.shop"
 )).host
 
 initApp(host)

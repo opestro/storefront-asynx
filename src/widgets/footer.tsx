@@ -172,7 +172,7 @@ function Footer({ store }: { store: StoreEntity }) {
             <br />
             {/* developed by mohamadlounnas */}
             <span className="text-sm font-extralight">
-              Powered by <a href="https://feeef.net/?ref=footer_copyrights" target="_blank" className="text-primary">feeef®</a> Business Solutions
+              created by <a href="https://feeef.net/?ref=footer_copyrights" target="_blank" className="text-primary">feeef®</a> created your store. startig for free!
             </span>
           </p>
         </div>

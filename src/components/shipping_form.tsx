@@ -5,6 +5,7 @@ import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser }
 import { getShippingRateForState } from "../pishop/logic";
 import { ShippingMethodEntity } from "feeef/src/core/core";
 import { useState } from 'react';
+import { tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
 
 /**
  * Represents a component for managing shipping information.
@@ -33,8 +34,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
     }
 
     function validatePhone(phone: string) {
-        const phonePattern = /^[0-9]{10}$/; // Adjust the pattern according to your phone number format
-        return phonePattern.test(phone);
+        return !validatePhoneNumber(tryFixPhoneNumber(phone))
     }
 
     function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -74,17 +74,37 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                 </div>
                 <div>
                     <label className="text-sm font-light flex items-center">الهاتف</label>
-                    <div className="relative border border-gray-500 border-opacity-20 rounded-lg overflow-hidden">
+                    <div className={
+                        
+                        "relative border border-gray-500 border-opacity-20 rounded-lg "
+                        + (isPhoneValid ? '' : ' text-red-500 pulse')
+                        
+                        }
+                        style={
+                            {
+                                "--p": isPhoneValid ? 'transparent' : 'rgba(255, 0, 0, .5)'
+                            } as React.CSSProperties
+                        }
+                        >
                         <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} />
                         <input
+                        style={
+                            {
+                                outline: "none",
+                                "--p": 'transparent' 
+                            } as React.CSSProperties
+                        }
                             required
-                            className={`bg-transparent p-2 w-full pr-10`}
+                            className={`bg-transparent p-2 w-full pr-10 overflow-hidden`}
                             type="tel"
                             placeholder="رقم الهاتف"
                             defaultValue={shipping!.phone}
                             onChange={handlePhoneChange}
+                            // no outline forces
                         />
-                        {!isPhoneValid && <div className="bg-red-500 text-white text-xs w-full text-center">رقم الهاتف غير صالح</div>}
+                        {!isPhoneValid && <div className="bg-red-500 rounded-b-lg text-white text-xs w-full text-center">
+                            {validatePhoneNumber(tryFixPhoneNumber(shipping.phone))}    
+                        </div>}
                     </div>
                 </div>
             </div>
