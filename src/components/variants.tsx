@@ -60,7 +60,7 @@ function ColorVariantButton({ variant, selected = false, onClick }: { variant: P
 function ImageVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
         <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 w-14 h-14 rounded-full  bg-opacity-5  focus:bg-opacity-100"}>
-            <img src={variant.name} className="w-full h-full object-cover" />
+            <img src={variant.value} className="w-full h-full object-cover" />
         </div>)
 
     return (
