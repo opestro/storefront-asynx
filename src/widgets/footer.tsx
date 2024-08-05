@@ -18,7 +18,7 @@ function Footer({ store }: { store: StoreEntity }) {
 
   return (
     <footer className="container">
-      <div className="gb rounded-t-xl max-w-screen-xl mx-auto px-4 pt-10 mt-10 sm:px-6 lg:px-8">
+      <div className="gb rounded-t-xl max-w-screen-xl mx-auto px-4 pt-10 mt-10 sm:px-6 lg:px-8 mb-[70px]">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
 
           <div>
@@ -174,6 +174,7 @@ function Footer({ store }: { store: StoreEntity }) {
             <span className="text-sm font-extralight">
               created by <a href="https://feeef.net/?ref=footer_copyrights" target="_blank" className="text-primary">feeef®</a> created your store. startig for free!
             </span>
+
           </p>
         </div>
       </div>
