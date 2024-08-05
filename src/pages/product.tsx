@@ -345,7 +345,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             // InitiateCheckout
             ReactPixel.track('InitiateCheckout', eventData);
         } else {
-            ReactPixel.track('Lead', eventData);
+            ReactPixel.track('Purchase', eventData);
         }
         // Purchase
         // ReactPixel.track('Purchase', eventData);
