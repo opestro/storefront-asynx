@@ -59,12 +59,12 @@ function ColorVariantButton({ variant, selected = false, onClick }: { variant: P
  */
 function ImageVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
-        <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 w-14 h-14 rounded-full  bg-opacity-5  focus:bg-opacity-100"}>
+        <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 w-14 h-14 rounded-[15px]  bg-opacity-5  focus:bg-opacity-100"}>
             <img src={variant.value} className="w-full h-full object-cover" />
         </div>)
 
     return (
-        <div onClick={onClick} className={(selected ? "border-primary   " : " dark:border-white border-black border-opacity-20") + " rounded-full border-2 mx-1 my-1 flex justify-center items-center"}>
+        <div onClick={onClick} className={(selected ? "border-primary   " : " dark:border-white border-black border-opacity-20") + " rounded-[17px] border-2 mx-1 my-1 flex justify-center items-center"}>
             {child}
         </div>
     )

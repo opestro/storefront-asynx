@@ -173,7 +173,7 @@ export const initApp = async (host: string) => {
 var host = (new URL(
   // window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" :
    window.location.href
-  // "http://afar.khfif.shop"
+  // "http://gamehub.khfif.shop"
 )).host
 
 initApp(host)

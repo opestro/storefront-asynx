@@ -13,7 +13,7 @@ import ReactPixel, { AdvancedMatching } from 'react-facebook-pixel';
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
-import { OrderEntity, ProductEntity, StoreEntity } from "feeef/src/core/core";
+import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
 import { ff, setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
@@ -578,15 +578,16 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                                         }}
                                         href={`#pimage-${index}`}
-                                    ><button key={index} onClick={() => setSelectedMediaIndex(index)} className={
-                                        (selectedMediaIndex === index ?
-                                            "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
-                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
-                                    }>
+                                    >
+                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={
+                                            (selectedMediaIndex === index ?
+                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                            " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
                                             <img src={media} className="w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
                                             />
-                                        </button></a>
+                                        </button>
+                                    </a>
                                 ))}
                             </div>
                         </div>
@@ -651,11 +652,14 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
+                                            if (variant?.type == VariantOptionType.image) {
+                                                var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
+                                                console.log(variant!.value)
+                                                console.log(product?.media[mediaIndex])
 
-                                            if (variant?.mediaIndex !== undefined && variant?.mediaIndex !== null) {
-                                                setSelectedMediaIndex(variant!.mediaIndex!);
+                                                setSelectedMediaIndex(mediaIndex!);
                                                 // scroll to element ut only in x
-                                                var el = document.getElementById(`pimage-${variant!.mediaIndex!}`)
+                                                var el = document.getElementById(`pimage-${mediaIndex!}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                                             }
 
