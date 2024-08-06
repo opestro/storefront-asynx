@@ -1,27 +1,38 @@
 
 
-
+import { EmbaddedAddress, EmbaddedCategory, EmbaddedContact, ProductEntity, StoreBanner, StoreDecoration, StoreDomain, StoreEntity, UserEntity } from 'feeef/src/core/core';
 /**
  * Represents a store model.
  */
-interface StoreModel {
-    ref: string,
-    name: string,
-    banner: string | null,
-    title: string,
-    description: string | null,
-    address: AddressModel | null,
-    domain: StoreDomainModel | null,
-    logo: ImageModel | null, 
-    darkLogo: ImageModel | null,
-    cover: string | null,
-    theme: StoreThemeModel,
+interface StoreModel extends StoreEntity {
 
-    action?: StoreAction | null,
+    id: string;
+    slug: string;
+    banner: StoreBanner | null;
+    action: StoreAction | null;
+    domain: StoreDomain | null;
+    decoration: StoreDecoration | null;
+    name: string;
+    logoUrl: string | null;
+    ondarkLogoUrl: string | null;
+    userId: string;
+    categories: EmbaddedCategory[];
+    title: string | null;
+    description: string | null;
+    addresses: EmbaddedAddress[];
+    metadata: Record<string, any>;
+    contacts: EmbaddedContact[];
+    // integrations: StoreIntegration[];
+    verifiedAt: any | null;
+    blockedAt: any | null;
+    createdAt: any;
+    updatedAt: any;
+    // products: ProductEntity[];
+    user: UserEntity;
+    // orders: OrderEntity[];
+    // shippingMethods: ShippingMethodEntity[];
 
-    currency: Currency,
-
-    shipping: {
+    shippingMethods: {
         name: String,
         code: String,
         office?: number | null,
@@ -36,17 +47,6 @@ interface StoreModel {
         name: string,
     }[],
 
-    // socials
-    socials: {
-        facebook: string,
-        instagram: string,
-        twitter: string,
-        links: {
-            name: string,
-            url: string,
-        }[],
-    },
-
     // links
     links: {
         name: string,
@@ -54,20 +54,19 @@ interface StoreModel {
     }[],
 
     // relations
-    categories: StoreCategoryModel[],
-    products: StoreProductModel[],
-    integrations: {
-        telegram?: {
-            active: boolean,
-            chatId: string,
-            token: string,
-            template: string,
-        },
-        facebookPixel?: {
-            active: boolean,
-            id: string,
-        }
-    },
+    products: ProductEntity[],
+    // integrations: {
+    //     telegram?: {
+    //         active: boolean,
+    //         chatId: string,
+    //         token: string,
+    //         template: string,
+    //     },
+    //     facebookPixel?: {
+    //         active: boolean,
+    //         id: string,
+    //     }
+    // },
 
 }
 
@@ -84,56 +83,6 @@ enum StoreActionType {
     phone = 'phone',
 }
 
-interface MediaModel {
-    url: string,
-    type: string,
-    //
-    [key: string]: any,
-}
-
-interface ImageModel extends MediaModel {
-    width?: number,
-    height?: number,
-    //
-    [key: string]: any,
-}
-
-interface VideoModel extends MediaModel {
-    duration: number,
-    width: number,
-    height: number,
-    source: string,
-    //
-    [key: string]: any,
-}
-
-interface StoreProductModel {
-    name: string,
-    description: string | null,
-    body: string | null,
-    price: number,
-    discount: number,
-    currency: Currency,
-    media: MediaModel[],
-    image: ImageModel | null,
-    categories: StoreCategoryModel[],
-    tags: string[],
-    storeId: string,
-    slug: string,
-    id: string,
-    reviews: any[],
-    rate: number,
-    variants?: VariantGroup,
-    quantity: number,
-    type: ProductType,
-    isPreorder: boolean,
-    createdAt: any,
-    updatedAt: any,
-    deletedAt: any,
-
-    //
-    [key: string]: any,
-}
 
 interface Currency {
     code: string,
@@ -146,14 +95,13 @@ enum ProductType {
     service = 'service',
 }
 
-interface StoreCategoryModel {
-    name: string,
-    description: string | null,
-    icon?: string | null,
-    cover?: string | null,
-    //
-    [key: string]: any,
-}
+interface StoreCategoryModel extends EmbaddedCategory {
+    name: string;
+    description: string;
+    photoUrl: string | null;
+    ondarkPhotoUrl?: string | null;
+    metadata?: Record<string, any>;
+  }
 
 interface StoreThemeModel {
     name: string,
@@ -164,20 +112,6 @@ interface StoreThemeModel {
 
 
 
-interface StoreDomainModel {
-    domain: string,
-    verifiedAt?: string | null,
-}
-
-interface AddressModel {
-    raw: string,
-    state?: string,
-    city?: string,
-    zip?: string,
-    location?: LocationModel,
-    //
-    [key: string]: any,
-}
 
 interface LocationModel {
     latitude: number,
@@ -199,7 +133,7 @@ interface VariantOption {
     discount?: number | null,
     quantity?: number,
     mediaIndex?: number | null,
-    image?: ImageModel | null,
+    // image?: ImageModel | null,
     type?: VariantOptionType,
     value?: string,
     child?: VariantGroup,
@@ -216,7 +150,7 @@ interface ShippingInfo {
     name: string,
     phone: string,
     email?: string,
-    address: AddressModel,
+    address: EmbaddedAddress,
     doorShipping?: boolean,
     notes?: string,
     //
@@ -224,7 +158,7 @@ interface ShippingInfo {
 }
 
 interface LocalOrderItem {
-    product: StoreProductModel,
+    product: ProductEntity,
     variants: string[],
     quantity: number,
 }
@@ -233,4 +167,4 @@ interface LocalOrderItem {
 
 // export all
 export { ProductType, VariantOptionType, StoreActionType};
-export type { StoreModel, MediaModel, ImageModel, VideoModel, StoreProductModel, StoreCategoryModel, StoreThemeModel, StoreDomainModel, AddressModel, LocationModel, VariantGroup, VariantOption, ShippingInfo, LocalOrderItem, Currency };
+export type { StoreModel, ProductEntity as StoreProductModel, StoreCategoryModel, StoreThemeModel, EmbaddedAddress as AddressModel, LocationModel, VariantGroup, VariantOption, ShippingInfo, LocalOrderItem, Currency };

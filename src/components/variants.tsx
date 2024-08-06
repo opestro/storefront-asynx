@@ -1,4 +1,5 @@
-import { VariantOption, VariantGroup } from "../pishop/models"
+import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
+import { dartColorToCss } from "../main";
 
 /**
  * Renders a variant button based on the variant type.
@@ -7,7 +8,7 @@ import { VariantOption, VariantGroup } from "../pishop/models"
  * @param onClick - The callback function to be called when the button is clicked.
  * @returns The rendered variant button.
  */
-export function VariantButton({ variant, selected = false, onClick }: { variant: VariantOption, selected?: boolean, onClick?: () => void }) {
+export function VariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     if (variant.type === "color") {
         return <ColorVariantButton variant={variant} selected={selected} onClick={onClick} />
     } else if (variant.type === "image") {
@@ -34,10 +35,10 @@ export function VariantButton({ variant, selected = false, onClick }: { variant:
  * @param onClick - The callback function to be called when the button is clicked.
  * @returns The rendered color variant button.
  */
-function ColorVariantButton({ variant, selected = false, onClick }: { variant: VariantOption, selected?: boolean, onClick?: () => void }) {
+function ColorVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
         <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 min-w-14 px-2 h-8 rounded-full  bg-opacity-5  focus:bg-opacity-100"}
-            style={{ backgroundColor: variant.value }}
+            style={{ backgroundColor:variant.value? dartColorToCss(variant.value) : "#000000" }}
         >
         </div>)
 
@@ -56,14 +57,14 @@ function ColorVariantButton({ variant, selected = false, onClick }: { variant: V
  * @param onClick - The callback function to be called when the button is clicked.
  * @returns The rendered image variant button.
  */
-function ImageVariantButton({ variant, selected = false, onClick }: { variant: VariantOption, selected?: boolean, onClick?: () => void }) {
+function ImageVariantButton({ variant, selected = false, onClick }: { variant: ProductVariantOption, selected?: boolean, onClick?: () => void }) {
     const child = (
-        <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 w-14 h-14 rounded-full  bg-opacity-5  focus:bg-opacity-100"}>
+        <div className={"cursor-pointer flex justify-center items-center border-transparent overflow-hidden shadow-xl border-2 w-14 h-14 rounded-[15px]  bg-opacity-5  focus:bg-opacity-100"}>
             <img src={variant.value} className="w-full h-full object-cover" />
         </div>)
 
     return (
-        <div onClick={onClick} className={(selected ? "border-primary   " : " dark:border-white border-black border-opacity-20") + " rounded-full border-2 mx-1 my-1 flex justify-center items-center"}>
+        <div onClick={onClick} className={(selected ? "border-primary   " : " dark:border-white border-black border-opacity-20") + " rounded-[17px] border-2 mx-1 my-1 flex justify-center items-center"}>
             {child}
         </div>
     )
@@ -78,8 +79,8 @@ function ImageVariantButton({ variant, selected = false, onClick }: { variant: V
  * @param onSelect - Optional callback function when a variant option is selected.
  */
 function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
-    variantGroup: VariantGroup, path: string[], onPathChange: (path: string[]) => void
-    onSelect?: (variant: VariantOption) => void
+    variantGroup: ProductVariant, path: string[], onPathChange: (path: string[]) => void
+    onSelect?: (variant: ProductVariantOption) => void
 }
 ) {
     var selected: string | null = null;
@@ -88,10 +89,10 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
         selected = path[0];
         rest = path.slice(1);
     }
-    function getVariant(name: string): VariantOption | null {
+    function getVariant(name: string): ProductVariantOption | null {
         return variantGroup.options?.find((option) => option.name === name) || null;
     }
-    function toggle(variant: VariantOption) {
+    function toggle(variant: ProductVariantOption) {
         selected = variant.name;
         onPathChange([selected])
     }
@@ -105,9 +106,9 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
                         <span className="px-2">{getVariant(selected!)?.name}</span>
                     </span>
                 }{
-                    getVariant(selected!)?.quantity !== undefined &&
+                    getVariant(selected!)?.stock !== undefined &&
                     <span className="  text-primary rounded-full px-2">
-                        {getVariant(selected!)?.quantity} متوفر
+                        {getVariant(selected!)?.stock} متوفر
                     </span>
                 }
 
@@ -116,7 +117,7 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
                 {variantGroup.options?.map((variant, index) => (
                     <span key={index}
                         className={(
-                            variant.quantity === 0 ?
+                            variant.stock === 0 ?
                                 "opacity-30" : "") +
                             " flex items-center justify-center "
                         }
@@ -131,10 +132,16 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
                                     " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
                                     <span className="px-1">{variant.hint}</span>
                                 </span>
+                                || variant.type === "color" &&variant.name &&
+                                <span dir="ltr" className={
+                                    (selected === variant.name ? "bg-primary" : "bg-gray-600") +
+                                    " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
+                                    <span className="px-1">{variant.name}</span>
+                                </span>
                             }
                             <VariantButton
                                 onClick={() => {
-                                    if (variant.quantity !== 0) {
+                                    if (variant.stock !== 0) {
                                         toggle(variant)
                                     }
                                     onSelect?.(variant);

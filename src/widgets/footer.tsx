@@ -1,12 +1,24 @@
-import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
+import { EmbaddedContactType, StoreEntity } from "feeef/src/core/core";
 import TextButton from "./text_button";
-import { StoreModel } from "../pishop/models";
+import { IconBrandFacebook, IconBrandInstagram, IconBrandTelegram, IconBrandTwitter, IconLink, IconMail, IconPhoneCall } from "@tabler/icons-react";
 
 
-function Footer({ store }: { store: StoreModel | null }) {
+function Footer({ store }: { store: StoreEntity }) {
+  var facebooks = store?.contacts?.filter(c => c.type === EmbaddedContactType.facebook)
+  var instagrams = store?.contacts?.filter(c => c.type === EmbaddedContactType.instagram)
+  var twitters = store?.contacts?.filter(c => c.type === EmbaddedContactType.twitter)
+  var telegrams = store?.contacts?.filter(c => c.type === EmbaddedContactType.telegram)
+  var linkedins = store?.contacts?.filter(c => c.type === EmbaddedContactType.linkedin)
+
+  var emails = store?.contacts?.filter(c => c.type === EmbaddedContactType.email)
+  var phones = store?.contacts?.filter(c => c.type === EmbaddedContactType.phone)
+  var websites = store?.contacts?.filter(c => c.type === EmbaddedContactType.website)
+
+
+
   return (
     <footer className="container">
-      <div className="gb rounded-t-xl max-w-screen-xl mx-auto px-4 pt-10 mt-10 sm:px-6 lg:px-8">
+      <div className="gb rounded-t-xl max-w-screen-xl mx-auto px-4 pt-10 mt-10 sm:px-6 lg:px-8 mb-[70px]">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
 
           <div>
@@ -14,53 +26,122 @@ function Footer({ store }: { store: StoreModel | null }) {
               تابعنا
             </h4>
             <ul className="mt-4">
-              <li>
-                {/* full width */}
-                <TextButton href={
-                  store?.socials?.facebook
-                } target='_blank'>
-                  <IconBrandFacebook
-                    className='pe-1'></IconBrandFacebook>
-                  Facebook
-                </TextButton>
-              </li>
-              <li>
-                <TextButton href={
-                  store?.socials?.instagram
-                } target='_blank'>
-                  <IconBrandInstagram
-                    className='pe-1'
-                  ></IconBrandInstagram>
+              {
+                facebooks?.map((facebook, index) => (
+                  <li key={index}>
+                    <TextButton href={
+                      facebook?.value
+                    } target='_blank'>
+                      {facebook?.name || 'Facebook'}
+                      <IconBrandFacebook
+                        size={30}
+                        className='ps-2'></IconBrandFacebook>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                instagrams?.map((instagram, index) => (
+                  <li key={index}>
+                    <TextButton href={
+                      instagram?.value
+                    } target='_blank'>
+                      {instagram?.name || 'Instagram'}
+                      <IconBrandInstagram
+                        size={30}
+                        className='ps-2'></IconBrandInstagram>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                linkedins?.map((linkedin, index) => (
+                  <li key={index}>
+                    <TextButton href={
+                      linkedin?.value
+                    } target='_blank'>
+                      {linkedin?.name || 'LinkedIn'}
+                      <IconLink
+                        size={30}
+                        className='ps-2'></IconLink>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                twitters?.map((twitter, index) => (
+                  <li key={index}>
+                    <TextButton href={
+                      twitter?.value
+                    } target='_blank'>
+                      {twitter?.name || 'Twitter'}
+                      <IconBrandTwitter
+                        size={30}
+                        className='ps-2'></IconBrandTwitter>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                telegrams?.map((telegram, index) => (
+                  <li key={index}>
+                    <TextButton href={
+                      telegram?.value
+                    } target='_blank'>
+                      {telegram?.name || 'Telegram'}
+                      <IconBrandTelegram
+                        size={30}
+                        className='ps-2'></IconBrandTelegram>
+                    </TextButton>
+                  </li>
+                ))
+              }
 
-                  Instagram
-                </TextButton>
-              </li>
-              <li>
-                <TextButton href={
-                  store?.socials?.twitter
-                } target='_blank'>
-                  <IconBrandTwitter
-                    className='pe-1'
-                  ></IconBrandTwitter>
-
-                  Twitter
-                </TextButton>
-              </li>
 
             </ul>
           </div>
           <div className="mt-12 md:mt-0">
             <h4 className="text-sm leading-5 font-semibold tracking-wider text-gray-400 uppercase">
-              روابط أخرى
+              المزيد
             </h4>
             <ul className="mt-4">
-              {store?.links?.map((link,index) => (
-                <li key={index}>
-                  <TextButton href={link.url} target='_blank'>
-                    {link.name}
-                  </TextButton>
-                </li>
-              ))}
+              {
+                emails?.map((email, index) => (
+                  <li key={index}>
+                    <TextButton href={`mailto:${email?.value}`}>
+                      {email?.name || email?.value}
+                      <IconMail
+                        size={30}
+                        className='ps-2'></IconMail>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                phones?.map((phone, index) => (
+                  <li key={index}>
+                    <TextButton href={`tel:${phone?.value}`}>
+                      {phone?.name || phone?.value}
+                      <IconPhoneCall
+                        size={30}
+                        className='ps-2'></IconPhoneCall>
+                    </TextButton>
+                  </li>
+                ))
+              }
+              {
+                websites?.map((website, index) => (
+                  <li key={index}>
+                    <TextButton href={website?.value} target='_blank'>
+                      {website?.name || website?.value}
+                      <IconLink
+                        size={30}
+                        className='ps-2'></IconLink>
+                    </TextButton>
+                  </li>
+                ))
+              }
+
             </ul>
           </div>
           <div className="mt-16 xl:mt-0">
@@ -72,7 +153,16 @@ function Footer({ store }: { store: StoreModel | null }) {
             </p>
             {/* logo in gray scale */}
             <center className="mt-4">
-              <img className="h-20 object-contain invert dark:invert-0 grayscale " src={store?.logo?.url} alt="" />
+              {
+                store?.ondarkLogoUrl &&
+                <img src={store?.ondarkLogoUrl} className={"h-20 hidden dark:block grayscale"
+                } alt={store?.name!} />
+              }
+              {
+                (store?.logoUrl || store?.ondarkLogoUrl) &&
+                <img src={store?.logoUrl || store?.ondarkLogoUrl || undefined} className={"h-20 dark:hidden block grayscale"
+                } alt={store?.name!} />
+              }
             </center>
           </div>
         </div>
@@ -80,15 +170,11 @@ function Footer({ store }: { store: StoreModel | null }) {
           <p className="text-center font-light text-base leading-6 text-gray-400 xl:text-center" dir='ltr'>
             &copy; {new Date().getFullYear()} {store?.name}. All rights reserved.
             <br />
-            Powered by PiShop
-            <br />
             {/* developed by mohamadlounnas */}
             <span className="text-sm font-extralight">
-            developed by {' '}
-            <a href="https://linkedin.com/in/mohamadlounnas"
-              target='_blank' className="text-primary transition duration-150 ease-in-out">
-              {'</'}Mohamad Lounnas{'>'} </a>
+              created by <a href="https://feeef.net/?ref=footer_copyrights" target="_blank" className="text-primary">feeef®</a> created your store. startig for free!
             </span>
+
           </p>
         </div>
       </div>

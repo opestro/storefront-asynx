@@ -1,4 +1,4 @@
-import { StoreCategoryModel } from "../pishop/models"
+import { EmbaddedCategory } from "feeef/src/core/core";
 
 // it take category form store as praameter
 /**
@@ -15,7 +15,7 @@ const CategoryButton = ({
     selected = false
 }: {
     onClick?: React.MouseEventHandler<HTMLButtonElement>,
-    category: StoreCategoryModel,
+    category: EmbaddedCategory,
     selected: boolean
 }) => {
     return (
@@ -23,17 +23,18 @@ const CategoryButton = ({
             onClick={onClick}
             className={(selected ? "gb border-transparent" : "") + " border flex items-center justify-start  bg-transparent hover:bg-white hover:bg-opacity-10     focus:bg-opacity-10 font-medium rounded-lg text-sm px-4 py-2 text-center"}>
             {/* slot */}
-            <div>
+            <div className="shrink-0">
                 {
-                    category.icon && <img src={category.icon || undefined} className="w-8 h-8 dark:invert" />
+                    category.photoUrl && <img src={category.photoUrl || undefined} className="w-8 h-8 dark:invert" />
                 }
             </div>
             <div className="w-2"></div>
-            <div className='flex flex-col items-start justify-center'>
+            <div className='flex flex-col items-start justify-center overflow-hidden'>
                 <span>
                     {category.name}
                 </span>
-                <span className="font-light text-gray-600">
+                {/* style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" */}
+                <span  className="font-light text-gray-600 dark:text-gray-400 text-xs md:text-sm lg:text-base whitespace-nowrap text-ellipsis">
                     {category.description}
                 </span>
             </div>

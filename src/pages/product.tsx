@@ -2,21 +2,24 @@ import { useParams } from "react-router-dom";
 import Navbar from "../widgets/navbar";
 import Footer from "../widgets/footer";
 import { useEffect, useState } from "react";
-import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser } from "@tabler/icons-react";
 import StickyBox from "react-sticky-box";
-import { getWilayat } from "../cities";
+import { cities } from "../cities";
 import AsynxWave from "../widgets/asynx_wave";
 import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
-// TypeAnimation
 import { TypeAnimation } from "react-type-animation"
-import ReactPixel from 'react-facebook-pixel';
+import ReactPixel, { AdvancedMatching } from 'react-facebook-pixel';
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
-import { StoreModel, LocalOrderItem, ShippingInfo } from "../pishop/models";
-import RenderVariantGroup from "../widgets/variants";
-import TelegramIntegration from "../pishop/integrations/telegram";
-export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)
+import { LocalOrderItem, ShippingInfo } from "../pishop/models";
+import RenderVariantGroup from "../components/variants";
+import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
+import { ff, setAdvancedMatching } from "../main";
+import { ShippingForm } from "../components/shipping_form";
+import { IconShoppingBag } from "@tabler/icons-react";
+import { SuperSEO } from "react-super-seo";
+import { tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
 export function getOrders() {
@@ -27,37 +30,111 @@ export function saveOrder(order: LocalOrder) {
     localStorage.orders = JSON.stringify(_cachedOrders);
 }
 
-function Product({ store }: { store: StoreModel }) {
+
+// ProductPage resposible for load the product
+function ProductPage({ store }: { store: StoreEntity }) {
+    const { id, slug } = useParams();
+    const [product, setProduct] = useState<ProductEntity | null>(null);
+
+    useEffect(() => {
+        ff.products.find({
+            id: slug ?? id!,
+            by: slug ? "slug" : 'id'
+        }).then((res) => {
+            setProduct(res)
+        }).catch((err) => {
+            console.error(err)
+        })
+    }, [id])
+
+    if (!product) {
+        return <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
+            <AsynxWave
+                className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl'
+                height="100%"
+                width="100%"
+            ></AsynxWave>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <AsynxWave
+                    height="50"
+                    width="50"
+                ></AsynxWave>
+                <div className="h-2"></div>
+                <TypeAnimation cursor={false} sequence={[
+                    "جاري التحميل",
+                    500,
+                    "يرجى الإنتظار",
+                    1000,
+                    "العملية قيد التقدم",
+                    300,
+                ]}
+                    repeat={Infinity}
+                    speed={10}
+                    className="h-5 text-sm text-gray-600 dark:text-gray-400 font-light"
+                />
+            </div>
+        </div>
+    }
+    return <>
+        <SuperSEO
+            title={store.title + "|" + (product.name || "")}
+            description={product.description || undefined}
+            lang="ar"
+            openGraph={{
+                ogTitle: store.title + "|" + (product.name || ""),
+                ogDescription: product.description || undefined,
+                ogUrl: window.location.href,
+                ogImage: {
+                    ogImage: product.media[0],
+                    ogImageAlt: product.name || product.title || store.title || "",
+                },
+                ogSiteName: store.name || store.title || undefined,
+                ogType: "product",
+                ogLocale: "ar_AR",
+                ogDeterminer: "auto",
+                ogLocaleAlternate: ["en_US"],
+            }}
+        >
+        </SuperSEO>
+        <Product store={store} product={product}></Product>
+    </>
+}
+
+
+function Product({ store, product }: { store: StoreEntity, product: ProductEntity }) {
 
     const [loading, setLoading] = useState(false);
-    const { id } = useParams();
-    const [orderId, setOrderId] = useState(generateOrderId());
-    const product = store?.products?.find((product) => product.id === id);
+    const [orderId] = useState(generateOrderId());
 
-    // set the title to the product name (only first time)
     useEffect(() => {
-        document.title = product?.name || store.title;
+        // set the title to the product name (only first time)
+        document.title = product?.name || store.title || "";
     }, [])
 
     // view page ReactPixel
     useEffect(() => {
         ReactPixel.pageView();
         // ViewContent
-        ReactPixel.track('ViewContent', {
-            content_name: product?.name,
-            content_category: 'cloth',
-            content_ids: [product?.id, product?.slug],
-            content_type: 'product',
-            value: getPriceWithoutVariantsDiscount(),
-            currency: 'DZD'
-        });
+        // ReactPixel.track('ViewContent', {
+        //     content_name: product?.name,
+        //     content_category: 'cloth',
+        //     content_ids: [product?.id, product?.slug],
+        //     content_type: 'product',
+        //     value: getPriceWithoutVariantsDiscount(),
+        //     currency: 'DZD'
+        // });
         // on scrol
     }, [])
 
 
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
 
-    const [sentOrder, setSentOrder] = useState<LocalOrder | null>(null);
+    const [sentOrder, setSentOrder] = useState<OrderEntity | null>(null);
+
+    // isSendOrderButtonInView
+    const isInView = useInViewport();
+    const sendOrderButtonRef = isInView.ref
+    const isSendOrderButtonInView = isInView.isInViewport
 
     const [item, setItem] = useState<LocalOrderItem>({
         product: product!,
@@ -70,14 +147,14 @@ function Product({ store }: { store: StoreModel }) {
         phone: "",
         doorShipping: true,
         address: {
-            raw: "",
-            city: "",
+            street: "",
+            city: "01",
             location: {
                 geohash: "",
-                latitude: 0,
-                longitude: 0,
+                lat: 0,
+                long: 0,
             },
-            state: getWilayat().length ? getWilayat()[0].en : "",
+            state: "16",
             zip: "",
         }
     });
@@ -108,15 +185,16 @@ function Product({ store }: { store: StoreModel }) {
         );
     }
 
-    function updateShippingWilaya(wilaya: string) {
-        shipping!.address.state = wilaya;
-        var baladiyat = getWilayat().find(e => e.en == shipping!.address.state)?.baladiyats;
-        shipping!.address.city = baladiyat?.length ? baladiyat?.[0].en : ""
-        setShipping({ ...shipping });
+    function updateShippingWilaya(stateCode: string) {
+        if (stateCode === "") return;
+        var index = parseInt(stateCode) - 1;
+        shipping!.address.state = stateCode;
+        var baladiyat = cities[index];
+        shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
+
+        setShipping(Object.assign({}, shipping));
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
             localStorage.addedToCard = "true";
-
-
             ReactPixel.track('AddToCart', {
                 contents: [
                     { id: product?.id, quantity: getQuantity() }
@@ -129,7 +207,7 @@ function Product({ store }: { store: StoreModel }) {
     }
 
     useEffect(() => {
-        updateShippingWilaya(shipping!.address.state || getWilayat()[0].en);
+        updateShippingWilaya(shipping!.address.state);
     }, [])
 
     function getTotal() {
@@ -141,65 +219,267 @@ function Product({ store }: { store: StoreModel }) {
             ref: "",
             shippingMethod: "standard",
         }
-        return calculateLocalOrderTotal(store, localOrder).toFixed(0);
+        return calculateLocalOrderTotal({
+            shippingMethod: product.shippingMethod,
+            store,
+            localOrder,
+            withShipping: true,
+        });
     }
 
     function getDiscount() {
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
-    async function sendOrder(e: any) {
-        e.preventDefault();
-        setLoading(true);
-
-        if (!shipping.name || !shipping.phone || !shipping.address.state) {
-            alert("رجاءا إملأ البيانات")
-        } else {
-            var order: LocalOrder = {
-                id: orderId,
-                shipping: shipping,
-                items: [item],
-                paymentMethod: "cod",
-                shippingMethod: "standard",
-                ref: Date.now().toString(),
-            }
-
-            if (!!store.integrations.telegram?.chatId) {
-
-                try {
-                    if (store.integrations.telegram) {
-                        var telegramBot = new TelegramIntegration(store.integrations.telegram);
-                        await telegramBot.init();
-                        telegramBot.sendOrder(store, order);
-                    }
-                    ReactPixel.track('Purchase', {
-                        value: getTotal(),
-                        currency: "DZD",
-                    });
-
-                    setSentOrder(order);
-                    saveOrder(order);
-                    setOrderId(generateOrderId());
-                } catch (error) {
-                    alert("الموقع تحت الضغط، انتضر دقيقة واعد الطلب")
-                }
-            }
-        }
-
-
-
-        // await ordersLogBot!.api.sendInvoice(chatId, "new order", "description",
-        //     "paylead", "token", "DZD", [{ amount: 500, label: "No" }]
-        // );
-
-        setLoading(false);
+    function scrollToShippingForm() {
+        var el = document.getElementById("order-form");
+        el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        el?.classList.add("pulse");
+        setTimeout(() => {
+            el?.classList.remove("pulse");
+        }, 3000);
 
     }
 
+    async function sendOrder(status: "draft" | "pending" = "pending") {
+        console.log("sending...");
+        var validationError = validatePhoneNumber(tryFixPhoneNumber(shipping.phone));
+        if (validationError) {
+            // alert(validationError);
+            console.log("invalid phone number");
+            return;
+        }
+        shipping.phone = tryFixPhoneNumber(shipping.phone);
+        var localStorageKey = `order:${status}-${product.id}`;
+        // allow send orders max 1/hour
+        var olderOrder = localStorage.getItem(localStorageKey);
+        if (olderOrder) {
+            var orderData = JSON.parse(olderOrder) as OrderEntity;
+            var currentTime = new Date().getTime();
+            var orderTime = new Date(orderData.createdAt).getTime();
+            if (currentTime - orderTime < 3600000) {
+                // delay 1 s
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                setSentOrder(orderData);
+                return;
+            }
+        }
+        if (status == 'draft' && olderOrder) {
+            console.log("draft order already exists");
+            return;
+        }
+
+        setLoading(status == 'pending');
+
+        // prepare data:
+        // fbc?: string | null
+        // fbp?: string | null
+        // eventSourceUrl?: string | null
+        let urlParams = new URLSearchParams(window.location.search);
+        let fbc = urlParams.get('fbclid');
+        let fbp = urlParams.get('_fbp') ?? document.cookie.split(';').find(c => c.trim().startsWith('_fbp'))?.split('=')[1];
+        let eventSourceUrl = window.location.href;
+
+
+        var data: any = {
+            customerName: shipping.name,
+            customerPhone: shipping.phone,
+            shippingAddress: shipping.address.street,
+            shippingCity: shipping.address.city,
+            shippingState: shipping.address.state,
+            status: status,
+            storeId: store.id,
+            items: [{
+                productId: product.id,
+                quantity: item.quantity,
+                variantPath: item.variants.join("/"),
+            }],
+            metadata: {
+                metaPixel: {
+                    fbc: fbc,
+                    fbp: fbp,
+                    eventSourceUrl: eventSourceUrl,
+                }
+            }
+        }
+        if (sentOrder?.id) {
+            data.id = sentOrder.id;
+            data.metadata.customerPhones = data.metadata.customerPhones || [];
+            data.metadata.customerPhones.push(shipping.phone);
+        }
+        var response = await ff.orders.send(data);
+        localStorage.setItem(localStorageKey, JSON.stringify(response));
+        setSentOrder(response);
+        setLoading(false);
+
+
+        var userData = {
+            country: "DZ",
+            st: shipping.address.state,
+            ct: shipping.address.city,
+            ph: shipping.phone,
+            fn: shipping.name,
+        }
+        setAdvancedMatching(userData as AdvancedMatching);
+        var eventData = {
+            content_name: product?.name,
+            content_type: 'product',
+            content_ids: [product?.id],
+            contents: [
+                {
+                    id: product?.id,
+                    quantity: item.quantity,
+                    item_price: getPriceWithoutVariantsDiscount(),
+                }
+            ],
+            currency: 'DZD',
+            num_items: 1,
+            value: getTotal() ?? 0,
+            delivery_category: shipping.doorShipping ? "home_delivery" : "in_store",
+            order_id: response.id,
+            // content_category
+        }
+
+        // if draft ReactPixel checkout else purchase
+        if (status == 'draft') {
+            // InitiateCheckout
+            ReactPixel.track('InitiateCheckout', eventData);
+        } else {
+            ReactPixel.track('Purchase', eventData);
+        }
+        // Purchase
+        // ReactPixel.track('Purchase', eventData);
+        console.log("order sent", response);
+    }
+
+
+    function SendOrderButton({
+        id,
+        ref
+    }: {
+        id: string
+        ref?: React.LegacyRef<HTMLButtonElement> | undefined
+    }): JSX.Element {
+        return <button
+            ref={ref}
+            id={"send-order-btn-" + id}
+            onClick={(e) => {
+                e.preventDefault();
+                sendOrder("pending")
+            }}
+            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+            <AsynxWave
+                color="white"
+                width="100%"
+                height="100%"
+                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
+                padding={0} />
+            <div className="flex items-center justify-center" >
+                {/* أرسل طلبك الآن */}
+                <TypeAnimation cursor={true} sequence={[
+                    "شراء الآن",
+                    2500,
+                    "سنتصل بك لتأكيد الطلبية",
+                    500,
+                    "ماذا تنتظر؟",
+                    500,
+                    "إظغط هنا لإرسال الطلب",
+                    500,
+                    "إظغط هنا لإرسال الطلب...",
+                    500,
+                ]}
+                    repeat={Infinity}
+                    speed={50}
+                />
+                <span dir="ltr" className="mx-2 text-primary rounded-full px-2" style={{ backgroundColor: "var(--on-p)" }}>
+                    x{item.quantity}
+                </span>
+            </div>
+            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+                {
+                    shipping?.address.state ?
+                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                        :
+                        <b className="px-2 font-extrabold">)اختر الولاية(</b>
+                }
+            </div>
+            {/* the basket icon */}
+            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
+        </button>
+    }
 
     return (
         <div className="relative">
+            {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
+            {
+                <div
+                    className="fixed text-center bottom-[10px] right-[10px] left-[10px] z-20"
 
+                    style={
+                        {
+                            "--on-p-s": 'var(--on-p)',
+                            "--p-s": 'var(--p)',
+                            transition: "all 0.5s",
+                            transform: isSendOrderButtonInView ?
+                                "translateY(100%)" : "translateY(0)",
+                            opacity: isSendOrderButtonInView ? 0 : 1,
+                            visibility: isSendOrderButtonInView ? "hidden" : "visible",
+
+                        } as React.CSSProperties
+                    }
+                >
+                    <div
+                        className="pulse rounded-lg"
+                        // max-width: ;
+
+
+
+
+                        style={
+                            {
+                                maxWidth: '500px',
+                                margin: 'auto',
+                            } as React.CSSProperties
+                        }
+                    >
+
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                scrollToShippingForm();
+                            }}
+                            type="submit" className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+                            <AsynxWave
+                                color="white"
+                                width="100%"
+                                height="100%"
+                                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
+                                padding={0} />
+                            <div className="flex items-center justify-center" >
+                                {/* أرسل طلبك الآن */}
+                                <TypeAnimation cursor={true} sequence={[
+                                    "شراء الآن",
+                                    2500,
+                                    "سنتصل بك لتأكيد الطلبية",
+                                    500,
+                                    "ماذا تنتظر؟",
+                                    500,
+                                    "إظغط هنا لإرسال الطلب",
+                                    500,
+                                    "إظغط هنا لإرسال الطلب...",
+                                    500,
+                                ]}
+                                    repeat={Infinity}
+                                    speed={50}
+                                />
+                            </div>
+                            {/* the basket icon */}
+                            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
+                        </button>
+                    </div>
+                </div>
+            }
+            <h1>{isSendOrderButtonInView}</h1>
             {
                 loading &&
                 <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -233,7 +513,7 @@ function Product({ store }: { store: StoreModel }) {
             }
 
             {
-                sentOrder &&
+                sentOrder && sentOrder.status == "pending" &&
                 <div className="overflow-auto flex items-center justify-center fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
                     <AsynxWave
                         className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-md'
@@ -248,7 +528,11 @@ function Product({ store }: { store: StoreModel }) {
                 {/* row, 1 col for images, other for detail; all sticky */}
                 <div className="flex flex-col md:flex-row">
                     {/* images */}
-                    <StickyBox offsetTop={78} className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
+
+                    <StickyBox offsetTop={
+                        78
+                        + (store?.banner?.enabled ? 40 : 0)
+                    } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
                         {/* image */}
                         <div className="relative">
                             {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
@@ -268,14 +552,14 @@ function Product({ store }: { store: StoreModel }) {
                                 {product?.media.map((media, index) => (
                                     <img
                                         id={`pimage-${index}`}
-                                        key={index} src={media.url} className={
+                                        key={index} src={media} className={
                                             " h-full object-cover aspect-square"
                                         }
                                         style={{
                                             scrollSnapAlign: "center",
                                             scrollSnapStop: "always",
                                         }}
-
+                                        alt={product.name!}
                                     />
                                 ))}
                             </div>
@@ -294,13 +578,16 @@ function Product({ store }: { store: StoreModel }) {
                                             el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                                         }}
                                         href={`#pimage-${index}`}
-                                    ><button key={index} onClick={() => setSelectedMediaIndex(index)} className={
-                                        (selectedMediaIndex === index ?
-                                            "border-primary border-[3px] w-14" : " w-10 border-[2px] dark:border-white border-black border-opacity-20") +
-                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-50 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
-                                    }>
-                                            <img src={media.url} className="w-full h-full object-cover " />
-                                        </button></a>
+                                    >
+                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={
+                                            (selectedMediaIndex === index ?
+                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                            " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
+                                            <img src={media} className="w-full h-full object-cover "
+                                                alt={"صورة " + product?.name + " " + index}
+                                            />
+                                        </button>
+                                    </a>
                                 ))}
                             </div>
                         </div>
@@ -327,7 +614,7 @@ function Product({ store }: { store: StoreModel }) {
                                     {
                                         getPriceAfterDiscount()
                                     }
-                                    {store?.currency.symbol}
+                                    دج
                                 </span>}
                                 {
                                     getPriceAfterDiscount() !== getPriceWithoutVariantsDiscount() &&
@@ -347,259 +634,142 @@ function Product({ store }: { store: StoreModel }) {
                         </div>
                         <div className="product-color">
                             {
-                                product?.variants &&
+                                product?.variant &&
                                 <div className="gb p-4 rounded-xl">
                                     <h2 className="text-xl font-semibold">الخيارات المتوفرة</h2>
                                     <div className="h-2"></div>
                                     {/* variant groups */}
                                     <RenderVariantGroup
-                                        variantGroup={product!.variants!}
+                                        variantGroup={product!.variant!}
                                         path={item.variants}
                                         onPathChange={(path) => {
+                                            if (item.variants.join() == path.join()) {
+                                                // delete last variant
+                                                path.pop();
+                                            }
                                             item.variants = path
+
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
-                                            if (variant?.mediaIndex !== undefined && variant?.mediaIndex !== null) {
-                                                setSelectedMediaIndex(variant!.mediaIndex!);
+                                            if (variant?.type == VariantOptionType.image) {
+                                                var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
+                                                console.log(variant!.value)
+                                                console.log(product?.media[mediaIndex])
+
+                                                setSelectedMediaIndex(mediaIndex!);
                                                 // scroll to element ut only in x
-                                                var el = document.getElementById(`pimage-${variant!.mediaIndex!}`)
+                                                var el = document.getElementById(`pimage-${mediaIndex!}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                                             }
+
+                                            // ViewContent
+                                            ReactPixel.track('ViewContent', {
+                                                content_name: product?.name + " " + variant?.name,
+                                                // content_category: 'cloth',
+                                                content_ids: [product?.id],
+                                                content_type: 'product',
+                                                value: getPriceWithoutVariantsDiscount(),
+                                                currency: 'DZD'
+                                            });
                                         }}
                                     />
                                 </div>
                             }
                             {/* name, phone, country|state */}
                             <div className="h-4"></div>
-                            <div className="gb gbz p-4 rounded-xl border-2 border-black dark:border-gray-50">
-                                <ShippingBox store={store} shipping={shipping} setShipping={setShipping} />
-                                <div className="h-2"></div>
-                                <div className="flex flex-col md:flex-row justify-between items-center" >
-                                    <button
-                                        onClick={sendOrder}
-                                        type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
-                                        <AsynxWave
-                                            color="white"
-                                            width="100%"
-                                            height="100%"
-                                            className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
-                                            padding={0} />
-                                        <div className="flex items-center justify-center" >
-                                            {/* أرسل طلبك الآن */}
-                                            <TypeAnimation cursor={false} sequence={[
-                                                "أرسل طلبك الآن",
-                                                500,
-                                                "سنتصل بك لتأكيد الطلبية",
-                                                1500,
-                                                "ماذا تنتظر؟",
-                                                500,
-                                                "إظغط هنا لإرسال الطلب",
-                                                500,
-                                                "إظغط هنا لإرسال الطلب...",
-                                                500,
-                                            ]}
-                                                repeat={Infinity}
-                                                speed={10}
-                                            />
-                                            <span dir="ltr" className="mx-2 bg-white text-primary rounded-full px-2">
-                                                x{item.quantity}
-                                            </span>
+                            <div id="order-form" className="gb rounded-xl">
+                                <div className="p-4">
+                                    <ShippingForm
+                                        shippingMethod={product.shippingMethod}
+                                        store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
+
+                                    <div className="h-2"></div>
+                                    <div ref={sendOrderButtonRef} className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center" >
+                                        <SendOrderButton id="fixed" />
+                                    </div>
+                                    <div className="h-2"></div>
+                                    <div className="flex items-center justify-center">
+                                        <div className="text-gray-600">
+                                            الكمية
                                         </div>
-                                        <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
-                                            <b className="px-2 font-extrabold">{getTotal()} دج</b></div>
-                                    </button>
+                                        <div className="flex-grow"></div>
+                                        <div className="flex items-center justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    // Decrease quantity
+                                                    setItem((prevItem) => ({
+                                                        ...prevItem,
+                                                        quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
+                                                    }));
+                                                }}
+                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-s-lg"
+                                            >
+                                                -
+                                            </button>
+                                            <span className="px-3 py-1 bg-gray-200 text-gray-700">
+                                                {item.quantity}
+                                            </span>
+                                            <button
+                                                onClick={() => {
+                                                    // Increase quantity
+                                                    setItem((prevItem) => ({
+                                                        ...prevItem,
+                                                        quantity: prevItem.quantity + 1,
+                                                    }));
+                                                }}
+                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
+                                {/* divider */}
+                                <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
+                                <div className="p-4">
+                                    {/* shipping */}
+                                    <div className="flex items-center justify-center">
+                                        <div className="text-gray-600">
+                                            الشحن
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">{
+                                                shipping?.address.state ?
+                                                    <span>{
+                                                        getTotal() &&
+                                                            getTotal()! - getPriceAfterDiscount() > 0 ?
+                                                            getTotal()! - getPriceAfterDiscount() + " دج"
+                                                            : "مجاني"
+                                                    }</span>
+                                                    :
+                                                    <span>اختر الولاية</span>
+                                            }</span>
+                                        </div>
+                                    </div>
+                                    <div className="h-2"></div>
+                                    {/* total */}
+                                    <div className="flex">
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">المجموع</span>
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="text-gray-600">
+                                            <span className="text-gray-600">{getTotal()} دج</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <Markdown className="p-4 prose dark:prose-invert" >{product?.body}</Markdown>
                         </div>
                     </div>
                 </div>
-
-
             </div>
             <Footer store={store}></Footer>
         </div>
     );
 }
 
-export default Product;
-
-/**
- * Represents a component for managing shipping information.
- *
- * @component
- * @param {Object} props - The component props.
- * @param {StoreModel} props.store - The store model.
- * @param {ShippingInfo} props.shipping - The shipping information.
- * @param {Function} props.setShipping - The function to update the shipping information.
- * @returns {JSX.Element} The ShippingBox component.
- */
-function ShippingBox({ store, shipping, setShipping }: { store: StoreModel, shipping: ShippingInfo, setShipping: (shipping: ShippingInfo) => void }): JSX.Element {
-    function updateShippingWilaya(wilaya: string) {
-        shipping!.address.state = wilaya;
-        var baladiyat = getWilayat().find(e => e.en == shipping!.address.state)?.baladiyats;
-        shipping!.address.city = baladiyat?.length ? baladiyat?.[0].en : ""
-        setShipping({ ...shipping });
-    }
-
-    function canShipToHome(): boolean {
-        var shippingArea = store.shipping.find(e => e.name == shipping.address.state);
-        return !!(shippingArea?.active && shippingArea?.home);
-    }
-    // function canShipToOffice(): boolean {
-    //     var shippingArea = store.shipping.find(e => e.name == shipping.address.state);
-    //     return !!(shippingArea?.active && shippingArea?.office);
-    // }
-
-    return (
-        <div>
-            <h2 className="text-xl font-semibold">معلومات الشحن
-            </h2>
-            <div className="h-2"></div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                <div>
-                    <label className="text-sm font-light flex items-center">الاسم</label>
-                    <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconUser className="absolute top-2 right-2 text-gray-400" />
-                        <input
-
-                            required
-                            className="bg-transparent p-2  w-full pr-10
-                                                invalid:outline-red-700 invalid:outline invalid:outline-2
-                                                
-                                                rounded-[inherit]
-                                                "
-                            type="name"
-                            placeholder="الإسم و اللقب"
-                            defaultValue={shipping!.name}
-                            onChange={(e) => {
-                                shipping!.name = e.target.value;
-                                setShipping({ ...shipping });
-                            }}
-                        />
-                    </div>
-                </div>
-                <div>
-                    <label className="text-sm font-light flex items-center">الهاتف</label>
-                    <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconPhone className="absolute top-2 right-2 text-gray-400" />
-                        <input
-                            required
-                            className="bg-transparent p-2 w-full pr-10 invalid:outline-red-700 invalid:outline invalid:outline-2 rounded-[inherit]" type="tel"
-                            placeholder="رقم الهاتف"
-                            defaultValue={shipping!.phone}
-                            onChange={(e) => {
-                                shipping!.phone = e.target.value;
-                                setShipping({ ...shipping });
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-            <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
-                <div>
-                    <label className="text-sm font-light flex items-center">الولاية
-                    </label>
-                    <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconLocation className="absolute top-2 right-2 text-gray-400" />
-                        <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit] focus:first-letter:outline-2" required
-                            onChange={(e) => {
-                                updateShippingWilaya(e.target.value);
-                            }}
-                            defaultValue={shipping!.address.state}
-                        >
-                            {
-                                getWilayat().map((wilaya, index) => (
-                                    <option key={index}
-                                        value={wilaya.en.toLocaleLowerCase()}
-                                    >({wilaya.code}) {wilaya.ar} - {
-                                            store.shipping.find(
-                                                e => e.name == wilaya.en
-                                            )?.[
-                                            shipping.doorShipping ?
-                                                "home" : "office"]
-                                        }دج
-
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label className="text-sm font-light flex items-center">البلدية
-                        {
-                            !shipping!.address.state &&
-                            <span className="mx-2 text-xs text-red-500"> (اختر الولاية أولاً)</span>
-                        }
-                        {
-                            shipping!.address.city &&
-                            <span className="mx-2 text-xs text-red-500"> ({shipping!.address.city})</span>
-                        }
-                    </label>
-                    <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
-                        <IconLocationCode className="absolute top-2 right-2 text-gray-400" />
-                        <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit]
-                                            " required
-                            onChange={(e) => {
-                                shipping!.address.city = e.target.value;
-                                setShipping({ ...shipping });
-                            }}
-                            defaultValue={shipping!.address.city}
-                            disabled={!shipping!.address.state}
-                        >
-                            {
-                                getWilayat().find((wilaya) => wilaya.en === shipping!.address.state!)?.baladiyats?.map((baladiya, index) => (
-                                    <option key={index}
-                                        value={baladiya.en.toLocaleLowerCase()}
-                                    >{baladiya.ar}</option>
-                                ))
-                                || <span>لا يوجد بلديات</span>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {
-                shipping.doorShipping && canShipToHome() &&
-                <>
-                    <div className="h-2"></div>
-                    <div>
-                        <label className="text-sm font-light">العنوان</label>
-                        <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
-                            <IconLocationBolt className="absolute top-2 right-2 text-gray-400" />
-                            <textarea
-                                required
-                                className="bg-transparent p-2  w-full pr-10"
-                                placeholder="أدخل العنوان كاملا، توصيل لباب البيت"
-                                defaultValue={shipping!.address.raw}
-                                onChange={(e) => {
-                                    shipping!.address.raw = e.target.value;
-                                    setShipping({ ...shipping });
-                                }}
-                            />
-                        </div>
-                    </div></>
-            }
-            <div className="h-4"></div>
-            <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" onChange={() => {
-                    shipping.doorShipping = !shipping.doorShipping && canShipToHome();
-                    setShipping({ ...shipping })
-                }} checked={shipping.doorShipping} className="sr-only peer" />
-                <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-                <div
-                    // column
-                    className="ms-3 flex flex-col"
-                >
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                        {!shipping.doorShipping && "هل تريد "}التوصيل للبيت  {!shipping.doorShipping && (<b dir="ltr">مقابل دج{((store.shipping.find(e => e.name == shipping.address.state)?.home || 0) - (store.shipping.find(e => e.name == shipping.address.state)?.office || 0))}</b>)}
-                    </span>
-                    {/* hint */}
-                    <span className="text-xs text-gray-500 dark:text-gray-400">التوصيل للمكتب ارخص في العادة لكن يتطلب منك التنقل لأقرب مكتب</span>
-                </div>
-            </label>
-        </div>
-    )
-}
+export default ProductPage;

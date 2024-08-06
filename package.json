@@ -1,21 +1,26 @@
 {
   "name": "asynx",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp ./robots.txt ./dist/robots.txt",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "start": "vite preview",
     "preview": "vite preview"
   },
   "dependencies": {
     "@grammyjs/parse-mode": "^1.8.1",
     "@medusajs/ui": "^2.2.1",
+    "@poppinss/utils": "^6.7.3",
     "@react-input/mask": "^1.0.20",
     "@tabler/icons-react": "^2.40.0",
     "@tailwindcss/typography": "^0.5.10",
+    "@vinejs/vine": "^2.0.0",
     "axios": "^1.6.2",
+    "emittery": "^1.0.3",
+    "feeef": "^0.0.21",
     "grammy": "^1.19.2",
     "marked": "^10.0.0",
     "nanoid": "^5.0.3",
@@ -25,6 +30,7 @@
     "react-markdown": "^9.0.0",
     "react-router-dom": "^6.18.0",
     "react-sticky-box": "^2.0.5",
+    "react-super-seo": "^1.1.9",
     "react-type-animation": "^3.2.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0"

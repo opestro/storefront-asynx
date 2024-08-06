@@ -2,15 +2,17 @@ import { useEffect, useId } from "react"
 
 
 export default function AsynxWave(params: any) {
+    return (<div></div>)
     var id = useId()
     useEffect(() => {
-        var c: any = document.getElementById(id);
+        var c = document.getElementById(id) as HTMLCanvasElement|null;
+        if (!c) return;
         
         var w = c.width;
         var h = c.height;
         var u = Math.min(w, h);
 
-        var ctx = c.getContext("2d");
+        var ctx = c.getContext("2d")!;
         var t = 0;
         var steps = 20;
         function draw() {
@@ -19,7 +21,7 @@ export default function AsynxWave(params: any) {
             ctx.beginPath();
             ctx.lineWidth = 0.1 * u;
             ctx.lineCap = "round";
-            ctx.strokeStyle =params.color || getComputedStyle(c).getPropertyValue('--p');
+            ctx.strokeStyle =params.color || getComputedStyle(c!).getPropertyValue('--p');
             ctx.globalAlpha = 0.3
 
             var padding = params.padding !== undefined?params.padding:0.2;

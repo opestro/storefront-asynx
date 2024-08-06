@@ -1,5 +1,5 @@
 import { Bot } from "grammy";
-import { LocalOrder, calculateLocalOrderShipping, calculateLocalOrderTotal } from "../logic";
+import { LocalOrder } from "../logic";
 import { StoreModel } from "../models";
 
 // class [Integration] is a base class for all integrations
@@ -47,20 +47,20 @@ export default class TelegramIntegration extends StoreIntegration {
         }
     }
 
-    async sendOrder(store: StoreModel, localOrder: LocalOrder): Promise<void> {
+    async sendOrder(_store: StoreModel, _localOrder: LocalOrder): Promise<void> {
         if (!this.active) return;
-        var message = this.template
-            .replace(/\{id\}/g, localOrder.id)
-            .replace(/\{address\}/g, localOrder.shipping?.doorShipping ? localOrder.shipping?.address.raw : "التوصيل لمكتب الولاية")
-            .replace(/\{phone\}/g, localOrder.shipping?.phone || "لا رقم")
-            .replace(/\{name\}/g, localOrder.shipping?.name || "لا اسم")
-            .replace(/\{notes\}/g, localOrder.shipping?.notes || "لا ملاحظة")
-            .replace(/\{state\}/g, localOrder.shipping?.address.state || "لا ولاية")
-            .replace(/\{city\}/g, localOrder.shipping?.address.city || "لا بلدية")
-            .replace(/\{products\}/g, localOrder.items.map(item => `${item.product.name} ${item.variants.join("-")}\n - الكمية:(x${item.quantity})`).join("\n"))
-            .replace(/\{shipping\}/g, calculateLocalOrderShipping(store, localOrder).toFixed(0))
-            .replace(/\{total\}/g, calculateLocalOrderTotal(store, localOrder).toFixed(0))
-            .replace(/\{cost\}/g, calculateLocalOrderTotal(store, localOrder, false).toFixed(0))
-        await this.sendMessage(message)
+        // var message = this.template
+        //     .replace(/\{id\}/g, localOrder.id)
+        //     .replace(/\{address\}/g, localOrder.shipping?.doorShipping ? (localOrder.shipping?.address.street ?? "--") : "التوصيل لمكتب الولاية")
+        //     .replace(/\{phone\}/g, localOrder.shipping?.phone || "لا رقم")
+        //     .replace(/\{name\}/g, localOrder.shipping?.name || "لا اسم")
+        //     .replace(/\{notes\}/g, localOrder.shipping?.notes || "لا ملاحظة")
+        //     .replace(/\{state\}/g, localOrder.shipping?.address.state || "لا ولاية")
+        //     .replace(/\{city\}/g, localOrder.shipping?.address.city || "لا بلدية")
+        //     .replace(/\{products\}/g, localOrder.items.map(item => `${item.product.name} ${item.variants.join("-")}\n - الكمية:(x${item.quantity})`).join("\n"))
+        //     .replace(/\{shipping\}/g, calculateLocalOrderShipping(store, localOrder).toFixed(0))
+        //     .replace(/\{total\}/g, calculateLocalOrderTotal(store, localOrder).toFixed(0))
+        //     .replace(/\{cost\}/g, calculateLocalOrderTotal(store, localOrder, false).toFixed(0))
+        // await this.sendMessage(message)
     }
 }

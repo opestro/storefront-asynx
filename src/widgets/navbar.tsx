@@ -1,44 +1,42 @@
 import { Link } from "react-router-dom";
-import TextButton from "./text_button";
-import { IconBrandInstagram, IconBrightness } from "@tabler/icons-react";
+import { IconBrightness } from "@tabler/icons-react";
 import ReactPixel from "react-facebook-pixel";
-import { StoreModel } from "../pishop/models";
+import { StoreEntity } from "feeef/src/core/core";
 
 
-function Navbar({ store }: { store: StoreModel | null }) {
+function Navbar({ store }: { store: StoreEntity }) {
   // const location = useLocation()
 
   return (
     <>
       <div className="h-16"></div>
-      <nav className=" backdrop-blur-xl bg-opacity-80 dark:bg-opacity-50 bg-gray-100 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
-
-      {
-        store?.banner &&
-        <div className="h-8 py-1 bg-primary text-center">
-          {store?.banner}
-        </div>
-      }
-        <div className="container flex flex-wrap items-center justify-between mx-auto">
+      <nav className="backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
+        {
+          store?.banner?.enabled &&
+          <a className="h-8 block py-1 bg-primary text-center" href={store!.banner!.url || "#!"}>
+            {store?.banner.title}
+          </a>
+        }
+        <div className="h-16 container flex flex-wrap items-center justify-between mx-auto">
           <Link
             to="/"
             className="flex items-center space-x-3 rtl:space-x-reverse">
             {
-              store?.theme.showStoreLogoInHeader && store?.logo?.url &&
-              <img src={store?.logo?.url} className={(
-                store?.theme.logoFullHeight ? "h-16" : "h-8")
+              store?.ondarkLogoUrl &&
+              <img src={store?.ondarkLogoUrl} className={(
+                store?.decoration?.logoFullHeight ? "h-16" : "h-12")
                 + " hidden dark:block"
-              } alt={store?.name} />
+              } alt={store?.name!} />
             }
             {
-              store?.theme.showStoreLogoInHeader && (store?.darkLogo?.url || store?.logo?.url) &&
-              <img src={store?.darkLogo?.url || store?.logo?.url} className={(
-                store?.theme.logoFullHeight ? "h-16" : "h-8")
+              (store?.logoUrl || store?.ondarkLogoUrl) &&
+              <img src={store?.logoUrl || store?.ondarkLogoUrl || undefined} className={(
+                store?.decoration?.logoFullHeight ? "h-16" : "h-12")
                 + " dark:hidden block"
-              } alt={store?.name} />
+              } alt={store?.name!} />
             }
             {
-              store?.theme.showStoreNameInHeader &&
+              store?.decoration?.showStoreNameInHeader &&
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{store?.name}</span>
             }
           </Link>
@@ -76,7 +74,7 @@ function Navbar({ store }: { store: StoreModel | null }) {
           </button> */}
             {/* toggle dark/light */}
           </div>
-          <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+          {/* <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul className=" flex items-center flex-col p-4 md:p-0 mt-4 font-medium border rounded-lg  md:space-x-2 rtl:space-x-reverse md:flex-row md:mt-0 ">
               <li>
                 <Link to="/"><TextButton>المعرض</TextButton></Link>
@@ -90,7 +88,7 @@ function Navbar({ store }: { store: StoreModel | null }) {
                 </TextButton>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
       </nav>
 
