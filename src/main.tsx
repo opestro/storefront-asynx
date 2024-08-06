@@ -172,7 +172,7 @@ export const initApp = async (host: string) => {
 // Initialize the app with the current store
 var host = (new URL(
   // window.location.href.includes("localhost") ? "http://elkhalwi.asynx.store" :
-   window.location.href
+  //  window.location.href
   // "http://gamehub.khfif.shop"
 )).host
 
