@@ -1,6 +1,4 @@
-import { useLoaderData, useLocation, useParams } from "react-router-dom";
-import Navbar from "../resources/parts/navbar";
-import Footer from "../resources/parts/footer";
+import { useLoaderData, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import StickyBox from "react-sticky-box";
 import { cities } from "../cities";
@@ -18,7 +16,7 @@ import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { SuperSEO } from "react-super-seo";
 import { pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
-import { ff, getCurrentHost, getCurrentUrl } from "../feeef";
+import { ff, getCurrentUrl } from "../feeef";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];

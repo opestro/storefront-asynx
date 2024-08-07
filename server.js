@@ -49,7 +49,6 @@ async function createServer() {
     try {
       let template;
       let render;
-
       if (!isProduction) {
         template = await fsp.readFile(resolve("index.html"), "utf8");
         template = await vite.transformIndexHtml(url, template);

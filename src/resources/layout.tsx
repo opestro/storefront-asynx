@@ -1,4 +1,4 @@
-import { Link, Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData } from "react-router-dom";
 import Navbar from "./parts/navbar";
 import { StoreEntity } from "feeef/src/core/core";
 import Footer from "./parts/footer";

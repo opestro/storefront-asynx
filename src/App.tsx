@@ -1,10 +1,9 @@
 import type { RouteObject } from "react-router-dom";
-import { Outlet, Link, useLoaderData, redirect, useLocation, useInRouterContext, useRouteLoaderData, useOutletContext, useParams } from "react-router-dom";
+import { Link, useLoaderData, redirect, useLocation } from "react-router-dom";
 import Layout from "./resources/layout";
-import { useContext, useState } from "react";
-import { ff, getCurrentHost } from "./feeef";
+import { useState } from "react";
+import { getCurrentHost } from "./feeef";
 import { EmbaddedCategory, ProductEntity, StoreEntity } from "feeef/src/core/core";
-import ProductPage from "./pages/product";
 import Product from "./pages/product";
 import AsynxWave from "./widgets/asynx_wave";
 import { ProductCard } from "./widgets/product_card";
