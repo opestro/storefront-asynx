@@ -1,5 +1,5 @@
 import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
-import { dartColorToCss } from "../main";
+import { dartColorToCss } from "../pishop/helpers";
 
 /**
  * Renders a variant button based on the variant type.

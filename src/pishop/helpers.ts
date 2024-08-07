@@ -108,3 +108,92 @@ export function useInViewport(): { isInViewport: boolean; ref: React.RefCallback
 
     return { isInViewport, ref: setRef };
 }
+
+
+
+
+var _reactFacebookPixel: any = null;
+// meta pixel helpers for ssr
+export function track(title: string, data?: any): void {
+    console.log("track",title)
+    if (!import.meta.env.SSR) {
+        console.log("trackSSR",title)
+        if (_reactFacebookPixel == null) {
+            import("react-facebook-pixel")
+                .then((ReactPixel) => {
+                    _reactFacebookPixel = ReactPixel.default;
+                    _reactFacebookPixel.track(title, data);
+                });
+        } else {
+            _reactFacebookPixel.track(title, data);
+        }
+    }
+}
+
+// pageView()
+export function pageView(): void {
+    console.log("pageView")
+    if (!import.meta.env.SSR) {
+        if (_reactFacebookPixel == null) {
+            import("react-facebook-pixel")
+                .then((ReactPixel) => {
+                    _reactFacebookPixel = ReactPixel.default;
+                    _reactFacebookPixel.pageView();
+                });
+        } else {
+            _reactFacebookPixel.pageView();
+        }
+    }
+}
+
+// initMetaPixel
+export function initMetaPixel(store: any): void {
+    console.log("init")
+    if (!import.meta.env.SSR) {
+        if (_reactFacebookPixel == null) {
+            import("react-facebook-pixel")
+                .then((ReactPixel) => {
+                    _reactFacebookPixel = ReactPixel.default;
+                    const metaPixelIntegration = store.integrations?.metaPixel;
+                    const pixels = metaPixelIntegration?.pixels.map((e: any) => e.id);
+                    if (pixels) {
+                        for (let i = 0; i < pixels.length; i++) {
+                            _reactFacebookPixel.init(pixels[i], undefined, {
+                                autoConfig: false,
+                                debug: true,
+                            });
+                        }
+                    }
+                });
+            } else {
+                const metaPixelIntegration = store.integrations?.metaPixel;
+                const pixels = metaPixelIntegration?.pixels.map((e: any) => e.id);
+                if (pixels) {
+                    for (let i = 0; i < pixels.length; i++) {
+                        _reactFacebookPixel.init(pixels[i], undefined, {
+                            autoConfig: false,
+                            debug: true,
+                        });
+                    }
+                }
+            }
+        }
+}
+
+
+// dart color is 0xffXXXXXX
+// js color is #XXXXXXFF
+// so we need to convert the color to the js format
+// and set the css variable --p to the primary color
+// of the store
+// for example ff009688 to #009688ff in css
+export const dartColorToCss = (color: number): string => {
+    var colorAsString = color.toString(16)
+    if (color > 0xffffff) {
+      var alpha = colorAsString.slice(0, 2)
+      colorAsString = colorAsString.slice(2) + alpha
+    }
+    var colorAsHex = "#" + colorAsString
+    return colorAsHex
+  }
+  
