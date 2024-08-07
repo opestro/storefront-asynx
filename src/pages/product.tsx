@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom";
-import Navbar from "../widgets/navbar";
-import Footer from "../widgets/footer";
+import { useLoaderData, useLocation, useParams } from "react-router-dom";
+import Navbar from "../resources/parts/navbar";
+import Footer from "../resources/parts/footer";
 import { useEffect, useState } from "react";
 import StickyBox from "react-sticky-box";
 import { cities } from "../cities";
@@ -9,16 +9,16 @@ import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation"
-import ReactPixel, { AdvancedMatching } from 'react-facebook-pixel';
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
 import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
-import { ff, setAdvancedMatching } from "../main";
+// import { setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { SuperSEO } from "react-super-seo";
-import { tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import { pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import { ff, getCurrentHost, getCurrentUrl } from "../feeef";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -31,50 +31,14 @@ export function saveOrder(order: LocalOrder) {
 }
 
 
+
 // ProductPage resposible for load the product
-function ProductPage({ store }: { store: StoreEntity }) {
-    const { id, slug } = useParams();
-    const [product, setProduct] = useState<ProductEntity | null>(null);
-
-    useEffect(() => {
-        ff.products.find({
-            id: slug ?? id!,
-            by: slug ? "slug" : 'id'
-        }).then((res) => {
-            setProduct(res)
-        }).catch((err) => {
-            console.error(err)
-        })
-    }, [id])
-
-    if (!product) {
-        return <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
-            <AsynxWave
-                className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl'
-                height="100%"
-                width="100%"
-            ></AsynxWave>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <AsynxWave
-                    height="50"
-                    width="50"
-                ></AsynxWave>
-                <div className="h-2"></div>
-                <TypeAnimation cursor={false} sequence={[
-                    "جاري التحميل",
-                    500,
-                    "يرجى الإنتظار",
-                    1000,
-                    "العملية قيد التقدم",
-                    300,
-                ]}
-                    repeat={Infinity}
-                    speed={10}
-                    className="h-5 text-sm text-gray-600 dark:text-gray-400 font-light"
-                />
-            </div>
-        </div>
-    }
+function ProductPage() {
+    let { product, store } = useLoaderData() as {
+        product: ProductEntity,
+        store: StoreEntity
+    };
+    let pathname = useLocation().pathname
     return <>
         <SuperSEO
             title={store.title + "|" + (product.name || "")}
@@ -83,7 +47,7 @@ function ProductPage({ store }: { store: StoreEntity }) {
             openGraph={{
                 ogTitle: store.title + "|" + (product.name || ""),
                 ogDescription: product.description || undefined,
-                ogUrl: window.location.href,
+                ogUrl: getCurrentUrl(pathname),
                 ogImage: {
                     ogImage: product.media[0],
                     ogImageAlt: product.name || product.title || store.title || "",
@@ -102,7 +66,7 @@ function ProductPage({ store }: { store: StoreEntity }) {
 
 
 function Product({ store, product }: { store: StoreEntity, product: ProductEntity }) {
-
+    let location = useLocation()
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
 
@@ -113,7 +77,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
     // view page ReactPixel
     useEffect(() => {
-        ReactPixel.pageView();
+        pageView();
         // ViewContent
         // ReactPixel.track('ViewContent', {
         //     content_name: product?.name,
@@ -195,7 +159,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         setShipping(Object.assign({}, shipping));
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
             localStorage.addedToCard = "true";
-            ReactPixel.track('AddToCart', {
+            track('AddToCart', {
                 contents: [
                     { id: product?.id, quantity: getQuantity() }
                 ],
@@ -264,6 +228,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 return;
             }
         }
+
         if (status == 'draft' && olderOrder) {
             console.log("draft order already exists");
             return;
@@ -275,10 +240,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         // fbc?: string | null
         // fbp?: string | null
         // eventSourceUrl?: string | null
-        let urlParams = new URLSearchParams(window.location.search);
+        console.log("xxx...");
+
+        let urlParams = new URLSearchParams(location.search);
         let fbc = urlParams.get('fbclid');
         let fbp = urlParams.get('_fbp') ?? document.cookie.split(';').find(c => c.trim().startsWith('_fbp'))?.split('=')[1];
-        let eventSourceUrl = window.location.href;
+        let eventSourceUrl = getCurrentUrl(location.pathname);
 
 
         var data: any = {
@@ -320,7 +287,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             ph: shipping.phone,
             fn: shipping.name,
         }
-        setAdvancedMatching(userData as AdvancedMatching);
+        // setAdvancedMatching(userData as any);
         var eventData = {
             content_name: product?.name,
             content_type: 'product',
@@ -343,9 +310,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         // if draft ReactPixel checkout else purchase
         if (status == 'draft') {
             // InitiateCheckout
-            ReactPixel.track('InitiateCheckout', eventData);
+            track('InitiateCheckout', eventData);
         } else {
-            ReactPixel.track('Purchase', eventData);
+            track('Purchase', eventData);
         }
         // Purchase
         // ReactPixel.track('Purchase', eventData);
@@ -430,11 +397,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 >
                     <div
                         className="pulse rounded-lg"
-                        // max-width: ;
-
-
-
-
                         style={
                             {
                                 maxWidth: '500px',
@@ -479,7 +441,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     </div>
                 </div>
             }
-            <h1>{isSendOrderButtonInView}</h1>
+            {/* <h1>{isSendOrderButtonInView}</h1> */}
             {
                 loading &&
                 <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -523,7 +485,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     <Thanks store={store} order={sentOrder} onDone={clearOrder}></Thanks>
                 </div>
             }
-            <Navbar store={store} />
             <div className="container mx-auto pt-4 ">
                 {/* row, 1 col for images, other for detail; all sticky */}
                 <div className="flex flex-col md:flex-row">
@@ -664,7 +625,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             }
 
                                             // ViewContent
-                                            ReactPixel.track('ViewContent', {
+                                            track('ViewContent', {
                                                 content_name: product?.name + " " + variant?.name,
                                                 // content_category: 'cloth',
                                                 content_ids: [product?.id],
@@ -767,7 +728,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     </div>
                 </div>
             </div>
-            <Footer store={store}></Footer>
         </div>
     );
 }

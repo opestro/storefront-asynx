@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { IconBrightness } from "@tabler/icons-react";
-import ReactPixel from "react-facebook-pixel";
 import { StoreEntity } from "feeef/src/core/core";
+import { track } from "../../pishop/helpers";
 
 
 function Navbar({ store }: { store: StoreEntity }) {
@@ -54,7 +54,7 @@ function Navbar({ store }: { store: StoreEntity }) {
               target="_blank"
               onClick={() => {
                 // Contact
-                ReactPixel.track('Contact');
+                track('Contact');
               }}
             >
               {

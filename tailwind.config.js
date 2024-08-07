@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
 import ui_preset from '@medusajs/ui-preset'
 
 import typography from "@tailwindcss/typography";
+/** @type {import('tailwindcss').Config} */
 
 export default {
   content: [
@@ -1006,5 +1006,4 @@ export default {
     typography
   ]
   ,
-} satisfies Config
-
+}
