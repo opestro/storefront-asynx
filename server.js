@@ -61,7 +61,7 @@ async function createServer() {
           resolve("dist/client/index.html"),
           "utf8"
         );
-        render = require(resolve("dist/server/entry.server.js")).render;
+        render = (await import('./dist/server/entry.server.mjs')).render;
       }
 
       try {
