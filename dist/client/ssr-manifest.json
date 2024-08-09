@@ -14,7 +14,7 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-14539ffd.js"
+    "/assets/fb-pixel-42abfcd1.js"
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -546,7 +546,7 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-14539ffd.js"
+    "/assets/fb-pixel-42abfcd1.js"
   ],
   "node_modules/react-fast-compare/index.js": [
   ],
@@ -695,7 +695,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-ec8a03c5.js"
+    "/assets/lazy-9bfd3860.js"
   ],
   "src/pages/product.tsx": [
   ],

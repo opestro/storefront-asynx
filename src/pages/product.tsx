@@ -39,7 +39,7 @@ function ProductPage() {
     let pathname = useLocation().pathname
     return <>
         <SuperSEO
-            title={store.title + "|" + (product.name || "")}
+            title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
             description={product.description || undefined}
             lang="ar"
             openGraph={{

@@ -2999,7 +2999,7 @@ function ProductPage() {
     /* @__PURE__ */ jsx(
       SuperSEO,
       {
-        title: store.title + "|" + (product.name || ""),
+        title: store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : ""),
         description: product.description || void 0,
         lang: "ar",
         openGraph: {
@@ -3760,9 +3760,7 @@ async function homeLoader() {
 function Home() {
   var _a;
   let { store, products } = useLoaderData();
-  useLocation();
-  if (!store)
-    return /* @__PURE__ */ jsx("div", { children: "loading..." });
+  const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   function filteredProducts() {
     return products.filter((product) => {
@@ -3771,6 +3769,28 @@ function Home() {
     });
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(
+      SuperSEO,
+      {
+        title: store.name + " - " + store.title || "",
+        description: store.description || void 0,
+        lang: "ar",
+        openGraph: {
+          ogTitle: store.name + " - " + store.title || "",
+          ogDescription: store.description || void 0,
+          ogUrl: getCurrentHost() + location.pathname,
+          ogImage: {
+            ogImage: store.logoUrl || void 0,
+            ogImageAlt: store.name || store.title || ""
+          },
+          ogSiteName: store.name || store.title || void 0,
+          ogType: "website",
+          ogLocale: "ar_AR",
+          ogDeterminer: "auto",
+          ogLocaleAlternate: ["en_US"]
+        }
+      }
+    ),
     /* @__PURE__ */ jsxs("div", { className: "text-center relative max-w-screen-xl mx-auto px-4  sm:px-6 py-10 lg:px-8", children: [
       /* @__PURE__ */ jsx(
         AsynxWave,

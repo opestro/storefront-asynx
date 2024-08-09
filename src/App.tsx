@@ -10,6 +10,7 @@ import { ProductCard } from "./widgets/product_card";
 import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
+import { SuperSEO } from "react-super-seo";
 
 export const routes: RouteObject[] = [
   {
@@ -88,10 +89,6 @@ function Home() {
   };
   const location = useLocation()
 
-
-
-  if (!store) return <div>loading...</div>
-
   const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
 
   function filteredProducts() {
@@ -100,6 +97,46 @@ function Home() {
 
   return (
     <>
+            <SuperSEO
+            // title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
+            // description={product.description || undefined}
+            // lang="ar"
+            // openGraph={{
+            //     ogTitle: store.title + "|" + (product.name || ""),
+            //     ogDescription: product.description || undefined,
+            //     ogUrl: getCurrentUrl(pathname),
+            //     ogImage: {
+            //         ogImage: product.media[0],
+            //         ogImageAlt: product.name || product.title || store.title || "",
+            //     },
+            //     ogSiteName: store.name || store.title || undefined,
+            //     ogType: "product",
+            //     ogLocale: "ar_AR",
+            //     ogDeterminer: "auto",
+            //     ogLocaleAlternate: ["en_US"],
+            // }}
+
+            title={store.name + " - " + store.title || ""}
+            description={store.description || undefined}
+            lang="ar"
+            openGraph={{
+                ogTitle: store.name + " - " + store.title || "",
+                ogDescription: store.description || undefined,
+                ogUrl: getCurrentHost() + location.pathname,
+                ogImage: {
+                    ogImage: store.logoUrl || undefined,
+                    ogImageAlt: store.name || store.title || "",
+                },
+                ogSiteName: store.name || store.title || undefined,
+                ogType: "website",
+                ogLocale: "ar_AR",
+                ogDeterminer: "auto",
+                ogLocaleAlternate: ["en_US"],
+            }}
+
+        >
+        </SuperSEO>
+
       {/* main container */}
       <div className="text-center relative max-w-screen-xl mx-auto px-4  sm:px-6 py-10 lg:px-8">
         <AsynxWave

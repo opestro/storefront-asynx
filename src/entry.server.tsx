@@ -25,13 +25,13 @@ export async function render(
   let router = createStaticRouter(dataRoutes, context);
 
   return ReactDOMServer.renderToString(
-      <React.StrictMode>
-        <StaticRouterProvider
-          router={router}
-          context={context}
-          nonce="the-nonce"
-        />
-      </React.StrictMode>
+    <React.StrictMode>
+      <StaticRouterProvider
+        router={router}
+        context={context}
+        nonce="the-nonce"
+      />
+    </React.StrictMode>
   );
 }
 

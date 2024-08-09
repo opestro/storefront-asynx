@@ -7,7 +7,7 @@ let { installGlobals } = require("@remix-run/node");
 installGlobals();
 
 let root = process.cwd();
-let isProduction = process.env.NODE_ENV === "production";
+let isProduction =  true; //process.env.NODE_ENV === "production";
 
 function resolve(p) {
   return path.resolve(__dirname, p);

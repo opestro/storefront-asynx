@@ -35,7 +35,7 @@ async function hydrate() {
   ReactDOM.hydrateRoot(
     document.getElementById("app")!,
     <React.StrictMode>
-        <RouterProvider router={router} fallbackElement={null} />
+      <RouterProvider router={router} fallbackElement={null} />
     </React.StrictMode>
   );
 }

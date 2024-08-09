@@ -1,3 +1,4 @@
+
 const states = [
     "أدرار",
     " الشلف",
@@ -1718,6 +1719,5 @@ const cities = [
         "Hassi Gara"
     ]
 ];
-
 
 export { states, cities };
