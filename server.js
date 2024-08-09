@@ -42,7 +42,10 @@ async function createServer() {
   });
 
   app.use("*", async (req, res) => {
+    console.log("GET: ", req.original);
+
     let url = req.originalUrl;
+    console.log(url);
     let host = req.get("host");
     // return host
 
