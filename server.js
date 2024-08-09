@@ -67,11 +67,13 @@ async function createServer() {
       }
 
       try {
+        console.log("Rendering...");
         let appHtml = await render(req, res);
         let html = template.replace("<!--app-html-->", appHtml);
         res.setHeader("Content-Type", "text/html");
         return res.status(200).end(html);
       } catch (e) {
+        console.error(e);
         if (e instanceof Response && e.status >= 300 && e.status <= 399) {
           return res.redirect(e.status, e.headers.get("Location"));
         }
