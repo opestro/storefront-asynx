@@ -14,7 +14,7 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-e93735ae.js"
+    "/assets/fb-pixel-14539ffd.js"
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -315,8 +315,6 @@
   ],
   "node_modules/feeef/src/feeef/validators/order.ts": [
   ],
-  "node_modules/feeef/src/feeef/validators/product.ts": [
-  ],
   "node_modules/feeef/src/feeef/validators/user_stores.ts": [
   ],
   "node_modules/feeef/src/feeef/validators/users.ts": [
@@ -548,7 +546,7 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-e93735ae.js"
+    "/assets/fb-pixel-14539ffd.js"
   ],
   "node_modules/react-fast-compare/index.js": [
   ],
@@ -697,7 +695,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-39f646f9.js"
+    "/assets/lazy-ec8a03c5.js"
   ],
   "src/pages/product.tsx": [
   ],

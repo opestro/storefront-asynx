@@ -14,7 +14,6 @@ import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBr
 import axios from "axios";
 import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
 import vine from "@vinejs/vine";
-import "@vinejs/vine/types";
 import StickyBox from "react-sticky-box";
 import { customAlphabet } from "nanoid";
 import Markdown from "react-markdown";
@@ -23,44 +22,6 @@ import { SuperSEO } from "react-super-seo";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
-var OrderStatus = /* @__PURE__ */ ((OrderStatus2) => {
-  OrderStatus2["draft"] = "draft";
-  OrderStatus2["pending"] = "pending";
-  OrderStatus2["processing"] = "processing";
-  OrderStatus2["completed"] = "completed";
-  OrderStatus2["cancelled"] = "cancelled";
-  return OrderStatus2;
-})(OrderStatus || {});
-var EmbaddedContactType = /* @__PURE__ */ ((EmbaddedContactType2) => {
-  EmbaddedContactType2["phone"] = "phone";
-  EmbaddedContactType2["email"] = "email";
-  EmbaddedContactType2["facebook"] = "facebook";
-  EmbaddedContactType2["twitter"] = "twitter";
-  EmbaddedContactType2["instagram"] = "instagram";
-  EmbaddedContactType2["linkedin"] = "linkedin";
-  EmbaddedContactType2["website"] = "website";
-  EmbaddedContactType2["whatsapp"] = "whatsapp";
-  EmbaddedContactType2["telegram"] = "telegram";
-  EmbaddedContactType2["signal"] = "signal";
-  EmbaddedContactType2["viber"] = "viber";
-  EmbaddedContactType2["skype"] = "skype";
-  EmbaddedContactType2["zoom"] = "zoom";
-  EmbaddedContactType2["other"] = "other";
-  return EmbaddedContactType2;
-})(EmbaddedContactType || {});
-var ProductStatus = /* @__PURE__ */ ((ProductStatus2) => {
-  ProductStatus2["draft"] = "draft";
-  ProductStatus2["published"] = "published";
-  ProductStatus2["archived"] = "archived";
-  ProductStatus2["deleted"] = "deleted";
-  return ProductStatus2;
-})(ProductStatus || {});
-var VariantOptionType = /* @__PURE__ */ ((VariantOptionType2) => {
-  VariantOptionType2["color"] = "color";
-  VariantOptionType2["image"] = "image";
-  VariantOptionType2["text"] = "text";
-  return VariantOptionType2;
-})(VariantOptionType || {});
 function tryFixPhoneNumber(phone2) {
   phone2 = phone2.trim();
   phone2 = phone2.replace(/\D/g, "");
@@ -219,6 +180,37 @@ function Navbar({ store }) {
     (store == null ? void 0 : store.banner) && /* @__PURE__ */ jsx("div", { className: "h-8" })
   ] });
 }
+var OrderStatus = /* @__PURE__ */ ((OrderStatus2) => {
+  OrderStatus2["draft"] = "draft";
+  OrderStatus2["pending"] = "pending";
+  OrderStatus2["processing"] = "processing";
+  OrderStatus2["completed"] = "completed";
+  OrderStatus2["cancelled"] = "cancelled";
+  return OrderStatus2;
+})(OrderStatus || {});
+var VariantOptionType = /* @__PURE__ */ ((VariantOptionType2) => {
+  VariantOptionType2["color"] = "color";
+  VariantOptionType2["image"] = "image";
+  VariantOptionType2["text"] = "text";
+  return VariantOptionType2;
+})(VariantOptionType || {});
+var EmbaddedContactType = /* @__PURE__ */ ((EmbaddedContactType2) => {
+  EmbaddedContactType2["phone"] = "phone";
+  EmbaddedContactType2["email"] = "email";
+  EmbaddedContactType2["facebook"] = "facebook";
+  EmbaddedContactType2["twitter"] = "twitter";
+  EmbaddedContactType2["instagram"] = "instagram";
+  EmbaddedContactType2["linkedin"] = "linkedin";
+  EmbaddedContactType2["website"] = "website";
+  EmbaddedContactType2["whatsapp"] = "whatsapp";
+  EmbaddedContactType2["telegram"] = "telegram";
+  EmbaddedContactType2["signal"] = "signal";
+  EmbaddedContactType2["viber"] = "viber";
+  EmbaddedContactType2["skype"] = "skype";
+  EmbaddedContactType2["zoom"] = "zoom";
+  EmbaddedContactType2["other"] = "other";
+  return EmbaddedContactType2;
+})(EmbaddedContactType || {});
 const TextButton = ({ children, href, target, className }) => {
   var child = /* @__PURE__ */ jsx(
     "button",
@@ -630,78 +622,6 @@ class OrderRepository extends ModelRepository {
     return res.data;
   }
 }
-const ProductVariantOptionSchema = vine.object({
-  name: vine.string().minLength(1).maxLength(32),
-  sku: vine.string().optional(),
-  price: vine.number().min(0).max(1e6).optional().nullable(),
-  discount: vine.number().min(0).max(1e6).optional().nullable(),
-  stock: vine.number().min(0).max(1e6).optional().nullable(),
-  sold: vine.number().min(0).max(1e6).optional().nullable(),
-  child: vine.any().optional().nullable()
-});
-const ProductVariantSchema = vine.object({
-  name: vine.string().minLength(1).maxLength(32),
-  options: vine.array(ProductVariantOptionSchema)
-}).optional();
-vine.object({
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32),
-  // .unique(async (db, value, field) => {
-  //   const product = await db.from('products').where('slug', value).first()
-  //   return !product
-  // }),
-  sku: vine.string().optional(),
-  decoration: vine.object({}).optional(),
-  name: vine.string().minLength(2).maxLength(32),
-  photoUrl: vine.string().optional(),
-  photoFile: ImageFileSchema.optional(),
-  media: vine.array(vine.string()).optional(),
-  mediaFiles: vine.array(ImageFileSchema).optional(),
-  // storeId must exist in the database
-  storeId: vine.string(),
-  // .exists(async (db, value, field) => {
-  //   return !!field.meta.store && (field.meta.store as Store).userId === field.meta.userId
-  // }),
-  category: EmbaddedCategorySchema.optional(),
-  title: vine.string().minLength(2).maxLength(255),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  body: vine.string().minLength(2).maxLength(1e3).optional(),
-  price: vine.number().min(0).max(1e6),
-  discount: vine.number().min(0).max(1e6).optional(),
-  stock: vine.number().min(0).max(1e6).optional(),
-  variant: ProductVariantSchema,
-  metadata: vine.object({}).optional(),
-  status: vine.enum(ProductStatus),
-  verifiedAt: vine.date().optional(),
-  blockedAt: vine.date().optional()
-});
-vine.object({
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32).optional(),
-  sku: vine.string().optional(),
-  decoration: vine.object({}).optional(),
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  photoUrl: vine.string().optional(),
-  photoFile: ImageFileSchema.optional(),
-  media: vine.array(vine.string()).optional(),
-  mediaFiles: vine.array(ImageFileSchema).optional(),
-  // storeId must exist in the database
-  storeId: vine.string(),
-  // .exists(async (db, value, field) => {
-  //   return !!field.meta.store && (field.meta.store as Store).userId === field.meta.userId
-  // })
-  // .optional(),
-  category: EmbaddedCategorySchema.optional(),
-  title: vine.string().minLength(2).maxLength(255).optional(),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  body: vine.string().minLength(2).maxLength(1e3).optional(),
-  price: vine.number().min(0).max(1e6).optional(),
-  discount: vine.number().min(0).max(1e6).optional(),
-  stock: vine.number().min(0).max(1e6).optional(),
-  variant: ProductVariantSchema,
-  metadata: vine.object({}).optional(),
-  status: vine.enum(ProductStatus).optional(),
-  verifiedAt: vine.date().optional(),
-  blockedAt: vine.date().optional()
-});
 class ProductRepository extends ModelRepository {
   /**
    * Creates a new instance of the ProductRepository class.
@@ -3804,7 +3724,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-9b4e6095.mjs")
+        lazy: () => import("./assets/lazy-3171c66a.mjs")
       },
       {
         path: "redirect",

@@ -32,22 +32,13 @@ async function createServer() {
     app.use(express.static(resolve("dist/client")));
   }
 
-  // favicon.ico
-  app.use((req, res, next) => {
-    if (req.url === "/favicon.ico") {
-      res.status(404).end();
-    } else {
-      next();
-    }
-  });
+  // Serve favicon.ico from root
+  app.use("/favicon.ico", express.static(resolve("favicon.ico")));
 
   app.use("*", async (req, res) => {
-    console.log("GET: ", req.original);
+    console.log("GET: ", req.originalUrl);
 
     let url = req.originalUrl;
-    console.log(url);
-    let host = req.get("host");
-    // return host
 
     try {
       let template;

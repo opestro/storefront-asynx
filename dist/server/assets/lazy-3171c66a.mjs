@@ -8,7 +8,6 @@ import "@tabler/icons-react";
 import "axios";
 import "axios-cache-interceptor";
 import "@vinejs/vine";
-import "@vinejs/vine/types";
 import "react-sticky-box";
 import "nanoid";
 import "react-markdown";
