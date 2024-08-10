@@ -29,13 +29,17 @@ async function createServer() {
     app.use(vite.middlewares);
   } else {
     app.use(require("compression")());
-    app.use(express.static(resolve("dist/client")));
   }
 
   // Serve favicon.ico from root
   app.use("/favicon.ico", express.static(resolve("favicon.ico")));
 
   app.use("*", async (req, res) => {
+    // any assets/* requests will be handled by static file server
+    if (req.originalUrl.startsWith("/assets/")) {
+      return res.sendFile(resolve(`dist/client${req.originalUrl}`));
+    }
+
     console.log("GET: ", req.originalUrl);
     console.log("hostname: ", req.hostname);
 
@@ -84,6 +88,10 @@ async function createServer() {
       res.status(500).end(error.stack);
     }
   });
+
+  if (isProduction) {
+    app.use(express.static(resolve("dist/client")));
+  }
 
   return app;
 }
