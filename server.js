@@ -29,7 +29,6 @@ async function createServer() {
     app.use(vite.middlewares);
   } else {
     app.use(require("compression")());
-    app.use(express.static(resolve("dist/client")));
   }
 
   // Serve favicon.ico from root
@@ -37,6 +36,7 @@ async function createServer() {
 
   app.use("*", async (req, res) => {
     console.log("GET: ", req.originalUrl);
+    console.log("hostname: ", req.hostname);
 
     let url = req.originalUrl;
 
@@ -49,7 +49,7 @@ async function createServer() {
       let template;
       let render;
       if (!isProduction) {
-        template = await fsp.readFile(resolve("i.html"), "utf8");
+        template = await fsp.readFile(resolve("index.html"), "utf8");
         template = await vite.transformIndexHtml(url, template);
         render = await vite
           .ssrLoadModule("src/entry.server.tsx")
@@ -83,6 +83,10 @@ async function createServer() {
       res.status(500).end(error.stack);
     }
   });
+
+  if (isProduction) {
+    app.use(express.static(resolve("dist/client")));
+  }
   return app;
 }
 
