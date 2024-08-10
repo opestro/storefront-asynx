@@ -49,7 +49,7 @@ async function createServer() {
       let template;
       let render;
       if (!isProduction) {
-        template = await fsp.readFile(resolve("index.html"), "utf8");
+        template = await fsp.readFile(resolve("i.html"), "utf8");
         template = await vite.transformIndexHtml(url, template);
         render = await vite
           .ssrLoadModule("src/entry.server.tsx")
