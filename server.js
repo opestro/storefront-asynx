@@ -29,6 +29,7 @@ async function createServer() {
     app.use(vite.middlewares);
   } else {
     app.use(require("compression")());
+    app.use(express.static(resolve("dist/client")));
   }
 
   // Serve favicon.ico from root
@@ -84,9 +85,6 @@ async function createServer() {
     }
   });
 
-  if (isProduction) {
-    app.use(express.static(resolve("dist/client")));
-  }
   return app;
 }
 
