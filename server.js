@@ -41,7 +41,7 @@ async function createServer() {
     let url = req.originalUrl;
 
     // if now subdomain, redirect to feeef.net
-    if (req.hostname === "feeef.shop") {
+    if (["feeef.shop",'"khfif.shop"'].includes(req.hostname)) {
       return res.redirect(301, `https://feeef.net`);
     }
 
