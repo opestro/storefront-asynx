@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+* {
+    max-width: 100%;
+  }
 .container {
     @apply max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 w-full lg:max-w-6xl;
 }

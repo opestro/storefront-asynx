@@ -493,7 +493,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                         + (store?.banner?.enabled ? 40 : 0)
                     } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
                         {/* image */}
-                        <div className="relative">
+                        <div className="relative overflow-hidden">
                             {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
                             <div
                                 id="slider"
@@ -542,7 +542,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             (selectedMediaIndex === index ?
                                                 "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
-                                            <img src={media} className="w-full h-full object-cover "
+                                            <img src={media} className="overflow-hidden w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
                                             />
                                         </button>

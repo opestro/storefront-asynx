@@ -150,7 +150,7 @@ function Home() {
             </h4>
             <AsynxWave></AsynxWave>
           </div>
-          <h1 className="title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
+          <h1 className="title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl">
             {store?.title}
           </h1>
           <p className="max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400
