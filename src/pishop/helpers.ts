@@ -69,19 +69,6 @@ export function validatePhoneNumber(phone: string): string | null {
     return null;
 }
 
-// Example usage
-const phone = "0561234567"; // Test with different phone numbers
-const validationResult = validatePhoneNumber(phone);
-
-if (validationResult) {
-    alert(validationResult);
-    console.log("Invalid phone number: " + validationResult);
-} else {
-    console.log("Valid phone number.");
-}
-
-
-
 export function useInViewport(): { isInViewport: boolean; ref: React.RefCallback<HTMLElement> } {
     const [isInViewport, setIsInViewport] = useState(false);
     const [refElement, setRefElement] = useState<HTMLElement | null>(null);

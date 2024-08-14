@@ -15,7 +15,7 @@ import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feee
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import { SuperSEO } from "react-super-seo";
-import { pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
@@ -501,6 +501,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     scrollSnapType: "x mandatory",
                                     WebkitOverflowScrolling: "touch",
                                     scrollBehavior: "smooth",
+                                    // box-shadow: inset 0px 0px 60px 60px store_color;
+                                    boxShadow: "inset 0px 0px 60px 60px " + dartColorToCss(store!.decoration!.primary),
                                 }}
                                 // when scroll update selected media index
                                 onScroll={(e) => {

@@ -32,8 +32,8 @@ async function hydrate() {
 
   setCurrentHost(window.location.href);
 
-  ReactDOM.hydrateRoot(
-    document.getElementById("app")!,
+  ReactDOM.createRoot(
+    document.getElementById("app")!).render(
     <React.StrictMode>
       <RouterProvider router={router} fallbackElement={null} />
     </React.StrictMode>

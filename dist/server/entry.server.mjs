@@ -22,33 +22,33 @@ import { SuperSEO } from "react-super-seo";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
-function tryFixPhoneNumber(phone2) {
-  phone2 = phone2.trim();
-  phone2 = phone2.replace(/\D/g, "");
-  if (!phone2.startsWith("0")) {
-    phone2 = "0" + phone2;
+function tryFixPhoneNumber(phone) {
+  phone = phone.trim();
+  phone = phone.replace(/\D/g, "");
+  if (!phone.startsWith("0")) {
+    phone = "0" + phone;
   }
-  return phone2;
+  return phone;
 }
-function validatePhoneNumber(phone2) {
-  if (phone2 == "0") {
+function validatePhoneNumber(phone) {
+  if (phone == "0") {
     return "اكمل رقم الهاتف";
   }
-  if (!phone2) {
+  if (!phone) {
     return "رقم الهاتف لا يمكن أن يكون فارغاً.";
   }
-  if (!/^[0-9]+$/.test(phone2)) {
+  if (!/^[0-9]+$/.test(phone)) {
     return "رقم الهاتف يجب أن يحتوي فقط على أرقام.";
   }
-  if (!phone2.startsWith("0")) {
+  if (!phone.startsWith("0")) {
     return "رقم الهاتف يجب أن يبدأ بـ 0.";
   }
-  if (!phone2.startsWith("05") && !phone2.startsWith("06") && !phone2.startsWith("07") && !phone2.startsWith("02")) {
+  if (!phone.startsWith("05") && !phone.startsWith("06") && !phone.startsWith("07") && !phone.startsWith("02")) {
     return "يجب أن يبدأ بـ 05, 06, 07, 02";
   }
-  if (phone2.startsWith("05") || phone2.startsWith("06") || phone2.startsWith("07")) {
-    if (phone2.length !== 10) {
-      var overflown = phone2.length - 10;
+  if (phone.startsWith("05") || phone.startsWith("06") || phone.startsWith("07")) {
+    if (phone.length !== 10) {
+      var overflown = phone.length - 10;
       if (overflown > 0) {
         return "عدد الأرقام زائد عن 10 رقماً بـ " + overflown;
       } else {
@@ -60,9 +60,9 @@ function validatePhoneNumber(phone2) {
         return "ينقصك " + -overflown + " أرقام";
       }
     }
-  } else if (phone2.startsWith("02")) {
-    if (phone2.length !== 9) {
-      var overflown = phone2.length - 9;
+  } else if (phone.startsWith("02")) {
+    if (phone.length !== 9) {
+      var overflown = phone.length - 9;
       if (overflown > 0) {
         return "عدد الأرقام زائد عن 9 رقماً بـ " + overflown;
       } else {
@@ -76,14 +76,6 @@ function validatePhoneNumber(phone2) {
     }
   }
   return null;
-}
-const phone = "0561234567";
-const validationResult = validatePhoneNumber(phone);
-if (validationResult) {
-  alert(validationResult);
-  console.log("Invalid phone number: " + validationResult);
-} else {
-  console.log("Valid phone number.");
 }
 function useInViewport() {
   const [isInViewport, setIsInViewport] = useState(false);
@@ -305,8 +297,8 @@ function Footer({ store }) {
               }
             )
           ] }) }, index)),
-          phones == null ? void 0 : phones.map((phone2, index) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs(TextButton, { href: `tel:${phone2 == null ? void 0 : phone2.value}`, children: [
-            (phone2 == null ? void 0 : phone2.name) || (phone2 == null ? void 0 : phone2.value),
+          phones == null ? void 0 : phones.map((phone, index) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs(TextButton, { href: `tel:${phone == null ? void 0 : phone.value}`, children: [
+            (phone == null ? void 0 : phone.name) || (phone == null ? void 0 : phone.value),
             /* @__PURE__ */ jsx(
               IconPhoneCall,
               {
@@ -2800,13 +2792,13 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     shipping.address.city = (Math.min(currentCityIndex, baladiyat.length - 1) + 1).toString().padStart(2, "0");
     setShipping({ ...shipping });
   }
-  function validatePhone(phone2) {
-    return !validatePhoneNumber(tryFixPhoneNumber(phone2));
+  function validatePhone(phone) {
+    return !validatePhoneNumber(tryFixPhoneNumber(phone));
   }
   function handlePhoneChange(e) {
-    const phone2 = e.target.value;
-    const isValid = validatePhone(phone2);
-    shipping.phone = phone2;
+    const phone = e.target.value;
+    const isValid = validatePhone(phone);
+    shipping.phone = phone;
     setShipping({ ...shipping });
     sendOrder("draft");
     setIsPhoneValid(isValid);
@@ -3414,7 +3406,9 @@ function Product({ store, product }) {
             style: {
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
-              scrollBehavior: "smooth"
+              scrollBehavior: "smooth",
+              // box-shadow: inset 0px 0px 60px 60px store_color;
+              boxShadow: "inset 0px 0px 60px 60px " + dartColorToCss(store.decoration.primary)
             },
             onScroll: (e) => {
               var el = e.target;
