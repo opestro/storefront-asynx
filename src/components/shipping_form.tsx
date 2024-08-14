@@ -6,6 +6,8 @@ import { getShippingRateForState } from "../pishop/logic";
 import { ShippingMethodEntity } from "feeef/src/core/core";
 import { useState } from 'react';
 import { tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
+import TextField from '@mui/material/TextField';
+import { InputAdornment } from "@mui/material";
 
 /**
  * Represents a component for managing shipping information.
@@ -71,6 +73,25 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             }}
                         />
                     </div>
+                    {/* use TextField outlined from materil ui istaide */}
+                    {/* <TextField
+                        label="الاسم"
+                        variant="outlined"
+                        defaultValue={shipping!.name}
+                        onChange={(e) => {
+                            shipping!.name = e.target.value;
+                            setShipping({ ...shipping });
+                        }}
+                        size="small"
+                        // prifix icon
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="start">
+                                    <IconUser />
+                                </InputAdornment>
+                            ),
+                        }}
+                    /> */}
                 </div>
                 <div>
                     <label className="text-sm font-light flex items-center">الهاتف

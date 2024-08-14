@@ -10,8 +10,11 @@
     "debug": "node --inspect-brk server.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@grammyjs/parse-mode": "^1.8.1",
     "@medusajs/ui": "^2.2.1",
+    "@mui/material": "^5.16.7",
     "@poppinss/utils": "^6.7.3",
     "@react-input/mask": "^1.0.20",
     "@remix-run/node": "^1.12.0",
@@ -29,8 +32,8 @@
     "history": "^5.3.0",
     "marked": "^10.0.0",
     "nanoid": "^5.0.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-facebook-pixel": "^1.0.4",
     "react-markdown": "^9.0.0",
     "react-router-dom": "^6.15.0",
@@ -39,7 +42,9 @@
     "react-type-animation": "^3.2.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
-    "sirv": "^2.0.4"
+    "sirv": "^2.0.4",
+    "stylis": "^4.3.2",
+    "stylis-plugin-rtl": "^2.1.1"
   },
   "devDependencies": {
     "@medusajs/icons": "^1.1.0",
@@ -62,5 +67,9 @@
     "tailwindcss": "^3.4.7",
     "typescript": "^4.9.5",
     "vite": "^4.0.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   }
 }

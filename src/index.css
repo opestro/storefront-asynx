@@ -134,10 +134,10 @@ html,body {
     border-radius: inherit;
     content: ' ';
   }
-  input:focus,textarea:focus,select:focus {
+  /* input:focus,textarea:focus,select:focus {
     animation: pulse-animation 3s infinite;
 
-  }
+  } */
   
   @keyframes pulse-animation {
     0% {
