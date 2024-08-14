@@ -849,7 +849,7 @@ class FeeeF {
   }
 }
 const ff = new FeeeF({
-  apiKey: "API_KEY",
+  apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
   baseURL: "https://apis.feeef.net/api/v1"
   // cache: 2000,
   // baseURL: "http://localhost:3333/api/v1",
@@ -3423,7 +3423,13 @@ function Product({ store, product }) {
                 className: " h-full object-contain aspect-square",
                 style: {
                   scrollSnapAlign: "center",
-                  scrollSnapStop: "always"
+                  scrollSnapStop: "always",
+                  // when this is selected scall to 1 else 0.4
+                  transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
+                  transition: "all 0.5s",
+                  borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                  rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg"
+                  // more effacts
                 },
                 alt: product.name
               },
