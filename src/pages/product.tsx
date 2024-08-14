@@ -519,6 +519,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         style={{
                                             scrollSnapAlign: "center",
                                             scrollSnapStop: "always",
+                                            // when this is selected scall to 1 else 0.4
+                                            transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
+                                            transition: "all 0.5s",
+                                            borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                            rotate: selectedMediaIndex == index ? "0deg" : 
+                                                selectedMediaIndex > index ? "30deg" : "-30deg",
+                                            // more effacts
                                         }}
                                         alt={product.name!}
                                     />
