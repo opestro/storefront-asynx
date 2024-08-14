@@ -11,6 +11,10 @@ import ReactDOMServer from "react-dom/server";
 import { createStaticHandler, createStaticRouter, StaticRouterProvider } from "react-router-dom/server.mjs";
 import { Link, useLoaderData, Outlet, useLocation, redirect } from "react-router-dom";
 import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBrandTwitter, IconBrandTelegram, IconMail, IconPhoneCall, IconUser, IconPhone, IconLocation, IconLocationCode, IconLocationBolt, IconShoppingBag, IconFlag } from "@tabler/icons-react";
+import { ThemeProvider, createTheme } from "@mui/material/styles/index.js";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import rtlPlugin from "stylis-plugin-rtl";
 import axios from "axios";
 import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
 import vine from "@vinejs/vine";
@@ -343,12 +347,23 @@ function Footer({ store }) {
     ] }) })
   ] }) });
 }
+const theme = (outerTheme) => createTheme({
+  direction: "rtl",
+  //   font
+  typography: {
+    fontFamily: '"IBM Plex Sans Arabic", sans-serif'
+  }
+});
+const cacheRtl = createCache({
+  key: "muirtl",
+  stylisPlugins: [rtlPlugin]
+});
 function Layout() {
   let store = useLoaderData();
   useEffect(() => {
     initMetaPixel();
   }, []);
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsx(CacheProvider, { value: cacheRtl, children: /* @__PURE__ */ jsx(ThemeProvider, { theme, children: /* @__PURE__ */ jsxs(
     "div",
     {
       style: {
@@ -361,7 +376,7 @@ function Layout() {
         /* @__PURE__ */ jsx(Footer, { store })
       ]
     }
-  );
+  ) }) });
 }
 const AvatarFileSchema = vine.any();
 const ImageFileSchema = vine.any();
@@ -3724,7 +3739,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-3171c66a.mjs")
+        lazy: () => import("./assets/lazy-954ed345.mjs")
       },
       {
         path: "redirect",
