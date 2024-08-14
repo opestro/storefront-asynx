@@ -36,18 +36,15 @@
 
 /* 
  */
-
- /* use Alexandria font */
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100;200;300;400;500;600;700;800;900&family=Aref+Ruqaa+Ink:wght@400;700&family=Pacifico&display=swap');
 html,body {
-    font-family: 'Alexandria', sans-serif;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
 }
 .dark {
     color: #eee;    
 }
 
 .title-font {
-    font-family: 'Pacifico', 'Alexandria', serif;
+    font-family: 'IBM Plex Sans Arabic', serif;
 }
 
 .gradient-border,

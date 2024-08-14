@@ -512,7 +512,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     <img
                                         id={`pimage-${index}`}
                                         key={index} src={media} className={
-                                            " h-full object-cover aspect-square"
+                                            " h-full object-contain aspect-square"
                                         }
                                         style={{
                                             scrollSnapAlign: "center",

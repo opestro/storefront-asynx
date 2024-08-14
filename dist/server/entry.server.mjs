@@ -3405,7 +3405,7 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden", children: [
         /* @__PURE__ */ jsx(
           "div",
           {
@@ -3426,7 +3426,7 @@ function Product({ store, product }) {
               {
                 id: `pimage-${index}`,
                 src: media,
-                className: " h-full object-cover aspect-square",
+                className: " h-full object-contain aspect-square",
                 style: {
                   scrollSnapAlign: "center",
                   scrollSnapStop: "always"
@@ -3450,7 +3450,7 @@ function Product({ store, product }) {
               "img",
               {
                 src: media,
-                className: "w-full h-full object-cover ",
+                className: "overflow-hidden w-full h-full object-cover ",
                 alt: "صورة " + (product == null ? void 0 : product.name) + " " + index
               }
             ) }, index)
@@ -3803,7 +3803,7 @@ function Home() {
           /* @__PURE__ */ jsx("h4", { className: " absolute\n          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase", children: store == null ? void 0 : store.name }),
           /* @__PURE__ */ jsx(AsynxWave, {})
         ] }),
-        /* @__PURE__ */ jsx("h1", { className: "title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-6xl", children: store == null ? void 0 : store.title }),
+        /* @__PURE__ */ jsx("h1", { className: "title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl", children: store == null ? void 0 : store.title }),
         /* @__PURE__ */ jsx("p", { className: "max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400\n            font-extralight\n            text-s\n            md:text-m\n            lg:text-l\n          ", children: store == null ? void 0 : store.description })
       ] })
     ] }),
