@@ -1,14 +1,4 @@
 {
-  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/@babel/runtime/helpers/interopRequireDefault.js?commonjs-module": [
-  ],
-  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/@mui/system/colorManipulator.js?commonjs-exports": [
-  ],
-  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/@mui/utils/esm/clamp/index.js?commonjs-proxy": [
-  ],
-  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/@mui/utils/esm/formatMuiErrorMessage/index.js?commonjs-proxy": [
-  ],
-  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/cssjanus/src/cssjanus.js?commonjs-module": [
-  ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/dayjs/dayjs.min.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/dayjs/plugin/customParseFormat.js?commonjs-module": [
@@ -26,7 +16,7 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-e3e485eb.js"
+    "/assets/fb-pixel-64308d87.js"
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -118,136 +108,6 @@
     "/assets/__vite-browser-external-b25bb000.js"
   ],
   "index.html": [
-  ],
-  "node_modules/@babel/runtime/helpers/esm/extends.js": [
-  ],
-  "node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js": [
-  ],
-  "node_modules/@babel/runtime/helpers/interopRequireDefault.js": [
-  ],
-  "node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Enum.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Middleware.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Parser.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Serializer.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Tokenizer.js": [
-  ],
-  "node_modules/@emotion/cache/node_modules/stylis/src/Utility.js": [
-  ],
-  "node_modules/@emotion/react/dist/emotion-element-5486c51c.browser.esm.js": [
-  ],
-  "node_modules/@emotion/sheet/dist/emotion-sheet.esm.js": [
-  ],
-  "node_modules/@mui/material/colors/blue.js": [
-  ],
-  "node_modules/@mui/material/colors/common.js": [
-  ],
-  "node_modules/@mui/material/colors/green.js": [
-  ],
-  "node_modules/@mui/material/colors/grey.js": [
-  ],
-  "node_modules/@mui/material/colors/lightBlue.js": [
-  ],
-  "node_modules/@mui/material/colors/orange.js": [
-  ],
-  "node_modules/@mui/material/colors/purple.js": [
-  ],
-  "node_modules/@mui/material/colors/red.js": [
-  ],
-  "node_modules/@mui/material/styles/ThemeProvider.js": [
-  ],
-  "node_modules/@mui/material/styles/createMixins.js": [
-  ],
-  "node_modules/@mui/material/styles/createPalette.js": [
-  ],
-  "node_modules/@mui/material/styles/createTheme.js": [
-  ],
-  "node_modules/@mui/material/styles/createTransitions.js": [
-  ],
-  "node_modules/@mui/material/styles/createTypography.js": [
-  ],
-  "node_modules/@mui/material/styles/identifier.js": [
-  ],
-  "node_modules/@mui/material/styles/shadows.js": [
-  ],
-  "node_modules/@mui/material/styles/zIndex.js": [
-  ],
-  "node_modules/@mui/private-theming/ThemeProvider/ThemeProvider.js": [
-  ],
-  "node_modules/@mui/private-theming/ThemeProvider/nested.js": [
-  ],
-  "node_modules/@mui/private-theming/useTheme/ThemeContext.js": [
-  ],
-  "node_modules/@mui/private-theming/useTheme/useTheme.js": [
-  ],
-  "node_modules/@mui/system/colorManipulator.js": [
-  ],
-  "node_modules/@mui/system/esm/DefaultPropsProvider/DefaultPropsProvider.js": [
-  ],
-  "node_modules/@mui/system/esm/RtlProvider/index.js": [
-  ],
-  "node_modules/@mui/system/esm/ThemeProvider/ThemeProvider.js": [
-  ],
-  "node_modules/@mui/system/esm/borders.js": [
-  ],
-  "node_modules/@mui/system/esm/breakpoints.js": [
-  ],
-  "node_modules/@mui/system/esm/compose.js": [
-  ],
-  "node_modules/@mui/system/esm/createTheme/applyStyles.js": [
-  ],
-  "node_modules/@mui/system/esm/createTheme/createBreakpoints.js": [
-  ],
-  "node_modules/@mui/system/esm/createTheme/createSpacing.js": [
-  ],
-  "node_modules/@mui/system/esm/createTheme/createTheme.js": [
-  ],
-  "node_modules/@mui/system/esm/createTheme/shape.js": [
-  ],
-  "node_modules/@mui/system/esm/cssGrid.js": [
-  ],
-  "node_modules/@mui/system/esm/memoize.js": [
-  ],
-  "node_modules/@mui/system/esm/merge.js": [
-  ],
-  "node_modules/@mui/system/esm/palette.js": [
-  ],
-  "node_modules/@mui/system/esm/responsivePropType.js": [
-  ],
-  "node_modules/@mui/system/esm/sizing.js": [
-  ],
-  "node_modules/@mui/system/esm/spacing.js": [
-  ],
-  "node_modules/@mui/system/esm/style.js": [
-  ],
-  "node_modules/@mui/system/esm/styleFunctionSx/defaultSxConfig.js": [
-  ],
-  "node_modules/@mui/system/esm/styleFunctionSx/styleFunctionSx.js": [
-  ],
-  "node_modules/@mui/system/esm/useThemeWithoutDefault.js": [
-  ],
-  "node_modules/@mui/utils/esm/ClassNameGenerator/ClassNameGenerator.js": [
-  ],
-  "node_modules/@mui/utils/esm/capitalize/capitalize.js": [
-  ],
-  "node_modules/@mui/utils/esm/clamp/clamp.js": [
-  ],
-  "node_modules/@mui/utils/esm/clamp/index.js": [
-  ],
-  "node_modules/@mui/utils/esm/deepmerge/deepmerge.js": [
-  ],
-  "node_modules/@mui/utils/esm/exactProp/exactProp.js": [
-  ],
-  "node_modules/@mui/utils/esm/formatMuiErrorMessage/formatMuiErrorMessage.js": [
-  ],
-  "node_modules/@mui/utils/esm/formatMuiErrorMessage/index.js": [
-  ],
-  "node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js": [
   ],
   "node_modules/@poppinss/macroable/build/index.js": [
   ],
@@ -412,8 +272,6 @@
   "node_modules/camelcase/index.js": [
   ],
   "node_modules/comma-separated-tokens/index.js": [
-  ],
-  "node_modules/cssjanus/src/cssjanus.js": [
   ],
   "node_modules/dayjs/dayjs.min.js": [
   ],
@@ -696,7 +554,7 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-e3e485eb.js"
+    "/assets/fb-pixel-64308d87.js"
   ],
   "node_modules/react-fast-compare/index.js": [
   ],
@@ -711,7 +569,7 @@
   "node_modules/react-player/lib/Player.js": [
   ],
   "node_modules/react-player/lib/Preview.js": [
-    "/assets/Preview-20c0ad89.js"
+    "/assets/Preview-d8e54728.js"
   ],
   "node_modules/react-player/lib/ReactPlayer.js": [
   ],
@@ -720,43 +578,43 @@
   "node_modules/react-player/lib/patterns.js": [
   ],
   "node_modules/react-player/lib/players/DailyMotion.js": [
-    "/assets/DailyMotion-2edcd522.js"
+    "/assets/DailyMotion-9b40367b.js"
   ],
   "node_modules/react-player/lib/players/Facebook.js": [
-    "/assets/Facebook-d3912658.js"
+    "/assets/Facebook-a7d09885.js"
   ],
   "node_modules/react-player/lib/players/FilePlayer.js": [
-    "/assets/FilePlayer-0f5d8336.js"
+    "/assets/FilePlayer-e02c505e.js"
   ],
   "node_modules/react-player/lib/players/Kaltura.js": [
-    "/assets/Kaltura-32a3d325.js"
+    "/assets/Kaltura-21f042af.js"
   ],
   "node_modules/react-player/lib/players/Mixcloud.js": [
-    "/assets/Mixcloud-0a67ab8f.js"
+    "/assets/Mixcloud-34f95ca3.js"
   ],
   "node_modules/react-player/lib/players/Mux.js": [
-    "/assets/Mux-ab0f3d60.js"
+    "/assets/Mux-a293c672.js"
   ],
   "node_modules/react-player/lib/players/SoundCloud.js": [
-    "/assets/SoundCloud-3ebbfce4.js"
+    "/assets/SoundCloud-dcf565bc.js"
   ],
   "node_modules/react-player/lib/players/Streamable.js": [
-    "/assets/Streamable-7c8c329d.js"
+    "/assets/Streamable-69877cb2.js"
   ],
   "node_modules/react-player/lib/players/Twitch.js": [
-    "/assets/Twitch-22b344cd.js"
+    "/assets/Twitch-6b4b238b.js"
   ],
   "node_modules/react-player/lib/players/Vidyard.js": [
-    "/assets/Vidyard-e208036b.js"
+    "/assets/Vidyard-22613529.js"
   ],
   "node_modules/react-player/lib/players/Vimeo.js": [
-    "/assets/Vimeo-99f9c806.js"
+    "/assets/Vimeo-75711112.js"
   ],
   "node_modules/react-player/lib/players/Wistia.js": [
-    "/assets/Wistia-d91e5838.js"
+    "/assets/Wistia-a641dc61.js"
   ],
   "node_modules/react-player/lib/players/YouTube.js": [
-    "/assets/YouTube-266356f7.js"
+    "/assets/YouTube-923a31e0.js"
   ],
   "node_modules/react-player/lib/players/index.js": [
   ],
@@ -799,18 +657,6 @@
   "node_modules/style-to-object/cjs/index.js": [
   ],
   "node_modules/style-to-object/esm/index.mjs": [
-  ],
-  "node_modules/stylis-plugin-rtl/dist/stylis-rtl.js": [
-  ],
-  "node_modules/stylis/src/Enum.js": [
-  ],
-  "node_modules/stylis/src/Parser.js": [
-  ],
-  "node_modules/stylis/src/Serializer.js": [
-  ],
-  "node_modules/stylis/src/Tokenizer.js": [
-  ],
-  "node_modules/stylis/src/Utility.js": [
   ],
   "node_modules/trim-lines/index.js": [
   ],
@@ -913,7 +759,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-fd547b43.js"
+    "/assets/lazy-700d79f8.js"
   ],
   "src/pages/product.tsx": [
   ],
