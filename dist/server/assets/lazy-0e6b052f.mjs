@@ -16,6 +16,7 @@ import "react-sticky-box";
 import "nanoid";
 import "react-markdown";
 import "react-type-animation";
+import "react-player";
 import "react-super-seo";
 const loader = async () => {
   await new Promise((r) => setTimeout(r, 500));

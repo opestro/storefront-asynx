@@ -22,6 +22,7 @@ import StickyBox from "react-sticky-box";
 import { customAlphabet } from "nanoid";
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
+import ReactPlayer from "react-player";
 import { SuperSEO } from "react-super-seo";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
@@ -3052,7 +3053,7 @@ function Product({ store, product }) {
   const [shipping, setShipping] = useState({
     name: "",
     phone: "",
-    doorShipping: true,
+    doorShipping: false,
     address: {
       street: "",
       city: "01",
@@ -3417,7 +3418,7 @@ function Product({ store, product }) {
           "div",
           {
             id: "slider",
-            className: "rounded-xl w-full aspect-square overflow-x-scroll flex",
+            className: "rounded-xl w-full aspect-square overflow-hidden flex",
             style: {
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
@@ -3430,12 +3431,59 @@ function Product({ store, product }) {
               var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
               setSelectedMediaIndex(index);
             },
-            children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
+            children: product == null ? void 0 : product.media.map((media, index) => getYoutubeVideoIdFromUrl(media) != null ? /* @__PURE__ */ jsx(
+              "div",
+              {
+                id: `pimage-${index}`,
+                className: "aspect-square w-full h-full relative",
+                children: /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
+                    children: /* @__PURE__ */ jsx(
+                      ReactPlayer,
+                      {
+                        url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
+                        width: "100%",
+                        height: "100%",
+                        controls: true,
+                        playing: selectedMediaIndex == index,
+                        config: {
+                          youtube: {
+                            // hide controls
+                            playerVars: {
+                              controls: 0,
+                              modestbranding: 1,
+                              showinfo: 0,
+                              rel: 0,
+                              loop: 1,
+                              autoplay: selectedMediaIndex == index
+                            }
+                          }
+                        },
+                        style: {
+                          scrollSnapAlign: "center",
+                          scrollSnapStop: "always",
+                          // when this is selected scall to 1 else 0.4
+                          transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
+                          transition: "all 0.5s",
+                          borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                          rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg"
+                          // more effacts
+                        }
+                      },
+                      index
+                    )
+                  }
+                )
+              },
+              index
+            ) : /* @__PURE__ */ jsx(
               "img",
               {
                 id: `pimage-${index}`,
                 src: media,
-                className: " h-full object-contain aspect-square",
+                className: "h-full object-contain aspect-square",
                 style: {
                   scrollSnapAlign: "center",
                   scrollSnapStop: "always",
@@ -3452,9 +3500,10 @@ function Product({ store, product }) {
             ))
           }
         ),
-        /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
           "a",
           {
+            className: "pointer-events-auto",
             onClick: (e) => {
               e.preventDefault();
               var el = document.getElementById(`pimage-${index}`);
@@ -3614,6 +3663,25 @@ function Product({ store, product }) {
     ] }) })
   ] });
 }
+function isValidId(id) {
+  return /^[\w\-]{11}$/.test(id);
+}
+function getYoutubeVideoIdFromUrl(url) {
+  const patterns = [
+    /youtube\.com\/watch\?v=([^&]+)/,
+    /youtu\.be\/([^?]+)/,
+    /youtube\.com\/embed\/([^?]+)/,
+    /img\.youtube\.com\/vi\/([^/]+)/,
+    /youtube\.com\/video\/([^?]+)/
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && isValidId(match[1])) {
+      return match[1];
+    }
+  }
+  return null;
+}
 const ProductCard = ({ product }) => {
   var _a;
   const total = !!product.discount ? (product.price - product.discount).toFixed(0) : product.price.toFixed(0);
@@ -3739,7 +3807,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-954ed345.mjs")
+        lazy: () => import("./assets/lazy-0e6b052f.mjs")
       },
       {
         path: "redirect",

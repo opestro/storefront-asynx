@@ -17,6 +17,8 @@
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/dayjs/plugin/isSameOrBefore.js?commonjs-module": [
   ],
+  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/memoize-one/dist/memoize-one.esm.js?commonjs-proxy": [
+  ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/prop-types/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/cjs/react-dom.development.js?commonjs-exports": [
@@ -24,7 +26,7 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-85d5b190.js"
+    "/assets/fb-pixel-e3e485eb.js"
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -423,6 +425,8 @@
   ],
   "node_modules/decode-named-character-reference/index.dom.js": [
   ],
+  "node_modules/deepmerge/dist/cjs.js": [
+  ],
   "node_modules/devlop/lib/default.js": [
   ],
   "node_modules/dlv/dist/dlv.es.js": [
@@ -470,6 +474,8 @@
   "node_modules/inline-style-parser/index.js": [
   ],
   "node_modules/is-plain-obj/index.js": [
+  ],
+  "node_modules/load-script/index.js": [
   ],
   "node_modules/mdast-util-from-markdown/lib/index.js": [
   ],
@@ -530,6 +536,8 @@
   "node_modules/mdast-util-to-hast/lib/state.js": [
   ],
   "node_modules/mdast-util-to-string/lib/index.js": [
+  ],
+  "node_modules/memoize-one/dist/memoize-one.esm.js": [
   ],
   "node_modules/micromark-core-commonmark/lib/attention.js": [
   ],
@@ -688,7 +696,7 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-85d5b190.js"
+    "/assets/fb-pixel-e3e485eb.js"
   ],
   "node_modules/react-fast-compare/index.js": [
   ],
@@ -699,6 +707,62 @@
   "node_modules/react-is/index.js": [
   ],
   "node_modules/react-markdown/lib/index.js": [
+  ],
+  "node_modules/react-player/lib/Player.js": [
+  ],
+  "node_modules/react-player/lib/Preview.js": [
+    "/assets/Preview-20c0ad89.js"
+  ],
+  "node_modules/react-player/lib/ReactPlayer.js": [
+  ],
+  "node_modules/react-player/lib/index.js": [
+  ],
+  "node_modules/react-player/lib/patterns.js": [
+  ],
+  "node_modules/react-player/lib/players/DailyMotion.js": [
+    "/assets/DailyMotion-2edcd522.js"
+  ],
+  "node_modules/react-player/lib/players/Facebook.js": [
+    "/assets/Facebook-d3912658.js"
+  ],
+  "node_modules/react-player/lib/players/FilePlayer.js": [
+    "/assets/FilePlayer-0f5d8336.js"
+  ],
+  "node_modules/react-player/lib/players/Kaltura.js": [
+    "/assets/Kaltura-32a3d325.js"
+  ],
+  "node_modules/react-player/lib/players/Mixcloud.js": [
+    "/assets/Mixcloud-0a67ab8f.js"
+  ],
+  "node_modules/react-player/lib/players/Mux.js": [
+    "/assets/Mux-ab0f3d60.js"
+  ],
+  "node_modules/react-player/lib/players/SoundCloud.js": [
+    "/assets/SoundCloud-3ebbfce4.js"
+  ],
+  "node_modules/react-player/lib/players/Streamable.js": [
+    "/assets/Streamable-7c8c329d.js"
+  ],
+  "node_modules/react-player/lib/players/Twitch.js": [
+    "/assets/Twitch-22b344cd.js"
+  ],
+  "node_modules/react-player/lib/players/Vidyard.js": [
+    "/assets/Vidyard-e208036b.js"
+  ],
+  "node_modules/react-player/lib/players/Vimeo.js": [
+    "/assets/Vimeo-99f9c806.js"
+  ],
+  "node_modules/react-player/lib/players/Wistia.js": [
+    "/assets/Wistia-d91e5838.js"
+  ],
+  "node_modules/react-player/lib/players/YouTube.js": [
+    "/assets/YouTube-266356f7.js"
+  ],
+  "node_modules/react-player/lib/players/index.js": [
+  ],
+  "node_modules/react-player/lib/props.js": [
+  ],
+  "node_modules/react-player/lib/utils.js": [
   ],
   "node_modules/react-router-dom/dist/index.js": [
   ],
@@ -849,7 +913,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-1e66814b.js"
+    "/assets/lazy-fd547b43.js"
   ],
   "src/pages/product.tsx": [
   ],

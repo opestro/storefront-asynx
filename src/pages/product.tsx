@@ -14,6 +14,7 @@ import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feee
 // import { setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
+import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
 import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
@@ -39,7 +40,7 @@ function ProductPage() {
     let pathname = useLocation().pathname
     return <>
         <SuperSEO
-            title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
+            title={store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")}
             description={product.description || undefined}
             lang="ar"
             openGraph={{
@@ -107,7 +108,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [shipping, setShipping] = useState<ShippingInfo>({
         name: "",
         phone: "",
-        doorShipping: true,
+        doorShipping: false,
         address: {
             street: "",
             city: "01",
@@ -497,7 +498,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
                             <div
                                 id="slider"
-                                className="rounded-xl w-full aspect-square overflow-x-scroll flex" style={{
+                                className="rounded-xl w-full aspect-square overflow-hidden flex" style={{
                                     scrollSnapType: "x mandatory",
                                     WebkitOverflowScrolling: "touch",
                                     scrollBehavior: "smooth",
@@ -511,33 +512,83 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     setSelectedMediaIndex(index);
                                 }}>
                                 {product?.media.map((media, index) => (
-                                    <img
-                                        id={`pimage-${index}`}
-                                        key={index} src={media} className={
-                                            " h-full object-contain aspect-square"
-                                        }
-                                        style={{
-                                            scrollSnapAlign: "center",
-                                            scrollSnapStop: "always",
-                                            // when this is selected scall to 1 else 0.4
-                                            transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
-                                            transition: "all 0.5s",
-                                            borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                            rotate: selectedMediaIndex == index ? "0deg" : 
-                                                selectedMediaIndex > index ? "30deg" : "-30deg",
-                                            // more effacts
-                                        }}
-                                        alt={product.name!}
-                                    />
+                                    getYoutubeVideoIdFromUrl(media) != null ?
+
+                                        <div
+                                            id={`pimage-${index}`}
+                                            className="aspect-square w-full h-full relative" key={index}>
+                                            {/* width: 100%;
+  top: -200px;
+  bottom: -200px;
+  height: calc(100% + 400px);
+  position: absolute; */}
+                                            <div className="absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0"
+                                            >
+                                                <ReactPlayer
+                                                    key={index}
+                                                    url={
+                                                        `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
+                                                    }
+                                                    width="100%"
+                                                    height="100%"
+                                                    controls
+                                                    playing={selectedMediaIndex == index}
+                                                    config={{
+                                                        youtube: {
+                                                            // hide controls
+                                                            playerVars: {
+                                                                controls: 0,
+                                                                modestbranding: 1,
+                                                                showinfo: 0,
+                                                                rel: 0,
+                                                                loop: 1,
+                                                                autoplay: selectedMediaIndex == index,
+                                                            }
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        scrollSnapAlign: "center",
+                                                        scrollSnapStop: "always",
+                                                        // when this is selected scall to 1 else 0.4
+                                                        transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
+                                                        transition: "all 0.5s",
+                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                        rotate: selectedMediaIndex == index ? "0deg" :
+                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                        // more effacts
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        :
+                                        <img
+                                            id={`pimage-${index}`}
+                                            key={index} src={media} className={
+                                                "h-full object-contain aspect-square"
+                                            }
+                                            style={{
+                                                scrollSnapAlign: "center",
+                                                scrollSnapStop: "always",
+                                                // when this is selected scall to 1 else 0.4
+                                                transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
+                                                transition: "all 0.5s",
+                                                borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                rotate: selectedMediaIndex == index ? "0deg" :
+                                                    selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                // more effacts
+                                            }}
+                                            alt={product.name!}
+                                        />
                                 ))}
                             </div>
 
 
 
                             {/* image selector */}
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end">
+                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
                                 {product?.media.map((media, index) => (
                                     <a
+                                        className="pointer-events-auto"
                                         key={index}
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -738,5 +789,30 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         </div>
     );
 }
+
+
+function isValidId(id: string): boolean {
+    return /^[\w\-]{11}$/.test(id);
+}
+
+export function getYoutubeVideoIdFromUrl(url: string): string | null {
+    const patterns = [
+        /youtube\.com\/watch\?v=([^&]+)/,
+        /youtu\.be\/([^?]+)/,
+        /youtube\.com\/embed\/([^?]+)/,
+        /img\.youtube\.com\/vi\/([^/]+)/,
+        /youtube\.com\/video\/([^?]+)/,
+    ];
+
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && isValidId(match[1])) {
+            return match[1];
+        }
+    }
+
+    return null;
+}
+
 
 export default ProductPage;
