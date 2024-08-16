@@ -3420,7 +3420,7 @@ function Product({ store, product }) {
               var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
               setSelectedMediaIndex(index);
             },
-            children: product == null ? void 0 : product.media.map((media, index) => getYoutubeVideoIdFromUrl(media) != null ? /* @__PURE__ */ jsx(
+            children: product == null ? void 0 : product.media.map((media, index) => getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx(
               "div",
               {
                 id: `pimage-${index}`,

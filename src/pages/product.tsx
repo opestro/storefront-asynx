@@ -512,7 +512,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     setSelectedMediaIndex(index);
                                 }}>
                                 {product?.media.map((media, index) => (
-                                    getYoutubeVideoIdFromUrl(media) != null ?
+                                    getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
 
                                         <div
                                             id={`pimage-${index}`}
