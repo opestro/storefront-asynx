@@ -497,8 +497,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                         <div className="relative overflow-hidden">
                             {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
                             <div
-                                id="slider"
-                                className="rounded-xl w-full aspect-square overflow-hidden flex" style={{
+                                className="rounded-xl w-full aspect-square overflow-x-scroll overflow-y-hidden flex" style={{
                                     scrollSnapType: "x mandatory",
                                     WebkitOverflowScrolling: "touch",
                                     scrollBehavior: "smooth",
@@ -516,46 +515,44 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                         <div
                                             id={`pimage-${index}`}
-                                            className="aspect-square w-full h-full relative" key={index}>
-                                            {/* width: 100%;
-  top: -200px;
-  bottom: -200px;
-  height: calc(100% + 400px);
-  position: absolute; */}
-                                            <div className="absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0"
+                                            className="aspect-square w-full h-full relative" key={index}
+                                            >
+                                            <div className="bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0"
                                             >
                                                 <ReactPlayer
-                                                    key={index}
+                                                    key={[index,selectedMediaIndex].join("-")}
                                                     url={
                                                         `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
                                                     }
                                                     width="100%"
                                                     height="100%"
-                                                    controls
-                                                    playing={selectedMediaIndex == index}
-                                                    config={{
-                                                        youtube: {
-                                                            // hide controls
-                                                            playerVars: {
-                                                                controls: 0,
-                                                                modestbranding: 1,
-                                                                showinfo: 0,
-                                                                rel: 0,
-                                                                loop: 1,
-                                                                autoplay: selectedMediaIndex == index,
-                                                            }
-                                                        }
-                                                    }}
+                                                    // controls
+                                                    playing={selectedMediaIndex === index}
+                                                    // config={{
+                                                    //     youtube: {
+                                                    //         // hide controls
+                                                    //         playerVars: {
+                                                    //             controls: 0,
+                                                    //             modestbranding: 1,
+                                                    //             showinfo: 0,
+                                                    //             rel: 0,
+                                                    //             loop: selectedMediaIndex == index,
+                                                    //             autoplay: selectedMediaIndex == index,
+                                                    //             // mute: selectedMediaIndex != index,
+                                                    //         }
+                                                    //     }
+                                                    // }}
                                                     style={{
                                                         scrollSnapAlign: "center",
                                                         scrollSnapStop: "always",
                                                         // when this is selected scall to 1 else 0.4
-                                                        transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
-                                                        transition: "all 0.5s",
+                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
+                                                        transition: "all 1s cubic-bezier(.08,.82,.17,1)",
                                                         borderRadius: selectedMediaIndex == index ? "0" : "100%",
                                                         rotate: selectedMediaIndex == index ? "0deg" :
-                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                            selectedMediaIndex > index ? "90deg" : "-90deg",
                                                         // more effacts
+                                                        opacity: selectedMediaIndex == index ? 1 : 0,
                                                     }}
                                                 />
                                             </div>
@@ -570,12 +567,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 scrollSnapAlign: "center",
                                                 scrollSnapStop: "always",
                                                 // when this is selected scall to 1 else 0.4
-                                                transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
-                                                transition: "all 0.5s",
+                                                transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
+                                                transition: "all 1s cubic-bezier(.08,.82,.17,1)",
                                                 borderRadius: selectedMediaIndex == index ? "0" : "100%",
                                                 rotate: selectedMediaIndex == index ? "0deg" :
-                                                    selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                    selectedMediaIndex > index ? "90deg" : "-90deg",
                                                 // more effacts
+                                                opacity: selectedMediaIndex == index ? 1 : 0,
                                             }}
                                             alt={product.name!}
                                         />
@@ -791,31 +789,28 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 }
 
 
+function isValidId(id: string): boolean {
+    return /^[\w\-]{11}$/.test(id);
+}
+
 export function getYoutubeVideoIdFromUrl(url: string): string | null {
-    const videoRegExp = new RegExp(
-        '(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?|watch)\\/|.*[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})',
-        'i'
-    );
+    const patterns = [
+        /youtube\.com\/watch\?v=([^&]+)/,
+        /youtu\.be\/([^?]+)/,
+        /youtube\.com\/embed\/([^?]+)/,
+        /img\.youtube\.com\/vi\/([^/]+)/,
+        /youtube\.com\/video\/([^?]+)/,
+    ];
 
-    const thumbRegExp = new RegExp(
-        'https:\\/\\/img\\.youtube\\.com\\/vi\\/([a-zA-Z0-9_-]{11})\\/',
-        'i'
-    );
-
-    // Check if it's a regular YouTube video URL
-    let match = videoRegExp.exec(url);
-    if (match && match[1]) {
-        return match[1];
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && isValidId(match[1])) {
+            return match[1];
+        }
     }
 
-    // Check if it's a YouTube thumbnail URL
-    match = thumbRegExp.exec(url);
-    if (match && match[1]) {
-        return match[1];
-    }
-
-    // Return null if no video ID is found
     return null;
 }
+
 
 export default ProductPage;

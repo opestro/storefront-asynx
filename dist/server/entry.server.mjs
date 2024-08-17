@@ -3406,8 +3406,7 @@ function Product({ store, product }) {
         /* @__PURE__ */ jsx(
           "div",
           {
-            id: "slider",
-            className: "rounded-xl w-full aspect-square overflow-hidden flex",
+            className: "rounded-xl w-full aspect-square overflow-x-scroll overflow-y-hidden flex",
             style: {
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
@@ -3428,40 +3427,27 @@ function Product({ store, product }) {
                 children: /* @__PURE__ */ jsx(
                   "div",
                   {
-                    className: "absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
+                    className: "bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
                     children: /* @__PURE__ */ jsx(
                       ReactPlayer,
                       {
                         url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
                         width: "100%",
                         height: "100%",
-                        controls: true,
-                        playing: selectedMediaIndex == index,
-                        config: {
-                          youtube: {
-                            // hide controls
-                            playerVars: {
-                              controls: 0,
-                              modestbranding: 1,
-                              showinfo: 0,
-                              rel: 0,
-                              loop: 1,
-                              autoplay: selectedMediaIndex == index
-                            }
-                          }
-                        },
+                        playing: selectedMediaIndex === index,
                         style: {
                           scrollSnapAlign: "center",
                           scrollSnapStop: "always",
                           // when this is selected scall to 1 else 0.4
-                          transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
-                          transition: "all 0.5s",
+                          transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
+                          transition: "all 1s cubic-bezier(.08,.82,.17,1)",
                           borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                          rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg"
+                          rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "90deg" : "-90deg",
                           // more effacts
+                          opacity: selectedMediaIndex == index ? 1 : 0
                         }
                       },
-                      index
+                      [index, selectedMediaIndex].join("-")
                     )
                   }
                 )
@@ -3477,11 +3463,12 @@ function Product({ store, product }) {
                   scrollSnapAlign: "center",
                   scrollSnapStop: "always",
                   // when this is selected scall to 1 else 0.4
-                  transform: selectedMediaIndex == index ? "scaleX(1) scaleY(1)" : "scaleX(0.1) scaleY(0.5)",
-                  transition: "all 0.5s",
+                  transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
+                  transition: "all 1s cubic-bezier(.08,.82,.17,1)",
                   borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                  rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg"
+                  rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "90deg" : "-90deg",
                   // more effacts
+                  opacity: selectedMediaIndex == index ? 1 : 0
                 },
                 alt: product.name
               },
