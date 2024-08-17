@@ -63,7 +63,7 @@ function ProductPage() {
     </>
 }
 
-var runner:any;
+var runner: any;
 
 function Product({ store, product }: { store: StoreEntity, product: ProductEntity }) {
     let location = useLocation()
@@ -503,55 +503,33 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             <a href="#slide-5">5</a> */}
 
                             <div
-                                className="slides overflow-hidden" 
+                                className="slides overflow-hidden"
                                 // when scroll update selected media index
-                                // onScroll={(e) => {
-                                //     if (runner) {
-                                //         clearTimeout(runner);
-                                //     }
-                                //     var el = e.target as HTMLDivElement;
-                                //     var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
-                                //     runner = setTimeout(() => {
-                                //         if (selectedMediaIndex != index) {
-                                //             setSelectedMediaIndex(index);
-                                //         }
-                                //     }, 10);
-                                // }}
+                                onScroll={(e) => {
+                                    var el = e.target as HTMLDivElement;
+                                    var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
+                                    setSelectedMediaIndex(index);
+                                }}
                             >
-                                {/* <div id="slide-1">
-                                    1
-                                </div>
-                                <div id="slide-2">
-                                    2
-                                </div>
-                                <div id="slide-3">
-                                    3
-                                </div>
-                                <div id="slide-4">
-                                    4
-                                </div>
-                                <div id="slide-5">
-                                    5
-                                </div> */}
                                 {
                                     product?.media.map((media, index) => (
-                                        <div id={`slide-${index + 1}`} key={index}>
+                                        <div id={`slide-${index + 1}`} className="overflow-hidden" key={[index,import.meta.env.SSR].join("-")}>
                                             {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
-                                                <div 
-                                                style={{
-                                                    scrollSnapAlign: "center",
-                                                    scrollSnapStop: "always",
-                                                    // when this is selected scall to 1 else 0.4
-                                                    transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                    transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                    borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                    rotate: selectedMediaIndex == index ? "0deg" :
-                                                        selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                    // more effacts
-                                                    opacity: selectedMediaIndex == index ? 1 : 0,
-                                                }} className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
+                                                <div
+                                                    style={{
+                                                        scrollSnapAlign: "center",
+                                                        scrollSnapStop: "always",
+                                                        // when this is selected scall to 1 else 0.4
+                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                        rotate: selectedMediaIndex == index ? "0deg" :
+                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                        // more effacts
+                                                        opacity: selectedMediaIndex == index ? 1 : 0,
+                                                    }} className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
                                                     <ReactPlayer
-                                                        key={[index].join("-")}
+                                                        key={[index,import.meta.env.SSR].join("-")}
                                                         url={
                                                             `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
                                                         }
@@ -559,20 +537,20 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         height="100%"
                                                         // controls
                                                         playing={selectedMediaIndex === index}
-                                                        // config={{
-                                                        //     youtube: {
-                                                        //         // hide controls
-                                                        //         playerVars: {
-                                                        //             controls: 0,
-                                                        //             modestbranding: 1,
-                                                        //             showinfo: 0,
-                                                        //             rel: 0,
-                                                        //             loop: selectedMediaIndex == index,
-                                                        //             autoplay: selectedMediaIndex == index,
-                                                        //             // mute: selectedMediaIndex != index,
-                                                        //         }
-                                                        //     }
-                                                        // }}
+                                                    // config={{
+                                                    //     youtube: {
+                                                    //         // hide controls
+                                                    //         playerVars: {
+                                                    //             controls: 0,
+                                                    //             modestbranding: 1,
+                                                    //             showinfo: 0,
+                                                    //             rel: 0,
+                                                    //             loop: selectedMediaIndex == index,
+                                                    //             autoplay: selectedMediaIndex == index,
+                                                    //             // mute: selectedMediaIndex != index,
+                                                    //         }
+                                                    //     }
+                                                    // }}
                                                     />
                                                 </div> :
                                                 <img
@@ -600,30 +578,30 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             </div>
                             <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
 
-                            {product?.media.map((media, index) => (
-                                <a
-                                    className="pointer-events-auto"
-                                    key={index}
-                                    // onClick={(e) => {
-                                    //     e.preventDefault();
-                                    //     var el = document.getElementById(`pimage-${index}`)
-                                    //     // scroll to element ut only in x
-                                    //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                    // }}
-                                    href={`#slide-${index + 1}`}
-                                >
-                                    <button key={index} onClick={() => setSelectedMediaIndex(index)} className={'overflow-hidden relative '+
-                                        (selectedMediaIndex === index ?
-                                            "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
-                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
-                                        <img src={media} className="overflow-hidden w-full h-full object-cover "
-                                            alt={"صورة " + product?.name + " " + index}
-                                        />
-                                    </button>
-                                </a>
-                            ))}
+                                {product?.media.map((media, index) => (
+                                    <a
+                                        className="pointer-events-auto"
+                                        key={index}
+                                        // onClick={(e) => {
+                                        //     e.preventDefault();
+                                        //     var el = document.getElementById(`pimage-${index}`)
+                                        //     // scroll to element ut only in x
+                                        //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                                        // }}
+                                        href={`#slide-${index + 1}`}
+                                    >
+                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={'overflow-hidden relative ' +
+                                            (selectedMediaIndex === index ?
+                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                            " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
+                                            <img src={media} className="overflow-hidden w-full h-full object-cover "
+                                                alt={"صورة " + product?.name + " " + index}
+                                            />
+                                        </button>
+                                    </a>
+                                ))}
 
-                        </div>
+                            </div>
                         </div>
 
                         {/* image */}
@@ -784,6 +762,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
+                                            console.log(variant!.value)
+
                                             if (variant?.type == VariantOptionType.image) {
                                                 var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
                                                 console.log(variant!.value)
@@ -791,8 +771,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                                 setSelectedMediaIndex(mediaIndex!);
                                                 // scroll to element ut only in x
-                                                var el = document.getElementById(`pimage-${mediaIndex!}`)
+                                                var el = document.getElementById(`slide-${mediaIndex!}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                                                // href={`#slide-${index + 1}`}
+                                                if (!import.meta.env.SSR) {
+                                                    window.history.pushState({}, "", `#${mediaIndex! + 1}`);
+                                                }
                                             }
 
                                             // ViewContent

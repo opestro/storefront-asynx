@@ -207,7 +207,6 @@ body {
     flex-shrink: 0;
     width: 100%;
     aspect-ratio: 1/1;
-    margin-right: 50px;
     border-radius: 10px;
     background: #eee;
     transform-origin: center center;

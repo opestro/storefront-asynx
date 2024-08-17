@@ -3402,17 +3402,17 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "slider relative rounded-2xl", children: [
+      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "overflow-hidden slider relative rounded-2xl", children: [
         /* @__PURE__ */ jsx(
           "div",
           {
-            className: "slides",
+            className: "slides overflow-hidden",
             onScroll: (e) => {
               var el = e.target;
               var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
               setSelectedMediaIndex(index);
             },
-            children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx("div", { id: `slide-${index + 1}`, children: getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx(
+            children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx("div", { id: `slide-${index + 1}`, className: "overflow-hidden", children: getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx(
               "div",
               {
                 style: {
@@ -3435,7 +3435,7 @@ function Product({ store, product }) {
                     height: "100%",
                     playing: selectedMediaIndex === index
                   },
-                  [index].join("-")
+                  [index, true].join("-")
                 )
               }
             ) : /* @__PURE__ */ jsx(
@@ -3456,7 +3456,7 @@ function Product({ store, product }) {
                   opacity: selectedMediaIndex == index ? 1 : 0
                 }
               }
-            ) }, index))
+            ) }, [index, true].join("-")))
           }
         ),
         /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
@@ -3523,12 +3523,13 @@ function Product({ store, product }) {
                   return setItem({ ...item });
                 },
                 onSelect: (variant) => {
+                  console.log(variant.value);
                   if ((variant == null ? void 0 : variant.type) == VariantOptionType.image) {
                     var mediaIndex = product == null ? void 0 : product.media.findIndex((media) => media == variant.value);
                     console.log(variant.value);
                     console.log(product == null ? void 0 : product.media[mediaIndex]);
                     setSelectedMediaIndex(mediaIndex);
-                    var el = document.getElementById(`pimage-${mediaIndex}`);
+                    var el = document.getElementById(`slide-${mediaIndex}`);
                     el == null ? void 0 : el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
                   }
                   track("ViewContent", {
