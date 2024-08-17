@@ -493,7 +493,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                         78
                         + (store?.banner?.enabled ? 40 : 0)
                     } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
-                        <div className="slider relative rounded-lg">
+                        <div className="slider relative rounded-2xl">
 
                             {/* <a href="#slide-1">1</a>
                             <a href="#slide-2">2</a>
@@ -501,7 +501,15 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             <a href="#slide-4">4</a>
                             <a href="#slide-5">5</a> */}
 
-                            <div className="slides">
+                            <div
+                                className="slides" 
+                                // when scroll update selected media index
+                                onScroll={(e) => {
+                                    var el = e.target as HTMLDivElement;
+                                    var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
+                                    setSelectedMediaIndex(index);
+                                }}
+                            >
                                 {/* <div id="slide-1">
                                     1
                                 </div>
@@ -521,9 +529,21 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     product?.media.map((media, index) => (
                                         <div id={`slide-${index + 1}`} key={index}>
                                             {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
-                                                <div className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
+                                                <div 
+                                                style={{
+                                                    scrollSnapAlign: "center",
+                                                    scrollSnapStop: "always",
+                                                    // when this is selected scall to 1 else 0.4
+                                                    transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                    transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                                                    borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                    rotate: selectedMediaIndex == index ? "0deg" :
+                                                        selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                    // more effacts
+                                                    opacity: selectedMediaIndex == index ? 1 : 0,
+                                                }} className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
                                                     <ReactPlayer
-                                                        key={[index, selectedMediaIndex].join("-")}
+                                                        key={[index].join("-")}
                                                         url={
                                                             `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
                                                         }
@@ -545,18 +565,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         //         }
                                                         //     }
                                                         // }}
-                                                        style={{
-                                                            // scrollSnapAlign: "center",
-                                                            // scrollSnapStop: "always",
-                                                            // // when this is selected scall to 1 else 0.4
-                                                            // transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                            // transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                            // borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                            // rotate: selectedMediaIndex == index ? "0deg" :
-                                                            //     selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                            // // more effacts
-                                                            // opacity: selectedMediaIndex == index ? 1 : 0,
-                                                        }}
                                                     />
                                                 </div> :
                                                 <img
@@ -564,6 +572,18 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         "inset-0 object-contain aspect-square"
                                                     }
                                                     alt={product.name!}
+                                                    style={{
+                                                        scrollSnapAlign: "center",
+                                                        scrollSnapStop: "always",
+                                                        // when this is selected scall to 1 else 0.4
+                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                        rotate: selectedMediaIndex == index ? "0deg" :
+                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                        // more effacts
+                                                        opacity: selectedMediaIndex == index ? 1 : 0,
+                                                    }}
                                                 />
                                             }
                                         </div>

@@ -193,7 +193,7 @@ body {
 }
 
 .slides::-webkit-scrollbar-thumb {
-    background: black;
+    background: var(--p, #ccc);
     /* top is 0 */
     border-radius: 0 0 10px 10px;
 }
