@@ -546,11 +546,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         scrollSnapAlign: "center",
                                                         scrollSnapStop: "always",
                                                         // when this is selected scall to 1 else 0.4
-                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
-                                                        transition: "all 1s cubic-bezier(.08,.82,.17,1)",
+                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
                                                         borderRadius: selectedMediaIndex == index ? "0" : "100%",
                                                         rotate: selectedMediaIndex == index ? "0deg" :
-                                                            selectedMediaIndex > index ? "90deg" : "-90deg",
+                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
                                                         // more effacts
                                                         opacity: selectedMediaIndex == index ? 1 : 0,
                                                     }}
@@ -567,11 +567,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 scrollSnapAlign: "center",
                                                 scrollSnapStop: "always",
                                                 // when this is selected scall to 1 else 0.4
-                                                transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.8)",
-                                                transition: "all 1s cubic-bezier(.08,.82,.17,1)",
+                                                transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
                                                 borderRadius: selectedMediaIndex == index ? "0" : "100%",
                                                 rotate: selectedMediaIndex == index ? "0deg" :
-                                                    selectedMediaIndex > index ? "90deg" : "-90deg",
+                                                    selectedMediaIndex > index ? "30deg" : "-30deg",
                                                 // more effacts
                                                 opacity: selectedMediaIndex == index ? 1 : 0,
                                             }}
