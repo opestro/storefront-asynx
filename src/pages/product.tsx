@@ -63,6 +63,7 @@ function ProductPage() {
     </>
 }
 
+var runner:any;
 
 function Product({ store, product }: { store: StoreEntity, product: ProductEntity }) {
     let location = useLocation()
@@ -493,7 +494,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                         78
                         + (store?.banner?.enabled ? 40 : 0)
                     } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
-                        <div className="slider relative rounded-2xl">
+                        <div className="overflow-hidden slider relative rounded-2xl">
 
                             {/* <a href="#slide-1">1</a>
                             <a href="#slide-2">2</a>
@@ -502,13 +503,20 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             <a href="#slide-5">5</a> */}
 
                             <div
-                                className="slides" 
+                                className="slides overflow-hidden" 
                                 // when scroll update selected media index
-                                onScroll={(e) => {
-                                    var el = e.target as HTMLDivElement;
-                                    var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
-                                    setSelectedMediaIndex(index);
-                                }}
+                                // onScroll={(e) => {
+                                //     if (runner) {
+                                //         clearTimeout(runner);
+                                //     }
+                                //     var el = e.target as HTMLDivElement;
+                                //     var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
+                                //     runner = setTimeout(() => {
+                                //         if (selectedMediaIndex != index) {
+                                //             setSelectedMediaIndex(index);
+                                //         }
+                                //     }, 10);
+                                // }}
                             >
                                 {/* <div id="slide-1">
                                     1
