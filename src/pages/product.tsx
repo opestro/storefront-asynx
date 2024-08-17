@@ -791,28 +791,31 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 }
 
 
-function isValidId(id: string): boolean {
-    return /^[\w\-]{11}$/.test(id);
-}
-
 export function getYoutubeVideoIdFromUrl(url: string): string | null {
-    const patterns = [
-        /youtube\.com\/watch\?v=([^&]+)/,
-        /youtu\.be\/([^?]+)/,
-        /youtube\.com\/embed\/([^?]+)/,
-        /img\.youtube\.com\/vi\/([^/]+)/,
-        /youtube\.com\/video\/([^?]+)/,
-    ];
+    const videoRegExp = new RegExp(
+        '(?:https?:\\/\\/)?(?:www\\.)?(?:youtube\\.com\\/(?:[^\\/\\n\\s]+\\/\\S+\\/|(?:v|e(?:mbed)?|watch)\\/|.*[?&]v=)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})',
+        'i'
+    );
 
-    for (const pattern of patterns) {
-        const match = url.match(pattern);
-        if (match && isValidId(match[1])) {
-            return match[1];
-        }
+    const thumbRegExp = new RegExp(
+        'https:\\/\\/img\\.youtube\\.com\\/vi\\/([a-zA-Z0-9_-]{11})\\/',
+        'i'
+    );
+
+    // Check if it's a regular YouTube video URL
+    let match = videoRegExp.exec(url);
+    if (match && match[1]) {
+        return match[1];
     }
 
+    // Check if it's a YouTube thumbnail URL
+    match = thumbRegExp.exec(url);
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    // Return null if no video ID is found
     return null;
 }
-
 
 export default ProductPage;
