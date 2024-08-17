@@ -3402,91 +3402,42 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden", children: [
-        /* @__PURE__ */ jsx(
-          "div",
+      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "slider relative rounded-lg", children: [
+        /* @__PURE__ */ jsx("div", { className: "slides", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx("div", { id: `slide-${index + 1}`, children: getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx("div", { className: "bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0", children: /* @__PURE__ */ jsx(
+          ReactPlayer,
           {
-            className: "rounded-xl w-full aspect-square overflow-x-scroll overflow-y-hidden flex",
+            url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
+            width: "100%",
+            height: "100%",
+            playing: selectedMediaIndex === index,
             style: {
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
-              scrollBehavior: "smooth",
-              // box-shadow: inset 0px 0px 60px 60px store_color;
-              boxShadow: "inset 0px 0px 60px 60px " + dartColorToCss(store.decoration.primary)
-            },
-            onScroll: (e) => {
-              var el = e.target;
-              var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
-              setSelectedMediaIndex(index);
-            },
-            children: product == null ? void 0 : product.media.map((media, index) => getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx(
-              "div",
-              {
-                id: `pimage-${index}`,
-                className: "aspect-square w-full h-full relative",
-                children: /* @__PURE__ */ jsx(
-                  "div",
-                  {
-                    className: "bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
-                    children: /* @__PURE__ */ jsx(
-                      ReactPlayer,
-                      {
-                        url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
-                        width: "100%",
-                        height: "100%",
-                        playing: selectedMediaIndex === index,
-                        style: {
-                          scrollSnapAlign: "center",
-                          scrollSnapStop: "always",
-                          // when this is selected scall to 1 else 0.4
-                          transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                          transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                          borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                          rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg",
-                          // more effacts
-                          opacity: selectedMediaIndex == index ? 1 : 0
-                        }
-                      },
-                      [index, selectedMediaIndex].join("-")
-                    )
-                  }
-                )
-              },
-              index
-            ) : /* @__PURE__ */ jsx(
-              "img",
-              {
-                id: `pimage-${index}`,
-                src: media,
-                className: "h-full object-contain aspect-square",
-                style: {
-                  scrollSnapAlign: "center",
-                  scrollSnapStop: "always",
-                  // when this is selected scall to 1 else 0.4
-                  transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                  transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                  borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                  rotate: selectedMediaIndex == index ? "0deg" : selectedMediaIndex > index ? "30deg" : "-30deg",
-                  // more effacts
-                  opacity: selectedMediaIndex == index ? 1 : 0
-                },
-                alt: product.name
-              },
-              index
-            ))
+              // scrollSnapAlign: "center",
+              // scrollSnapStop: "always",
+              // // when this is selected scall to 1 else 0.4
+              // transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+              // transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+              // borderRadius: selectedMediaIndex == index ? "0" : "100%",
+              // rotate: selectedMediaIndex == index ? "0deg" :
+              //     selectedMediaIndex > index ? "30deg" : "-30deg",
+              // // more effacts
+              // opacity: selectedMediaIndex == index ? 1 : 0,
+            }
+          },
+          [index, selectedMediaIndex].join("-")
+        ) }) : /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: media,
+            className: "inset-0 object-contain aspect-square",
+            alt: product.name
           }
-        ),
+        ) }, index)) }),
         /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
           "a",
           {
             className: "pointer-events-auto",
-            onClick: (e) => {
-              e.preventDefault();
-              var el = document.getElementById(`pimage-${index}`);
-              el == null ? void 0 : el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-            },
-            href: `#pimage-${index}`,
-            children: /* @__PURE__ */ jsx("button", { onClick: () => setSelectedMediaIndex(index), className: (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
+            href: `#slide-${index + 1}`,
+            children: /* @__PURE__ */ jsx("button", { onClick: () => setSelectedMediaIndex(index), className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
               "img",
               {
                 src: media,

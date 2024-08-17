@@ -493,11 +493,115 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                         78
                         + (store?.banner?.enabled ? 40 : 0)
                     } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
+                        <div className="slider relative rounded-lg">
+
+                            {/* <a href="#slide-1">1</a>
+                            <a href="#slide-2">2</a>
+                            <a href="#slide-3">3</a>
+                            <a href="#slide-4">4</a>
+                            <a href="#slide-5">5</a> */}
+
+                            <div className="slides">
+                                {/* <div id="slide-1">
+                                    1
+                                </div>
+                                <div id="slide-2">
+                                    2
+                                </div>
+                                <div id="slide-3">
+                                    3
+                                </div>
+                                <div id="slide-4">
+                                    4
+                                </div>
+                                <div id="slide-5">
+                                    5
+                                </div> */}
+                                {
+                                    product?.media.map((media, index) => (
+                                        <div id={`slide-${index + 1}`} key={index}>
+                                            {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
+                                                <div className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
+                                                    <ReactPlayer
+                                                        key={[index, selectedMediaIndex].join("-")}
+                                                        url={
+                                                            `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
+                                                        }
+                                                        width="100%"
+                                                        height="100%"
+                                                        // controls
+                                                        playing={selectedMediaIndex === index}
+                                                        // config={{
+                                                        //     youtube: {
+                                                        //         // hide controls
+                                                        //         playerVars: {
+                                                        //             controls: 0,
+                                                        //             modestbranding: 1,
+                                                        //             showinfo: 0,
+                                                        //             rel: 0,
+                                                        //             loop: selectedMediaIndex == index,
+                                                        //             autoplay: selectedMediaIndex == index,
+                                                        //             // mute: selectedMediaIndex != index,
+                                                        //         }
+                                                        //     }
+                                                        // }}
+                                                        style={{
+                                                            // scrollSnapAlign: "center",
+                                                            // scrollSnapStop: "always",
+                                                            // // when this is selected scall to 1 else 0.4
+                                                            // transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
+                                                            // transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                                                            // borderRadius: selectedMediaIndex == index ? "0" : "100%",
+                                                            // rotate: selectedMediaIndex == index ? "0deg" :
+                                                            //     selectedMediaIndex > index ? "30deg" : "-30deg",
+                                                            // // more effacts
+                                                            // opacity: selectedMediaIndex == index ? 1 : 0,
+                                                        }}
+                                                    />
+                                                </div> :
+                                                <img
+                                                    src={media} className={
+                                                        "inset-0 object-contain aspect-square"
+                                                    }
+                                                    alt={product.name!}
+                                                />
+                                            }
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
+
+                            {product?.media.map((media, index) => (
+                                <a
+                                    className="pointer-events-auto"
+                                    key={index}
+                                    // onClick={(e) => {
+                                    //     e.preventDefault();
+                                    //     var el = document.getElementById(`pimage-${index}`)
+                                    //     // scroll to element ut only in x
+                                    //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                                    // }}
+                                    href={`#slide-${index + 1}`}
+                                >
+                                    <button key={index} onClick={() => setSelectedMediaIndex(index)} className={'overflow-hidden relative '+
+                                        (selectedMediaIndex === index ?
+                                            "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                        " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
+                                        <img src={media} className="overflow-hidden w-full h-full object-cover "
+                                            alt={"صورة " + product?.name + " " + index}
+                                        />
+                                    </button>
+                                </a>
+                            ))}
+
+                        </div>
+                        </div>
+
                         {/* image */}
-                        <div className="relative overflow-hidden">
-                            {/* <img src={product?.media[selectedMediaIndex]?.url} className="rounded-xl w-full aspect-square object-cover" /> */}
+                        {/* <div className="relative overflow-hidden">
                             <div
-                                className="rounded-xl w-full aspect-square overflow-x-scroll overflow-y-hidden flex" style={{
+                                className="relative rounded-xl aspect-square overflow-hidden w-96" style={{
                                     scrollSnapType: "x mandatory",
                                     WebkitOverflowScrolling: "touch",
                                     scrollBehavior: "smooth",
@@ -511,16 +615,14 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     setSelectedMediaIndex(index);
                                 }}>
                                 {product?.media.map((media, index) => (
-                                    getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
-
-                                        <div
-                                            id={`pimage-${index}`}
-                                            className="aspect-square w-full h-full relative" key={index}
-                                            >
-                                            <div className="bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0"
-                                            >
+                                    <div
+                                        id={`pimage-${index}`}
+                                        className="aspect-square w-full h-full relative" key={index}
+                                    >
+                                        {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
+                                            <div className="bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
                                                 <ReactPlayer
-                                                    key={[index,selectedMediaIndex].join("-")}
+                                                    key={[index, selectedMediaIndex].join("-")}
                                                     url={
                                                         `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
                                                     }
@@ -555,34 +657,19 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         opacity: selectedMediaIndex == index ? 1 : 0,
                                                     }}
                                                 />
-                                            </div>
-                                        </div>
-                                        :
-                                        <img
-                                            id={`pimage-${index}`}
-                                            key={index} src={media} className={
-                                                "h-full object-contain aspect-square"
-                                            }
-                                            style={{
-                                                scrollSnapAlign: "center",
-                                                scrollSnapStop: "always",
-                                                // when this is selected scall to 1 else 0.4
-                                                transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                rotate: selectedMediaIndex == index ? "0deg" :
-                                                    selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                // more effacts
-                                                opacity: selectedMediaIndex == index ? 1 : 0,
-                                            }}
-                                            alt={product.name!}
-                                        />
+                                            </div> :
+                                            <img
+                                                src={media} className={
+                                                    "inset-0 object-contain aspect-square"
+                                                }
+                                                alt={product.name!}
+                                            />
+                                        }
+                                    </div>
+
                                 ))}
                             </div>
 
-
-
-                            {/* image selector */}
                             <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
                                 {product?.media.map((media, index) => (
                                     <a
@@ -607,7 +694,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     </a>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </StickyBox>
                     {/* detail */}
                     <div className="w-4"></div>
