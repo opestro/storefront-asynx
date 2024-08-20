@@ -1,4 +1,5 @@
 import { IconShoppingCartOff } from "@tabler/icons-react";
+import "./cart.css";
 
 import { OrderItem } from "feeef/src/core/core";
 import React, { useEffect } from "react";
@@ -6,9 +7,16 @@ import React, { useEffect } from "react";
 interface CartProps {
   active: boolean;
   setCartLength: React.Dispatch<React.SetStateAction<number>>;
+  length: number;
+  setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
+const Cart: React.FC<CartProps> = ({
+  active,
+  setCartLength,
+  length,
+  setActive,
+}) => {
   //   const array: OrderEntity[] = JSON.parse(cart);
   const cart: string =
     typeof window !== "undefined" ? localStorage.getItem("cart") || "[]" : "[]";
@@ -24,7 +32,7 @@ const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
   useEffect(() => {
     setArray(JSON.parse(cart));
     setCartLength(array.length);
-  }, [active, array.length]);
+  }, [active, length]);
 
   console.log("rendered");
   return (
@@ -33,7 +41,26 @@ const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
         active ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <h1 className="text-2xl font-bold p-4">Cart</h1>
+      <h1 className="text-2xl font-bold p-4">السلة</h1>
+      <button
+        onClick={() => setActive(false)}
+        className="absolute top-0 left-0 p-4"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+
       <ul className="min-h-7">
         {array.length > 0 ? (
           array.map((item: any, index: number) => (
@@ -77,14 +104,14 @@ const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
             </li>
           ))
         ) : (
-          <li className="p-4">
+          <li className="p-4 text-center text-6xl">
             السلة فارغة{" "}
             <IconShoppingCartOff size={400} stroke={0.5} className="text-p" />
           </li>
         )}
       </ul>
-      <p className="p-4">
-        Total:{" "}
+      <p className="p-4 text-2xl">
+        المجموع :{" "}
         {array.reduce((acc: number, item: any) => acc + item.product.price, 0)}{" "}
         دج
       </p>

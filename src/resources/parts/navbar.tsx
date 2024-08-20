@@ -22,7 +22,12 @@ function Navbar({ store }: { store: StoreEntity }) {
 
   return (
     <>
-      <Cart active={open} setCartLength={setCartLength} />
+      <Cart
+        active={open}
+        setCartLength={setCartLength}
+        length={cartlength}
+        setActive={setOpen}
+      />
       <div className="h-16"></div>
       <nav className="backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
         {store?.banner?.enabled && (
