@@ -23,7 +23,8 @@ async function createServer() {
   if (!isProduction) {
     vite = await require("vite").createServer({
       root,
-      server: { middlewareMode: "ssr" },
+      server: { middlewareMode: "true" },
+      appType: "custom",
     });
 
     app.use(vite.middlewares);
@@ -51,7 +52,7 @@ async function createServer() {
     let url = req.originalUrl;
 
     // if now subdomain, redirect to feeef.net
-    if (["feeef.shop",'"khfif.shop"'].includes(req.hostname)) {
+    if (["feeef.shop", '"khfif.shop"'].includes(req.hostname)) {
       return res.redirect(301, `https://feeef.net`);
     }
 
@@ -69,7 +70,7 @@ async function createServer() {
           resolve("dist/client/index.html"),
           "utf8"
         );
-        render = (await import('./dist/server/entry.server.mjs')).render;
+        render = (await import("./dist/server/entry.server.mjs")).render;
       }
 
       try {

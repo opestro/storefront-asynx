@@ -18,6 +18,7 @@ import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
 import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
+import AddToCart from "../components/addToCart"
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -38,6 +39,8 @@ function ProductPage() {
         store: StoreEntity
     };
     let pathname = useLocation().pathname
+
+
     return <>
         <SuperSEO
             title={store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")}
@@ -59,7 +62,7 @@ function ProductPage() {
             }}
         >
         </SuperSEO>
-        <Product store={store} product={product}></Product>
+        <Product store={store} product={product}/>
     </>
 }
 
@@ -376,236 +379,270 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
     return (
-        <div className="relative">
-            {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
-            {
-                <div
-                    className="fixed text-center bottom-[10px] right-[10px] left-[10px] z-20"
-
-                    style={
-                        {
-                            "--on-p-s": 'var(--on-p)',
-                            "--p-s": 'var(--p)',
-                            transition: "all 0.5s",
-                            transform: isSendOrderButtonInView ?
-                                "translateY(100%)" : "translateY(0)",
-                            opacity: isSendOrderButtonInView ? 0 : 1,
-                            visibility: isSendOrderButtonInView ? "hidden" : "visible",
-
-                        } as React.CSSProperties
-                    }
-                >
-                    <div
-                        className="pulse rounded-lg"
-                        style={
-                            {
-                                maxWidth: '500px',
-                                margin: 'auto',
-                            } as React.CSSProperties
-                        }
-                    >
-
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                scrollToShippingForm();
-                            }}
-                            type="submit" className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
-                            <AsynxWave
-                                color="white"
-                                width="100%"
-                                height="100%"
-                                className={"absolute start-0 top-0 bottom-0 h-full aspect-square"}
-                                padding={0} />
-                            <div className="flex items-center justify-center" >
-                                {/* أرسل طلبك الآن */}
-                                <TypeAnimation cursor={true} sequence={[
-                                    "شراء الآن",
-                                    2500,
-                                    "سنتصل بك لتأكيد الطلبية",
-                                    500,
-                                    "ماذا تنتظر؟",
-                                    500,
-                                    "إظغط هنا لإرسال الطلب",
-                                    500,
-                                    "إظغط هنا لإرسال الطلب...",
-                                    500,
-                                ]}
-                                    repeat={Infinity}
-                                    speed={50}
-                                />
-                            </div>
-                            {/* the basket icon */}
-                            <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
-                        </button>
-                    </div>
-                </div>
+      <div className="relative">
+        {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
+        {
+          <div
+            className="fixed text-center bottom-[10px] right-[10px] left-[10px] z-20"
+            style={
+              {
+                "--on-p-s": "var(--on-p)",
+                "--p-s": "var(--p)",
+                transition: "all 0.5s",
+                transform: isSendOrderButtonInView
+                  ? "translateY(100%)"
+                  : "translateY(0)",
+                opacity: isSendOrderButtonInView ? 0 : 1,
+                visibility: isSendOrderButtonInView ? "hidden" : "visible",
+              } as React.CSSProperties
             }
-            {/* <h1>{isSendOrderButtonInView}</h1> */}
-            {
-                loading &&
-                <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
-                    <AsynxWave
-                        className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl'
-                        height="100%"
-                        width="100%"
-                    ></AsynxWave>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        {/* <div className="pulse w-20 h-20 bg-gray-200 rounded-full"></div> */}
-                        <AsynxWave
-                            height="50"
-                            width="50"
-                        ></AsynxWave>
-
-                        <div className="h-2"></div>
-                        <TypeAnimation cursor={false} sequence={[
-                            "جاري التحميل",
-                            500,
-                            "يرجى الإنتظار",
-                            1000,
-                            "العملية قيد التقدم",
-                            300,
-                        ]}
-                            repeat={Infinity}
-                            speed={10}
-                            className="h-5 text-sm text-gray-600 dark:text-gray-400 font-light"
-                        />
-                    </div>
+          >
+            <div
+              className="pulse rounded-lg"
+              style={
+                {
+                  maxWidth: "500px",
+                  margin: "auto",
+                } as React.CSSProperties
+              }
+            >
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToShippingForm();
+                }}
+                type="submit"
+                className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   "
+              >
+                <AsynxWave
+                  color="white"
+                  width="100%"
+                  height="100%"
+                  className={
+                    "absolute start-0 top-0 bottom-0 h-full aspect-square"
+                  }
+                  padding={0}
+                />
+                <div className="flex items-center justify-center">
+                  {/* أرسل طلبك الآن */}
+                  <TypeAnimation
+                    cursor={true}
+                    sequence={[
+                      "شراء الآن",
+                      2500,
+                      "سنتصل بك لتأكيد الطلبية",
+                      500,
+                      "ماذا تنتظر؟",
+                      500,
+                      "إظغط هنا لإرسال الطلب",
+                      500,
+                      "إظغط هنا لإرسال الطلب...",
+                      500,
+                    ]}
+                    repeat={Infinity}
+                    speed={50}
+                  />
                 </div>
-            }
+                {/* the basket icon */}
+                <IconShoppingBag
+                  size={34}
+                  className="absolute end-3 top-0 bottom-0 m-auto"
+                />
+              </button>
+            </div>
+          </div>
+        }
+        {/* <h1>{isSendOrderButtonInView}</h1> */}
+        {loading && (
+          <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
+            <AsynxWave
+              className="opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-3xl"
+              height="100%"
+              width="100%"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              {/* <div className="pulse w-20 h-20 bg-gray-200 rounded-full"></div> */}
+              <AsynxWave height="50" width="50"></AsynxWave>
 
-            {
-                sentOrder && sentOrder.status == "pending" &&
-                <div className="overflow-auto flex items-center justify-center fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
-                    <AsynxWave
-                        className='opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-md'
-                        height="100%"
-                        width="100%"
-                    ></AsynxWave>
-                    <Thanks store={store} order={sentOrder} onDone={clearOrder}></Thanks>
-                </div>
-            }
-            <div className="container mx-auto pt-4 ">
-                {/* row, 1 col for images, other for detail; all sticky */}
-                <div className="flex flex-col md:flex-row">
-                    {/* images */}
+              <div className="h-2"></div>
+              <TypeAnimation
+                cursor={false}
+                sequence={[
+                  "جاري التحميل",
+                  500,
+                  "يرجى الإنتظار",
+                  1000,
+                  "العملية قيد التقدم",
+                  300,
+                ]}
+                repeat={Infinity}
+                speed={10}
+                className="h-5 text-sm text-gray-600 dark:text-gray-400 font-light"
+              />
+            </div>
+          </div>
+        )}
 
-                    <StickyBox offsetTop={
-                        78
-                        + (store?.banner?.enabled ? 40 : 0)
-                    } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
-                        <div className="overflow-hidden slider relative rounded-2xl">
+        {sentOrder && sentOrder.status == "pending" && (
+          <div className="overflow-auto flex items-center justify-center fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
+            <AsynxWave
+              className="opacity-70 dark:opacity-90 pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-md"
+              height="100%"
+              width="100%"
+            ></AsynxWave>
+            <Thanks store={store} order={sentOrder} onDone={clearOrder} />
+          </div>
+        )}
+        <div className="container mx-auto pt-4 ">
+          {/* row, 1 col for images, other for detail; all sticky */}
+          <div className="flex flex-col md:flex-row">
+            {/* images */}
 
-                            {/* <a href="#slide-1">1</a>
+            <StickyBox
+              offsetTop={78 + (store?.banner?.enabled ? 40 : 0)}
+              className="top-0 md:top-[78px]  h-full w-full md:w-1/2"
+            >
+              <div className="overflow-hidden slider relative rounded-2xl">
+                {/* <a href="#slide-1">1</a>
                             <a href="#slide-2">2</a>
                             <a href="#slide-3">3</a>
                             <a href="#slide-4">4</a>
                             <a href="#slide-5">5</a> */}
 
-                            <div
-                                className="slides overflow-hidden"
-                                // when scroll update selected media index
-                                onScroll={(e) => {
-                                    var el = e.target as HTMLDivElement;
-                                    var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
-                                    setSelectedMediaIndex(index);
-                                }}
-                            >
-                                {
-                                    product?.media.map((media, index) => (
-                                        <div id={`slide-${index + 1}`} className="overflow-hidden" key={[index,import.meta.env.SSR].join("-")}>
-                                            {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
-                                                <div
-                                                    style={{
-                                                        scrollSnapAlign: "center",
-                                                        scrollSnapStop: "always",
-                                                        // when this is selected scall to 1 else 0.4
-                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                        rotate: selectedMediaIndex == index ? "0deg" :
-                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                        // more effacts
-                                                        opacity: selectedMediaIndex == index ? 1 : 0,
-                                                    }} className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
-                                                    <ReactPlayer
-                                                        key={[index,import.meta.env.SSR].join("-")}
-                                                        url={
-                                                            `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
-                                                        }
-                                                        width="100%"
-                                                        height="100%"
-                                                        // controls
-                                                        playing={selectedMediaIndex === index}
-                                                    // config={{
-                                                    //     youtube: {
-                                                    //         // hide controls
-                                                    //         playerVars: {
-                                                    //             controls: 0,
-                                                    //             modestbranding: 1,
-                                                    //             showinfo: 0,
-                                                    //             rel: 0,
-                                                    //             loop: selectedMediaIndex == index,
-                                                    //             autoplay: selectedMediaIndex == index,
-                                                    //             // mute: selectedMediaIndex != index,
-                                                    //         }
-                                                    //     }
-                                                    // }}
-                                                    />
-                                                </div> :
-                                                <img
-                                                    src={media} className={
-                                                        "inset-0 object-contain aspect-square"
-                                                    }
-                                                    alt={product.name!}
-                                                    style={{
-                                                        scrollSnapAlign: "center",
-                                                        scrollSnapStop: "always",
-                                                        // when this is selected scall to 1 else 0.4
-                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                        rotate: selectedMediaIndex == index ? "0deg" :
-                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                        // more effacts
-                                                        opacity: selectedMediaIndex == index ? 1 : 0,
-                                                    }}
-                                                />
-                                            }
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
-
-                                {product?.media.map((media, index) => (
-                                    <a
-                                        className="pointer-events-auto"
-                                        key={index}
-                                        // onClick={(e) => {
-                                        //     e.preventDefault();
-                                        //     var el = document.getElementById(`pimage-${index}`)
-                                        //     // scroll to element ut only in x
-                                        //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                        // }}
-                                        href={`#slide-${index + 1}`}
-                                    >
-                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={'overflow-hidden relative ' +
-                                            (selectedMediaIndex === index ?
-                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
-                                            " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
-                                            <img src={media} className="overflow-hidden w-full h-full object-cover "
-                                                alt={"صورة " + product?.name + " " + index}
-                                            />
-                                        </button>
-                                    </a>
-                                ))}
-
-                            </div>
+                <div
+                  className="slides overflow-hidden"
+                  // when scroll update selected media index
+                  onScroll={(e) => {
+                    var el = e.target as HTMLDivElement;
+                    var index = Math.abs(
+                      Math.round(el.scrollLeft / el.clientWidth)
+                    );
+                    setSelectedMediaIndex(index);
+                  }}
+                >
+                  {product?.media.map((media, index) => (
+                    <div
+                      id={`slide-${index + 1}`}
+                      className="overflow-hidden"
+                      key={[index, import.meta.env.SSR].join("-")}
+                    >
+                      {getYoutubeVideoIdFromUrl(media) != null &&
+                      !import.meta.env.SSR ? (
+                        <div
+                          style={{
+                            scrollSnapAlign: "center",
+                            scrollSnapStop: "always",
+                            // when this is selected scall to 1 else 0.4
+                            transform:
+                              selectedMediaIndex == index
+                                ? "scale(1)"
+                                : "scale(0.5)",
+                            transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                            borderRadius:
+                              selectedMediaIndex == index ? "0" : "100%",
+                            rotate:
+                              selectedMediaIndex == index
+                                ? "0deg"
+                                : selectedMediaIndex > index
+                                ? "30deg"
+                                : "-30deg",
+                            // more effacts
+                            opacity: selectedMediaIndex == index ? 1 : 0,
+                          }}
+                          className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0"
+                        >
+                          <ReactPlayer
+                            key={[index, import.meta.env.SSR].join("-")}
+                            url={`https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(
+                              media
+                            )}`}
+                            width="100%"
+                            height="100%"
+                            // controls
+                            playing={selectedMediaIndex === index}
+                            // config={{
+                            //     youtube: {
+                            //         // hide controls
+                            //         playerVars: {
+                            //             controls: 0,
+                            //             modestbranding: 1,
+                            //             showinfo: 0,
+                            //             rel: 0,
+                            //             loop: selectedMediaIndex == index,
+                            //             autoplay: selectedMediaIndex == index,
+                            //             // mute: selectedMediaIndex != index,
+                            //         }
+                            //     }
+                            // }}
+                          />
                         </div>
+                      ) : (
+                        <img
+                          src={media}
+                          className={"inset-0 object-contain aspect-square"}
+                          alt={product.name!}
+                          style={{
+                            scrollSnapAlign: "center",
+                            scrollSnapStop: "always",
+                            // when this is selected scall to 1 else 0.4
+                            transform:
+                              selectedMediaIndex == index
+                                ? "scale(1)"
+                                : "scale(0.5)",
+                            transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
+                            borderRadius:
+                              selectedMediaIndex == index ? "0" : "100%",
+                            rotate:
+                              selectedMediaIndex == index
+                                ? "0deg"
+                                : selectedMediaIndex > index
+                                ? "30deg"
+                                : "-30deg",
+                            // more effacts
+                            opacity: selectedMediaIndex == index ? 1 : 0,
+                          }}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
+                  {product?.media.map((media, index) => (
+                    <a
+                      className="pointer-events-auto"
+                      key={index}
+                      // onClick={(e) => {
+                      //     e.preventDefault();
+                      //     var el = document.getElementById(`pimage-${index}`)
+                      //     // scroll to element ut only in x
+                      //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                      // }}
+                      href={`#slide-${index + 1}`}
+                    >
+                      <button
+                        key={index}
+                        onClick={() => setSelectedMediaIndex(index)}
+                        className={
+                          "overflow-hidden relative " +
+                          (selectedMediaIndex === index
+                            ? "border-primary border-[2px] w-14"
+                            : " w-11 border-[2px] dark:border-white border-white ") +
+                          " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"
+                        }
+                      >
+                        <img
+                          src={media}
+                          className="overflow-hidden w-full h-full object-cover "
+                          alt={"صورة " + product?.name + " " + index}
+                        />
+                      </button>
+                    </a>
+                  ))}
+                </div>
+              </div>
 
-                        {/* image */}
-                        {/* <div className="relative overflow-hidden">
+              {/* image */}
+              {/* <div className="relative overflow-hidden">
                             <div
                                 className="relative rounded-xl aspect-square overflow-hidden w-96" style={{
                                     scrollSnapType: "x mandatory",
@@ -701,189 +738,208 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 ))}
                             </div>
                         </div> */}
-                    </StickyBox>
-                    {/* detail */}
-                    <div className="w-4"></div>
-                    <div className="w-full md:w-1/2 z-10">
-                        <div className="px-4 pt-5 product-gradient">
-                            <div className="flex items-center">
-                                <h1 className="text-3xl font-semibold">{product?.name}</h1>
-                                {
-                                    !!product?.discount &&
-                                    <span dir="ltr" className="mx-2 bg-primary text-white rounded-full px-2">
-                                        -{getDiscount()}%
-                                    </span>
-                                }
-                            </div>
-                            <div className="h-2"></div>
-                            <span className=" text-gray-600">{product?.description}</span>
-                            <div className="h-1"></div>
-                            <div className="flex items-center pb-3 ">
-
-                                {<span className="rounded-md px-1 text-orange-500 text-2xl">
-                                    {
-                                        getPriceAfterDiscount()
-                                    }
-                                    دج
-                                </span>}
-                                {
-                                    getPriceAfterDiscount() !== getPriceWithoutVariantsDiscount() &&
-                                    <span className="px-1  text-gray-400 line-through text-lg">
-                                        {getPriceWithoutVariantsDiscount()} دج
-                                    </span>
-                                }
-
-                                <div className="flex-grow"></div>
-
-                                <span className="px-1  text-gray-400 text-lg">
-                                    يتوفر {getQuantity()}
-                                </span>
-
-
-                            </div>
-                        </div>
-                        <div className="product-color">
-                            {
-                                product?.variant &&
-                                <div className="gb p-4 rounded-xl">
-                                    <h2 className="text-xl font-semibold">الخيارات المتوفرة</h2>
-                                    <div className="h-2"></div>
-                                    {/* variant groups */}
-                                    <RenderVariantGroup
-                                        variantGroup={product!.variant!}
-                                        path={item.variants}
-                                        onPathChange={(path) => {
-                                            if (item.variants.join() == path.join()) {
-                                                // delete last variant
-                                                path.pop();
-                                            }
-                                            item.variants = path
-
-                                            return setItem({ ...item });
-                                        }}
-                                        onSelect={(variant) => {
-                                            console.log(variant!.value)
-
-                                            if (variant?.type == VariantOptionType.image) {
-                                                var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
-                                                console.log(variant!.value)
-                                                console.log(product?.media[mediaIndex])
-
-                                                setSelectedMediaIndex(mediaIndex!);
-                                                // scroll to element ut only in x
-                                                var el = document.getElementById(`slide-${mediaIndex!}`)
-                                                el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                                // href={`#slide-${index + 1}`}
-                                                if (!import.meta.env.SSR) {
-                                                    window.history.pushState({}, "", `#${mediaIndex! + 1}`);
-                                                }
-                                            }
-
-                                            // ViewContent
-                                            track('ViewContent', {
-                                                content_name: product?.name + " " + variant?.name,
-                                                // content_category: 'cloth',
-                                                content_ids: [product?.id],
-                                                content_type: 'product',
-                                                value: getPriceWithoutVariantsDiscount(),
-                                                currency: 'DZD'
-                                            });
-                                        }}
-                                    />
-                                </div>
-                            }
-                            {/* name, phone, country|state */}
-                            <div className="h-4"></div>
-                            <div id="order-form" className="gb rounded-xl">
-                                <div className="p-4">
-                                    <ShippingForm
-                                        shippingMethod={product.shippingMethod}
-                                        store={store} shipping={shipping} setShipping={setShipping} sendOrder={sendOrder} />
-
-                                    <div className="h-2"></div>
-                                    <div ref={sendOrderButtonRef} className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center" >
-                                        <SendOrderButton id="fixed" />
-                                    </div>
-                                    <div className="h-2"></div>
-                                    <div className="flex items-center justify-center">
-                                        <div className="text-gray-600">
-                                            الكمية
-                                        </div>
-                                        <div className="flex-grow"></div>
-                                        <div className="flex items-center justify-center">
-                                            <button
-                                                onClick={() => {
-                                                    // Decrease quantity
-                                                    setItem((prevItem) => ({
-                                                        ...prevItem,
-                                                        quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
-                                                    }));
-                                                }}
-                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-s-lg"
-                                            >
-                                                -
-                                            </button>
-                                            <span className="px-3 py-1 bg-gray-200 text-gray-700">
-                                                {item.quantity}
-                                            </span>
-                                            <button
-                                                onClick={() => {
-                                                    // Increase quantity
-                                                    setItem((prevItem) => ({
-                                                        ...prevItem,
-                                                        quantity: prevItem.quantity + 1,
-                                                    }));
-                                                }}
-                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* divider */}
-                                <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
-                                <div className="p-4">
-                                    {/* shipping */}
-                                    <div className="flex items-center justify-center">
-                                        <div className="text-gray-600">
-                                            الشحن
-                                        </div>
-                                        <div className="flex-grow"></div>
-                                        <div className="text-gray-600">
-                                            <span className="text-gray-600">{
-                                                shipping?.address.state ?
-                                                    <span>{
-                                                        getTotal() &&
-                                                            getTotal()! - getPriceAfterDiscount() > 0 ?
-                                                            getTotal()! - getPriceAfterDiscount() + " دج"
-                                                            : "مجاني"
-                                                    }</span>
-                                                    :
-                                                    <span>اختر الولاية</span>
-                                            }</span>
-                                        </div>
-                                    </div>
-                                    <div className="h-2"></div>
-                                    {/* total */}
-                                    <div className="flex">
-                                        <div className="text-gray-600">
-                                            <span className="text-gray-600">المجموع</span>
-                                        </div>
-                                        <div className="flex-grow"></div>
-                                        <div className="text-gray-600">
-                                            <span className="text-gray-600">{getTotal()} دج</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <Markdown className="p-4 prose dark:prose-invert" >{product?.body}</Markdown>
-                        </div>
-                    </div>
+            </StickyBox>
+            {/* detail */}
+            <div className="w-4"></div>
+            <div className="w-full md:w-1/2 z-10">
+              <div className="px-4 pt-5 product-gradient">
+                <div className="flex items-center">
+                  <h1 className="text-3xl font-semibold">{product?.name}</h1>
+                  {!!product?.discount && (
+                    <span
+                      dir="ltr"
+                      className="mx-2 bg-primary text-white rounded-full px-2"
+                    >
+                      -{getDiscount()}%
+                    </span>
+                  )}
                 </div>
+                <div className="h-2"></div>
+                <span className=" text-gray-600">{product?.description}</span>
+                <div className="h-1"></div>
+                <div className="flex items-center pb-3 ">
+                  {
+                    <span className="rounded-md px-1 text-orange-500 text-2xl">
+                      {getPriceAfterDiscount()}
+                      دج
+                    </span>
+                  }
+                  {getPriceAfterDiscount() !==
+                    getPriceWithoutVariantsDiscount() && (
+                    <span className="px-1  text-gray-400 line-through text-lg">
+                      {getPriceWithoutVariantsDiscount()} دج
+                    </span>
+                  )}
+
+                  <div className="flex-grow"></div>
+
+                  <span className="px-1  text-gray-400 text-lg">
+                    يتوفر {getQuantity()}
+                  </span>
+                </div>
+              </div>
+              <div className="product-color">
+                {product?.variant && (
+                  <div className="gb p-4 rounded-xl">
+                    <h2 className="text-xl font-semibold">الخيارات المتوفرة</h2>
+                    <div className="h-2"></div>
+                    {/* variant groups */}
+                    <RenderVariantGroup
+                      variantGroup={product!.variant!}
+                      path={item.variants}
+                      onPathChange={(path) => {
+                        if (item.variants.join() == path.join()) {
+                          // delete last variant
+                          path.pop();
+                        }
+                        item.variants = path;
+
+                        return setItem({ ...item });
+                      }}
+                      onSelect={(variant) => {
+                        console.log(variant!.value);
+
+                        if (variant?.type == VariantOptionType.image) {
+                          var mediaIndex = product?.media.findIndex(
+                            (media) => media == variant!.value
+                          );
+                          console.log(variant!.value);
+                          console.log(product?.media[mediaIndex]);
+
+                          setSelectedMediaIndex(mediaIndex!);
+                          // scroll to element ut only in x
+                          var el = document.getElementById(
+                            `slide-${mediaIndex!}`
+                          );
+                          el?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                            inline: "center",
+                          });
+                          // href={`#slide-${index + 1}`}
+                          if (!import.meta.env.SSR) {
+                            window.history.pushState(
+                              {},
+                              "",
+                              `#${mediaIndex! + 1}`
+                            );
+                          }
+                        }
+
+                        // ViewContent
+                        track("ViewContent", {
+                          content_name: product?.name + " " + variant?.name,
+                          // content_category: 'cloth',
+                          content_ids: [product?.id],
+                          content_type: "product",
+                          value: getPriceWithoutVariantsDiscount(),
+                          currency: "DZD",
+                        });
+                      }}
+                    />
+                  </div>
+                )}
+                {/* name, phone, country|state */}
+                <div className="h-4"></div>
+                <div id="order-form" className="gb rounded-xl">
+                  <div className="p-4">
+                    <ShippingForm
+                      shippingMethod={product.shippingMethod}
+                      store={store}
+                      shipping={shipping}
+                      setShipping={setShipping}
+                      sendOrder={sendOrder}
+                    />
+
+                    <div className="h-2"></div>
+                    <div
+                      ref={sendOrderButtonRef}
+                      className="pulse rounded-lg flex flex-col md:flex-row justify-between items-center"
+                    >
+                      <SendOrderButton id="fixed" />
+                    </div>
+                    <div className="h-2"></div>
+                    <div className="flex items-center justify-center">
+                      <div className="text-gray-600">الكمية</div>
+                      <div className="flex-grow"></div>
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => {
+                            // Decrease quantity
+                            setItem((prevItem) => ({
+                              ...prevItem,
+                              quantity:
+                                prevItem.quantity > 1
+                                  ? prevItem.quantity - 1
+                                  : 1,
+                            }));
+                          }}
+                          className="px-3 py-1 bg-gray-200 text-gray-700 rounded-s-lg"
+                        >
+                          -
+                        </button>
+                        <span className="px-3 py-1 bg-gray-200 text-gray-700">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => {
+                            // Increase quantity
+                            setItem((prevItem) => ({
+                              ...prevItem,
+                              quantity: prevItem.quantity + 1,
+                            }));
+                          }}
+                          className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <AddToCart item={item} />
+                    </div>
+                  </div>
+                  {/* divider */}
+                  <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="p-4">
+                    {/* shipping */}
+                    <div className="flex items-center justify-center">
+                      <div className="text-gray-600">الشحن</div>
+                      <div className="flex-grow"></div>
+                      <div className="text-gray-600">
+                        <span className="text-gray-600">
+                          {shipping?.address.state ? (
+                            <span>
+                              {getTotal() &&
+                              getTotal()! - getPriceAfterDiscount() > 0
+                                ? getTotal()! - getPriceAfterDiscount() + " دج"
+                                : "مجاني"}
+                            </span>
+                          ) : (
+                            <span>اختر الولاية</span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="h-2"></div>
+                    {/* total */}
+                    <div className="flex">
+                      <div className="text-gray-600">
+                        <span className="text-gray-600">المجموع</span>
+                      </div>
+                      <div className="flex-grow"></div>
+                      <div className="text-gray-600">
+                        <span className="text-gray-600">{getTotal()} دج</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Markdown className="p-4 prose dark:prose-invert">
+                  {product?.body}
+                </Markdown>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     );
 }
 
