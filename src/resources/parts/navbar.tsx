@@ -8,12 +8,21 @@ import Cart from "../../components/Cart";
 // import { IoCartOutline } from "react-icons/io5";
 function Navbar({ store }: { store: StoreEntity }) {
   const [open, setOpen] = React.useState(false);
-  const [lengh, setLengh] = React.useState(0);
+
   const [cartlength, setCartLength] = React.useState(0);
+  useEffect(() => {
+    const cart: string =
+      typeof window !== "undefined"
+        ? localStorage.getItem("cart") || "[]"
+        : "[]";
+    const array: any[] = JSON.parse(cart);
+    // setArray(array);
+    setCartLength(array.length);
+  }, [cartlength]);
 
   return (
     <>
-      <Cart active={open}  setCartLength={setCartLength} />
+      <Cart active={open} setCartLength={setCartLength} />
       <div className="h-16"></div>
       <nav className="backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600">
         {store?.banner?.enabled && (

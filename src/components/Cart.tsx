@@ -9,22 +9,24 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
+  //   const array: OrderEntity[] = JSON.parse(cart);
   const cart: string =
     typeof window !== "undefined" ? localStorage.getItem("cart") || "[]" : "[]";
 
-  //   const array: OrderEntity[] = JSON.parse(cart);
   const [array, setArray] = React.useState<OrderItem[]>(JSON.parse(cart));
   const removeFromCart = (index: number) => {
     array.splice(index, 1);
+    setArray((prev) => prev.filter((_, i) => i !== index));
+    setCartLength(array.length);
     localStorage.setItem("cart", JSON.stringify(array));
   };
 
   useEffect(() => {
-    setArray((prev) => JSON.parse(localStorage.getItem("cart") || "[]"));
+    setArray(JSON.parse(cart));
     setCartLength(array.length);
-    console.log(array);
-  }, [array]);
+  }, [active, array.length]);
 
+  console.log("rendered");
   return (
     <div
       className={`fixed top-16 right-0 z-50  h-screen bg-white dark:bg-gray-800 border  shadow-2xl  overflow-scroll  transform transition-transform duration-300 ${
@@ -59,10 +61,7 @@ const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
                     <button className="p-1">
                       <MinusIcon className="h-4 w-4" />
                     </button>
-                    <span>
-                    {item.quantity}
-
-                    </span>
+                    <span>{item.quantity}</span>
                     <button className="p-1">
                       <PlusIcon className="h-4 w-4" />
                     </button>
@@ -70,9 +69,7 @@ const Cart: React.FC<CartProps> = ({ active, setCartLength }) => {
                   <div className="font-medium text-2xl">
                     {item.product.price} دج
                   </div>
-                  <button
-                  onClick={() => removeFromCart(index)}
-                  className="p-1">
+                  <button onClick={() => removeFromCart(index)} className="p-1">
                     <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>

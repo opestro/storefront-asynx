@@ -148,7 +148,7 @@ function Home() {
           font-extrabold text-base dark:text-gray-50 tracking-wide uppercase">
               {store?.name}
             </h4>
-            <AsynxWave></AsynxWave>
+            <AsynxWave/>
           </div>
           <h1 className="title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl">
             {store?.title}
