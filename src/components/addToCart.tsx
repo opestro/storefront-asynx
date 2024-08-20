@@ -18,6 +18,7 @@ const AddToCart: React.FC<{ item: Item }> = ({ item }) => {
 
     console.log("Order added to cart", cart);
   };
+  const [cart, setCart] = React.useState<Item[]>([]);
 
   return (
     <button

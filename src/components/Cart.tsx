@@ -9,6 +9,7 @@ interface CartProps {
   setCartLength: React.Dispatch<React.SetStateAction<number>>;
   length: number;
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
+  cart: OrderItem[];
 }
 
 const Cart: React.FC<CartProps> = ({
@@ -16,23 +17,23 @@ const Cart: React.FC<CartProps> = ({
   setCartLength,
   length,
   setActive,
+  cart,
 }) => {
-  //   const array: OrderEntity[] = JSON.parse(cart);
-  const cart: string =
-    typeof window !== "undefined" ? localStorage.getItem("cart") || "[]" : "[]";
-
-  const [array, setArray] = React.useState<OrderItem[]>(JSON.parse(cart));
+  const [array, setArray] = React.useState<OrderItem[]>(cart);
   const removeFromCart = (index: number) => {
     array.splice(index, 1);
     setArray((prev) => prev.filter((_, i) => i !== index));
     setCartLength(array.length);
     localStorage.setItem("cart", JSON.stringify(array));
   };
+  useEffect(() => {
+    setArray(cart);
+  }, [cart]);
 
   useEffect(() => {
-    setArray(JSON.parse(cart));
+    setArray(cart);
     setCartLength(array.length);
-  }, [active, length]);
+  }, [active, length, cart]);
 
   console.log("rendered");
   return (
@@ -120,6 +121,7 @@ const Cart: React.FC<CartProps> = ({
 };
 
 export default Cart;
+
 function MinusIcon(props: any) {
   return (
     <svg
