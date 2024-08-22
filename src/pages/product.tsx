@@ -766,14 +766,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                             if (variant?.type == VariantOptionType.image) {
                                                 var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
-                                                console.log(variant!.value)
-                                                console.log(product?.media[mediaIndex])
-
                                                 setSelectedMediaIndex(mediaIndex!);
-                                                // scroll to element ut only in x
+
                                                 var el = document.getElementById(`slide-${mediaIndex!}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                                // href={`#slide-${index + 1}`}
+
                                                 if (!import.meta.env.SSR) {
                                                     window.history.pushState({}, "", `#${mediaIndex! + 1}`);
                                                 }
@@ -813,7 +810,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         <div className="flex items-center justify-center">
                                             <button
                                                 onClick={() => {
-                                                    // Decrease quantity
                                                     setItem((prevItem) => ({
                                                         ...prevItem,
                                                         quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
