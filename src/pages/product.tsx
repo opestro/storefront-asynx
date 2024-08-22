@@ -109,10 +109,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [shipping, setShipping] = useState<ShippingInfo>({
         name: "",
         phone: "",
-        doorShipping: false,
+        doorShipping: true,
         address: {
             street: "",
-            city: "01",
+            city: "1",
             location: {
                 geohash: "",
                 lat: 0,
@@ -154,7 +154,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         var index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
         var baladiyat = cities[index];
-        shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
+        // shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
 
         setShipping(Object.assign({}, shipping));
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {

@@ -2871,7 +2871,14 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { className: "text-sm font-light flex items-center", children: "الولاية" }),
+        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+          "الولاية",
+          shipping.address.state && /* @__PURE__ */ jsxs("span", { className: "mx-2 text-xs text-red-500", children: [
+            "(",
+            shipping.address.state,
+            ")"
+          ] })
+        ] }),
         /* @__PURE__ */ jsxs("div", { className: "relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg", children: [
           /* @__PURE__ */ jsx(IconLocation, { className: "absolute top-2 right-2 text-gray-400" }),
           /* @__PURE__ */ jsx(
@@ -2911,12 +2918,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
           "البلدية",
-          !shipping.address.state && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-red-500", children: "(اختر الولاية أولاً)" }),
-          shipping.address.city && /* @__PURE__ */ jsxs("span", { className: "mx-2 text-xs text-red-500", children: [
-            "(",
-            shipping.address.city,
-            ")"
-          ] })
+          !shipping.address.state && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-red-500", children: "(اختر الولاية أولاً)" })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg", children: [
           /* @__PURE__ */ jsx(IconLocationCode, { className: "absolute top-2 right-2 text-gray-400" }),
@@ -3042,10 +3044,10 @@ function Product({ store, product }) {
   const [shipping, setShipping] = useState({
     name: "",
     phone: "",
-    doorShipping: false,
+    doorShipping: true,
     address: {
       street: "",
-      city: "01",
+      city: "1",
       location: {
         geohash: "",
         lat: 0,
@@ -3080,10 +3082,7 @@ function Product({ store, product }) {
   function updateShippingWilaya(stateCode) {
     if (stateCode === "")
       return;
-    var index = parseInt(stateCode) - 1;
     shipping.address.state = stateCode;
-    var baladiyat = cities[index];
-    shipping.address.city = (baladiyat == null ? void 0 : baladiyat.length) ? baladiyat == null ? void 0 : baladiyat[0] : "";
     setShipping(Object.assign({}, shipping));
     if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
       localStorage.addedToCard = "true";
@@ -3526,8 +3525,6 @@ function Product({ store, product }) {
                   console.log(variant.value);
                   if ((variant == null ? void 0 : variant.type) == VariantOptionType.image) {
                     var mediaIndex = product == null ? void 0 : product.media.findIndex((media) => media == variant.value);
-                    console.log(variant.value);
-                    console.log(product == null ? void 0 : product.media[mediaIndex]);
                     setSelectedMediaIndex(mediaIndex);
                     var el = document.getElementById(`slide-${mediaIndex}`);
                     el == null ? void 0 : el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });

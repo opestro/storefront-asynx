@@ -143,7 +143,12 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             </div>
             <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
                 <div>
-                    <label className="text-sm font-light flex items-center">الولاية</label>
+                    <label className="text-sm font-light flex items-center">الولاية
+                        {
+                            shipping!.address.state &&
+                            <span className="mx-2 text-xs text-red-500">({shipping!.address.state})</span>
+                        }
+                    </label>
                     <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
                         <IconLocation className="absolute top-2 right-2 text-gray-400" />
                         <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit] focus:first-letter:outline-2" required
@@ -177,10 +182,6 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                         {
                             !shipping!.address.state &&
                             <span className="mx-2 text-xs text-red-500">(اختر الولاية أولاً)</span>
-                        }
-                        {
-                            shipping!.address.city &&
-                            <span className="mx-2 text-xs text-red-500">({shipping!.address.city})</span>
                         }
                     </label>
                     <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
