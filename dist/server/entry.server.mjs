@@ -343,10 +343,82 @@ function Footer({ store }) {
     ] }) })
   ] }) });
 }
+const cart = {
+  inited: false,
+  // init
+  init() {
+    if (this.inited)
+      return;
+    this.load();
+    this.inited = true;
+  },
+  // load
+  load() {
+    if (typeof localStorage === "undefined")
+      return;
+    let cartl = localStorage.getItem("cart");
+    if (cartl) {
+      this.items = JSON.parse(cartl);
+      console.log("cart loaded", cartl);
+    }
+  },
+  // save
+  save() {
+    if (typeof localStorage === "undefined")
+      return;
+    localStorage.setItem("cart", JSON.stringify(this.items));
+  },
+  items: [],
+  add(item) {
+    this.items.push(item);
+    this.save();
+  },
+  updateQuantity(productId, quantity) {
+    let item = this.items.find((item2) => item2.productId === productId);
+    if (item) {
+      item.quantity = quantity;
+    }
+    this.save();
+  },
+  updatePrice(productId, price) {
+    let item = this.items.find((item2) => item2.productId === productId);
+    if (item) {
+      item.price = price;
+    }
+    this.save();
+  },
+  updateVariantPath(productId, variantPath) {
+    let item = this.items.find((item2) => item2.productId === productId);
+    if (item) {
+      item.variantPath = variantPath;
+    }
+    this.save();
+  },
+  removeProduct(productId) {
+    this.items = this.items.filter((item) => item.productId !== productId);
+    this.save();
+  },
+  get total() {
+    var ttl = 0;
+    this.items.forEach((item) => {
+      ttl += item.price * item.quantity;
+    });
+    console.log("total", this.items);
+    return ttl;
+  },
+  hasProduct(productId) {
+    return this.items.some((item) => item.productId === productId);
+  },
+  clear() {
+    this.items = [];
+    this.save();
+  }
+};
 function Layout() {
   let store = useLoaderData();
   useEffect(() => {
     initMetaPixel();
+    cart.init();
   }, []);
   return (
     // <CacheProvider value={cacheRtl}>
@@ -3119,6 +3191,17 @@ function Product({ store, product }) {
   function getDiscount() {
     return (100 - getProductDiscountPercentage(product, item.variants) * 100).toFixed(1);
   }
+  function getShippingRate() {
+    var rate = getShippingRateForState({
+      state: shipping.address.state,
+      shippingMethod: product.shippingMethod,
+      store
+    });
+    if (shipping.doorShipping) {
+      return rate == null ? void 0 : rate.home;
+    }
+    return rate == null ? void 0 : rate.desk;
+  }
   function scrollToShippingForm() {
     var el = document.getElementById("order-form");
     el == null ? void 0 : el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -3166,11 +3249,13 @@ function Product({ store, product }) {
       shippingState: shipping.address.state,
       status,
       storeId: store.id,
-      items: [{
-        productId: product.id,
-        quantity: item.quantity,
-        variantPath: item.variants.join("/")
-      }],
+      items: cart.hasProduct(product.id) ? cart.items : [
+        {
+          productId: product.id,
+          quantity: item.quantity,
+          variantPath: item.variants.join("/")
+        }
+      ],
       metadata: {
         metaPixel: {
           fbc,
@@ -3217,6 +3302,7 @@ function Product({ store, product }) {
       track("InitiateCheckout");
     } else {
       track("Purchase");
+      cart.clear();
     }
     console.log("order sent", response);
   }
@@ -3234,7 +3320,7 @@ function Product({ store, product }) {
           sendOrder("pending");
         },
         type: "submit",
-        className: "relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ",
+        className: "h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ",
         children: [
           /* @__PURE__ */ jsx(
             AsynxWave,
@@ -3271,13 +3357,6 @@ function Product({ store, product }) {
               "x",
               item.quantity
             ] })
-          ] }),
-          /* @__PURE__ */ jsxs("div", { className: "text-[12px] font-light", children: [
-            "المبلغ الكلي مع الشحن:",
-            (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsxs("b", { className: "px-2 font-extrabold", children: [
-              getTotal(),
-              " دج"
-            ] }) : /* @__PURE__ */ jsx("b", { className: "px-2 font-extrabold", children: ")اختر الولاية(" })
           ] }),
           /* @__PURE__ */ jsx(IconShoppingBag, { size: 34, className: "absolute end-3 top-0 bottom-0 m-auto" })
         ]
@@ -3520,6 +3599,7 @@ function Product({ store, product }) {
                     path.pop();
                   }
                   item.variants = path;
+                  cart.updateVariantPath(product.id, path.join("/"));
                   return setItem({ ...item });
                 },
                 onSelect: (variant) => {
@@ -3560,11 +3640,12 @@ function Product({ store, product }) {
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "الكمية" }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
-                /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center bg-gray-200 text-gray-700 justify-center border-2 rounded-lg overflow-hidden", children: [
                   /* @__PURE__ */ jsx(
                     "button",
                     {
                       onClick: () => {
+                        cart.updateQuantity(product.id, item.quantity - 1);
                         setItem((prevItem) => ({
                           ...prevItem,
                           quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1
@@ -3574,36 +3655,107 @@ function Product({ store, product }) {
                       children: "-"
                     }
                   ),
-                  /* @__PURE__ */ jsx("span", { className: "px-3 py-1 bg-gray-200 text-gray-700", children: item.quantity }),
+                  /* @__PURE__ */ jsx("span", { className: "px-3 py-1 ", children: item.quantity }),
                   /* @__PURE__ */ jsx(
                     "button",
                     {
                       onClick: () => {
+                        cart.updateQuantity(product.id, item.quantity + 1);
                         setItem((prevItem) => ({
                           ...prevItem,
                           quantity: prevItem.quantity + 1
                         }));
                       },
-                      className: "px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg",
+                      className: "px-3 py-1 ",
                       children: "+"
                     }
                   )
-                ] })
+                ] }),
+                /* @__PURE__ */ jsx("div", { className: "w-2" }),
+                !cart.hasProduct(product.id) ? /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    onClick: () => {
+                      cart.add({
+                        productName: product.name,
+                        productId: product.id,
+                        quantity: item.quantity,
+                        price: getPriceAfterDiscount(),
+                        variantPath: item.variants.join("/")
+                      });
+                      setItem({ ...item });
+                    },
+                    className: "px-3 py-1 rounded-lg border-2 border-primary text-primary",
+                    children: "إضافة إلى السلة"
+                  }
+                ) : /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    onClick: () => {
+                      cart.removeProduct(product.id);
+                      setItem({ ...item });
+                    },
+                    className: "px-3 py-1 rounded-lg border-2 border-red-500 text-red-500",
+                    children: "إزالة من السلة"
+                  }
+                )
               ] })
             ] }),
             /* @__PURE__ */ jsx("div", { className: "h-[1px] bg-gray-200 dark:bg-gray-700" }),
             /* @__PURE__ */ jsxs("div", { className: "p-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
+                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "المنتجات" }),
+                /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
+                /* @__PURE__ */ jsx("div", { className: "text-gray-600 text-end", children: /* @__PURE__ */ jsx("table", { children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                  /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.productName && _item.productName.length > 10 ? _item.productName.substring(0, 10) + "..." : _item.productName }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    "x",
+                    _item.quantity
+                  ] }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    "= ",
+                    _item.price,
+                    " دج"
+                  ] }),
+                  /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      onClick: () => {
+                        cart.removeProduct(_item.productId);
+                        setItem({ ...item });
+                      },
+                      className: "px-2 ms-2 text-sm rounded-full bg-red-500 text-white",
+                      children: "إزالة"
+                    }
+                  ) })
+                ] }, _item.productId)) : /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                  /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    "x",
+                    item.quantity
+                  ] }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    "= ",
+                    getPriceAfterDiscount(),
+                    " دج"
+                  ] })
+                ] }) }) })
+              ] }),
+              /* @__PURE__ */ jsx("div", { className: "h-2" }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "الشحن" }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
-                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsx("span", { children: getTotal() && getTotal() - getPriceAfterDiscount() > 0 ? getTotal() - getPriceAfterDiscount() + " دج" : "مجاني" }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
+                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsxs("span", { children: [
+                  getShippingRate() || 0,
+                  "دج"
+                ] }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
               ] }),
               /* @__PURE__ */ jsx("div", { className: "h-2" }),
               /* @__PURE__ */ jsxs("div", { className: "flex", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: "المجموع" }) }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsxs("span", { className: "text-gray-600", children: [
-                  getTotal(),
+                  cart.total > 0 ? cart.total + (getShippingRate() || 0) : getTotal(),
                   " دج"
                 ] }) })
               ] })

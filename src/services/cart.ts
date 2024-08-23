@@ -31,6 +31,7 @@ export const cart = {
 
     add(item: OrderItem) {
         this.items.push(item);
+        this.save();
     },
 
     updateQuantity(productId: string, quantity: number) {
@@ -38,6 +39,7 @@ export const cart = {
         if (item) {
             item.quantity = quantity;
         }
+        this.save();
     },
 
     updatePrice(productId: string, price: number) {
@@ -45,6 +47,7 @@ export const cart = {
         if (item) {
             item.price = price;
         }
+        this.save();
     },
 
     updateVariantPath(productId: string, variantPath: string|undefined) {
@@ -52,10 +55,12 @@ export const cart = {
         if (item) {
             item.variantPath = variantPath;
         }
+        this.save();
     },
     
     removeProduct(productId: string) {
         this.items = this.items.filter((item) => item.productId !== productId);
+        this.save();
     },
     get total() {
         var ttl = 0;
@@ -72,5 +77,6 @@ export const cart = {
 
     clear() {
         this.items = [];
+        this.save();
     }
 };
