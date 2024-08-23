@@ -1,0 +1,1 @@
+import{j as t,u as r,a,F as n}from"./index-fa1494ac.js";const d=async()=>(await new Promise(e=>setTimeout(e,500)),{date:new Date().toISOString()});function o(){let e=r();return a(n,{children:[t("h2",{children:"Lazy Route"}),a("p",{children:["Date from loader: ",e.date]})]})}const i=t(o,{});export{i as element,d as loader};

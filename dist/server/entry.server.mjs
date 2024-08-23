@@ -2625,6 +2625,8 @@ function Thanks({ order, onDone }) {
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
         /* @__PURE__ */ jsx("button", { type: "button", className: "w-full pulse btn gb", onClick: onDone, children: "إغلاق" }),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
+        /* @__PURE__ */ jsx("div", { className: "p-2 bg-gray-100 text-center", children: /* @__PURE__ */ jsx("a", { href: `https://track.feeef.net/track/${order.id}`, target: "_blank", className: "text-blue-500", children: "تتبع حالة الطلب" }) }),
+        /* @__PURE__ */ jsx("div", { className: "h-2" }),
         /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx("button", { type: "button", className: "w-full btn gb", children: "باقي المنتجات" }) })
       ]
     }
