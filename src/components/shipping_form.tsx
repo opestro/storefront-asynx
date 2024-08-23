@@ -57,6 +57,54 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             <h2 className="text-xl font-semibold flex">معلومات الشحن</h2>
             <div className="h-2"></div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+
+            <div>
+                    <label className="text-sm font-light flex items-center">الهاتف
+                        {
+                            !isPhoneValid
+                            &&
+                            tryFixPhoneNumber(shipping.phone) != "0"
+                            &&
+                            <span className="mx-2 text-xs text-p">
+                                {
+                                    tryFixPhoneNumber(shipping.phone)
+                                }
+                            </span>
+                        }
+                    </label>
+                    <div className={
+
+                        "relative border border-gray-500 border-opacity-20 rounded-lg "
+                        + (isPhoneValid ? '' : ' text-red-500 pulse')
+
+                    }
+                        style={
+                            {
+                                "--p": isPhoneValid ? 'transparent' : 'rgba(255, 0, 0, .5)'
+                            } as React.CSSProperties
+                        }
+                    >
+                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} />
+                        <input
+                            style={
+                                {
+                                    outline: "none",
+                                    "--p": 'transparent'
+                                } as React.CSSProperties
+                            }
+                            required
+                            className={`bg-transparent p-2 w-full pr-10 overflow-hidden`}
+                            type="tel"
+                            placeholder="رقم الهاتف"
+                            defaultValue={shipping!.phone}
+                            onChange={handlePhoneChange}
+                        // no outline forces
+                        />
+                        {!isPhoneValid && <div className="bg-red-500 rounded-b-lg text-white text-xs w-full text-center">
+                            {validatePhoneNumber(tryFixPhoneNumber(shipping.phone))}
+                        </div>}
+                    </div>
+                </div>
                 <div>
                     <label className="text-sm font-light flex items-center">الاسم</label>
                     <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
@@ -92,53 +140,6 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             ),
                         }}
                     /> */}
-                </div>
-                <div>
-                    <label className="text-sm font-light flex items-center">الهاتف
-                        {
-                            !isPhoneValid
-                            &&
-                            tryFixPhoneNumber(shipping.phone) != "0"
-                            &&
-                            <span className="mx-2 text-xs text-p">
-                                {
-                                    tryFixPhoneNumber(shipping.phone)
-                                }
-                            </span>
-                        }
-                    </label>
-                    <div className={
-                        
-                        "relative border border-gray-500 border-opacity-20 rounded-lg "
-                        + (isPhoneValid ? '' : ' text-red-500 pulse')
-                        
-                        }
-                        style={
-                            {
-                                "--p": isPhoneValid ? 'transparent' : 'rgba(255, 0, 0, .5)'
-                            } as React.CSSProperties
-                        }
-                        >
-                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} />
-                        <input
-                        style={
-                            {
-                                outline: "none",
-                                "--p": 'transparent' 
-                            } as React.CSSProperties
-                        }
-                            required
-                            className={`bg-transparent p-2 w-full pr-10 overflow-hidden`}
-                            type="tel"
-                            placeholder="رقم الهاتف"
-                            defaultValue={shipping!.phone}
-                            onChange={handlePhoneChange}
-                            // no outline forces
-                        />
-                        {!isPhoneValid && <div className="bg-red-500 rounded-b-lg text-white text-xs w-full text-center">
-                            {validatePhoneNumber(tryFixPhoneNumber(shipping.phone))}    
-                        </div>}
-                    </div>
                 </div>
             </div>
             <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
@@ -207,7 +208,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                 </div>
             </div>
             {
-                shipping.doorShipping && canShipToHome() &&
+                shipping.doorShipping && store.metadata?.shipping?.mode !== "deskOnly" &&
                 <>
                     <div className="h-2"></div>
                     <div>
@@ -228,26 +229,28 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </div>
                 </>
             }
-            <div className="h-4"></div>
-            <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" onChange={() => {
-                    shipping.doorShipping = !shipping.doorShipping && canShipToHome();
-                    setShipping({ ...shipping })
-                }} checked={shipping.doorShipping} className="sr-only peer" />
-                <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-                <div className="ms-3 flex flex-col">
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                        {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل دج{
-                            getShippingRateForState({
-                                shippingMethod,
-                                store,
-                                state: shipping.address.state
-                            })?.home
-                        }</b>)}
-                    </span>
-                    {/* <span className="text-xs text-gray-500">حدد هذا الخيار إن كان لديك عنوان توصيل غير عنوانك الحالي</span> */}
-                </div>
-            </label>
+            <div className="h-4"></div>{
+                store.metadata?.shipping?.mode === "deskOnly" || store.metadata?.shipping?.mode === "homeOnly" ? null :
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" onChange={() => {
+                            shipping.doorShipping = !shipping.doorShipping && canShipToHome();
+                            setShipping({ ...shipping })
+                        }} checked={shipping.doorShipping} className="sr-only peer" />
+                        <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                        <div className="ms-3 flex flex-col">
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل دج{
+                                    getShippingRateForState({
+                                        shippingMethod,
+                                        store,
+                                        state: shipping.address.state
+                                    })?.home
+                                }</b>)}
+                            </span>
+                            {/* <span className="text-xs text-gray-500">حدد هذا الخيار إن كان لديك عنوان توصيل غير عنوانك الحالي</span> */}
+                        </div>
+                    </label>
+                }
         </div>
     );
 }

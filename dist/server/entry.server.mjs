@@ -10,7 +10,7 @@ import { useState, useCallback, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import { createStaticHandler, createStaticRouter, StaticRouterProvider } from "react-router-dom/server.mjs";
 import { Link, useLoaderData, Outlet, useLocation, redirect } from "react-router-dom";
-import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBrandTwitter, IconBrandTelegram, IconMail, IconPhoneCall, IconUser, IconPhone, IconLocation, IconLocationCode, IconLocationBolt, IconShoppingBag, IconFlag } from "@tabler/icons-react";
+import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBrandTwitter, IconBrandTelegram, IconMail, IconPhoneCall, IconPhone, IconUser, IconLocation, IconLocationCode, IconLocationBolt, IconShoppingBag, IconFlag } from "@tabler/icons-react";
 import axios from "axios";
 import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
 import vine from "@vinejs/vine";
@@ -116,61 +116,60 @@ const dartColorToCss = (color) => {
   var colorAsHex = "#" + colorAsString;
   return colorAsHex;
 };
-function Navbar({ store }) {
-  var _a, _b, _c, _d, _e, _f;
+function Navbar({ store, fixed = true }) {
+  var _a, _b, _c, _d, _e;
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: "h-16" }),
-    /* @__PURE__ */ jsxs("nav", { className: "backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600", children: [
-      ((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) && /* @__PURE__ */ jsx("a", { className: "h-8 block py-1 bg-primary text-center", href: store.banner.url || "#!", children: store == null ? void 0 : store.banner.title }),
-      /* @__PURE__ */ jsxs("div", { className: "h-16 container flex flex-wrap items-center justify-between mx-auto", children: [
-        /* @__PURE__ */ jsxs(
-          Link,
+    (store == null ? void 0 : store.banner) && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("div", { className: "h-8" }),
+      /* @__PURE__ */ jsx("a", { className: "h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50", href: store.banner.url || "#!", children: store == null ? void 0 : store.banner.title })
+    ] }),
+    /* @__PURE__ */ jsx("div", { className: fixed ? `sticky ${(store == null ? void 0 : store.banner) ? "top-8" : "top-0"} z-50` : "", children: /* @__PURE__ */ jsx("nav", { className: `w-screen backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900   z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600`, children: /* @__PURE__ */ jsxs("div", { className: "h-16 container flex flex-wrap items-center justify-between mx-auto", children: [
+      /* @__PURE__ */ jsxs(
+        Link,
+        {
+          to: "/",
+          className: "flex items-center space-x-3 rtl:space-x-reverse",
+          children: [
+            (store == null ? void 0 : store.ondarkLogoUrl) && /* @__PURE__ */ jsx("img", { src: store == null ? void 0 : store.ondarkLogoUrl, className: (((_a = store == null ? void 0 : store.decoration) == null ? void 0 : _a.logoFullHeight) ? "h-16" : "h-12") + " hidden dark:block", alt: store == null ? void 0 : store.name }),
+            ((store == null ? void 0 : store.logoUrl) || (store == null ? void 0 : store.ondarkLogoUrl)) && /* @__PURE__ */ jsx("img", { src: (store == null ? void 0 : store.logoUrl) || (store == null ? void 0 : store.ondarkLogoUrl) || void 0, className: (((_b = store == null ? void 0 : store.decoration) == null ? void 0 : _b.logoFullHeight) ? "h-16" : "h-12") + " dark:hidden block", alt: store == null ? void 0 : store.name }),
+            ((_c = store == null ? void 0 : store.decoration) == null ? void 0 : _c.showStoreNameInHeader) && /* @__PURE__ */ jsx("span", { className: "self-center text-2xl font-semibold whitespace-nowrap dark:text-white", children: store == null ? void 0 : store.name })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { className: "flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse", children: [
+        /* @__PURE__ */ jsx(
+          "button",
           {
-            to: "/",
-            className: "flex items-center space-x-3 rtl:space-x-reverse",
-            children: [
-              (store == null ? void 0 : store.ondarkLogoUrl) && /* @__PURE__ */ jsx("img", { src: store == null ? void 0 : store.ondarkLogoUrl, className: (((_b = store == null ? void 0 : store.decoration) == null ? void 0 : _b.logoFullHeight) ? "h-16" : "h-12") + " hidden dark:block", alt: store == null ? void 0 : store.name }),
-              ((store == null ? void 0 : store.logoUrl) || (store == null ? void 0 : store.ondarkLogoUrl)) && /* @__PURE__ */ jsx("img", { src: (store == null ? void 0 : store.logoUrl) || (store == null ? void 0 : store.ondarkLogoUrl) || void 0, className: (((_c = store == null ? void 0 : store.decoration) == null ? void 0 : _c.logoFullHeight) ? "h-16" : "h-12") + " dark:hidden block", alt: store == null ? void 0 : store.name }),
-              ((_d = store == null ? void 0 : store.decoration) == null ? void 0 : _d.showStoreNameInHeader) && /* @__PURE__ */ jsx("span", { className: "self-center text-2xl font-semibold whitespace-nowrap dark:text-white", children: store == null ? void 0 : store.name })
-            ]
+            type: "button",
+            onClick: () => {
+              document.body.classList.toggle("dark");
+            },
+            className: "inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600",
+            "aria-controls": "navbar-sticky",
+            "aria-expanded": "false",
+            children: /* @__PURE__ */ jsx(IconBrightness, { size: 20 })
           }
         ),
-        /* @__PURE__ */ jsxs("div", { className: "flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse", children: [
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              type: "button",
-              onClick: () => {
-                document.body.classList.toggle("dark");
-              },
-              className: "inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600",
-              "aria-controls": "navbar-sticky",
-              "aria-expanded": "false",
-              children: /* @__PURE__ */ jsx(IconBrightness, { size: 20 })
-            }
-          ),
-          /* @__PURE__ */ jsx(
-            "a",
-            {
-              href: ((_e = store == null ? void 0 : store.action) == null ? void 0 : _e.url) || "#!",
-              target: "_blank",
-              onClick: () => {
-                track("Contact");
-              },
-              children: ((_f = store == null ? void 0 : store.action) == null ? void 0 : _f.label) && /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  className: "text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary",
-                  children: store.action.label
-                }
-              )
-            }
-          )
-        ] })
+        /* @__PURE__ */ jsx(
+          "a",
+          {
+            href: ((_d = store == null ? void 0 : store.action) == null ? void 0 : _d.url) || "#!",
+            target: "_blank",
+            onClick: () => {
+              track("Contact");
+            },
+            children: ((_e = store == null ? void 0 : store.action) == null ? void 0 : _e.label) && /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: "text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary",
+                children: store.action.label
+              }
+            )
+          }
+        )
       ] })
-    ] }),
-    (store == null ? void 0 : store.banner) && /* @__PURE__ */ jsx("div", { className: "h-8" })
+    ] }) }) })
   ] });
 }
 var OrderStatus = /* @__PURE__ */ ((OrderStatus2) => {
@@ -360,7 +359,7 @@ function Layout() {
           "--on-p": dartColorToCss(store.decoration.onPrimary)
         },
         children: [
-          /* @__PURE__ */ jsx(Navbar, { store }),
+          /* @__PURE__ */ jsx(Navbar, { store, fixed: false }),
           /* @__PURE__ */ jsx(Outlet, {}),
           /* @__PURE__ */ jsx(Footer, { store })
         ]
@@ -2746,7 +2745,7 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }) {
     /* @__PURE__ */ jsx("div", { className: "h-1" }),
     /* @__PURE__ */ jsxs("h3", { className: "text-sm font-medium", children: [
       variantGroup.name,
-      getVariant(selected) && /* @__PURE__ */ jsx("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-full", children: /* @__PURE__ */ jsx("span", { className: "px-2", children: (_a = getVariant(selected)) == null ? void 0 : _a.name }) }),
+      getVariant(selected) && /* @__PURE__ */ jsx("span", { dir: "ltr", className: "px-2 bg-primary text-white rounded-full", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: (_a = getVariant(selected)) == null ? void 0 : _a.name }) }),
       ((_b = getVariant(selected)) == null ? void 0 : _b.stock) !== void 0 && /* @__PURE__ */ jsxs("span", { className: "  text-primary rounded-full px-2", children: [
         (_c = getVariant(selected)) == null ? void 0 : _c.stock,
         " متوفر"
@@ -2757,7 +2756,7 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }) {
       {
         className: (variant.stock === 0 ? "opacity-30" : "") + " flex items-center justify-center ",
         children: /* @__PURE__ */ jsxs("span", { className: "relative flex items-center justify-center", children: [
-          variant.hint && /* @__PURE__ */ jsx("span", { dir: "ltr", className: (selected === variant.name ? "bg-primary" : "bg-gray-600") + " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: variant.hint }) }) || variant.type === "color" && variant.name && /* @__PURE__ */ jsx("span", { dir: "ltr", className: (selected === variant.name ? "bg-primary" : "bg-gray-600") + " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: variant.name }) }),
+          variant.hint && /* @__PURE__ */ jsx("span", { dir: "ltr", className: (selected === variant.name ? "bg-primary" : "bg-gray-600") + " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: variant.hint }) }) || variant.type === "color" && variant.name && /* @__PURE__ */ jsx("span", { dir: "ltr", className: (selected === variant.name ? "bg-primary" : "bg-gray-600") + " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: variant.name }) }) || variant.type === "image" && variant.value && /* @__PURE__ */ jsx("span", { dir: "ltr", className: (selected === variant.name ? "bg-primary" : "bg-gray-600") + " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none", children: /* @__PURE__ */ jsx("span", { className: "px-1", children: variant.name }) }),
           /* @__PURE__ */ jsx(
             VariantButton,
             {
@@ -2789,7 +2788,7 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }) {
   ] });
 }
 function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder }) {
-  var _a;
+  var _a, _b, _c, _d, _e, _f, _g;
   const [isPhoneValid, setIsPhoneValid] = useState(true);
   function updateShippingWilaya(stateCode) {
     const index = parseInt(stateCode) - 1;
@@ -2817,25 +2816,6 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold flex", children: "معلومات الشحن" }),
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-4 gap-y-2", children: [
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { className: "text-sm font-light flex items-center", children: "الاسم" }),
-        /* @__PURE__ */ jsxs("div", { className: "relative border border-gray-500 border-opacity-20 rounded-lg", children: [
-          /* @__PURE__ */ jsx(IconUser, { className: "absolute top-2 right-2 text-gray-400" }),
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "bg-transparent p-2  w-full pr-10 invalid:outline-red-700 invalid:outline invalid:outline-2 rounded-[inherit]",
-              type: "text",
-              placeholder: "الإسم و اللقب",
-              defaultValue: shipping.name,
-              onChange: (e) => {
-                shipping.name = e.target.value;
-                setShipping({ ...shipping });
-              }
-            }
-          )
-        ] })
-      ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
           "الهاتف",
@@ -2869,6 +2849,25 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
             ]
           }
         )
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { className: "text-sm font-light flex items-center", children: "الاسم" }),
+        /* @__PURE__ */ jsxs("div", { className: "relative border border-gray-500 border-opacity-20 rounded-lg", children: [
+          /* @__PURE__ */ jsx(IconUser, { className: "absolute top-2 right-2 text-gray-400" }),
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "bg-transparent p-2  w-full pr-10 invalid:outline-red-700 invalid:outline invalid:outline-2 rounded-[inherit]",
+              type: "text",
+              placeholder: "الإسم و اللقب",
+              defaultValue: shipping.name,
+              onChange: (e) => {
+                shipping.name = e.target.value;
+                setShipping({ ...shipping });
+              }
+            }
+          )
+        ] })
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-x-4 gap-y-2", children: [
@@ -2948,7 +2947,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         ] })
       ] })
     ] }),
-    shipping.doorShipping && canShipToHome() && /* @__PURE__ */ jsxs(Fragment, { children: [
+    shipping.doorShipping && ((_b = (_a = store.metadata) == null ? void 0 : _a.shipping) == null ? void 0 : _b.mode) !== "deskOnly" && /* @__PURE__ */ jsxs(Fragment, { children: [
       /* @__PURE__ */ jsx("div", { className: "h-2" }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { className: "text-sm font-light", children: "العنوان" }),
@@ -2971,7 +2970,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
+    ((_d = (_c = store.metadata) == null ? void 0 : _c.shipping) == null ? void 0 : _d.mode) === "deskOnly" || ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "homeOnly" ? null : /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
       /* @__PURE__ */ jsx("input", { type: "checkbox", onChange: () => {
         shipping.doorShipping = !shipping.doorShipping && canShipToHome();
         setShipping({ ...shipping });
@@ -2982,11 +2981,11 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         "التوصيل للبيت ",
         !shipping.doorShipping && /* @__PURE__ */ jsxs("b", { dir: "ltr", children: [
           "مقابل دج",
-          (_a = getShippingRateForState({
+          (_g = getShippingRateForState({
             shippingMethod,
             store,
             state: shipping.address.state
-          })) == null ? void 0 : _a.home
+          })) == null ? void 0 : _g.home
         ] })
       ] }) })
     ] })
@@ -3023,7 +3022,7 @@ function ProductPage() {
   ] });
 }
 function Product({ store, product }) {
-  var _a;
+  var _a, _b, _c;
   let location = useLocation();
   const [loading, setLoading] = useState(false);
   const [orderId] = useState(generateOrderId());
@@ -3046,7 +3045,7 @@ function Product({ store, product }) {
   const [shipping, setShipping] = useState({
     name: "",
     phone: "",
-    doorShipping: true,
+    doorShipping: ((_b = (_a = store.metadata) == null ? void 0 : _a.shipping) == null ? void 0 : _b.mode) == "deskOnly" ? false : true,
     address: {
       street: "",
       city: "1",
@@ -3403,7 +3402,7 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_a = store == null ? void 0 : store.banner) == null ? void 0 : _a.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "overflow-hidden slider relative rounded-2xl", children: [
+      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_c = store == null ? void 0 : store.banner) == null ? void 0 : _c.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "overflow-hidden slider relative rounded-2xl", children: [
         /* @__PURE__ */ jsx(
           "div",
           {
@@ -3416,6 +3415,7 @@ function Product({ store, product }) {
             children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx("div", { id: `slide-${index + 1}`, className: "overflow-hidden", children: getYoutubeVideoIdFromUrl(media) != null && false ? /* @__PURE__ */ jsx(
               "div",
               {
+                "data-playing": selectedMediaIndex === index,
                 style: {
                   scrollSnapAlign: "center",
                   scrollSnapStop: "always",
@@ -3435,8 +3435,7 @@ function Product({ store, product }) {
                     width: "100%",
                     height: "100%",
                     playing: selectedMediaIndex === index
-                  },
-                  [index, true].join("-")
+                  }
                 )
               }
             ) : /* @__PURE__ */ jsx(
@@ -3457,7 +3456,7 @@ function Product({ store, product }) {
                   opacity: selectedMediaIndex == index ? 1 : 0
                 }
               }
-            ) }, [index, true].join("-")))
+            ) }, index))
           }
         ),
         /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
@@ -3465,7 +3464,7 @@ function Product({ store, product }) {
           {
             className: "pointer-events-auto",
             href: `#slide-${index + 1}`,
-            children: /* @__PURE__ */ jsx("button", { onClick: () => setSelectedMediaIndex(index), className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
+            children: /* @__PURE__ */ jsx("button", { className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
               "img",
               {
                 src: media,
@@ -3527,8 +3526,7 @@ function Product({ store, product }) {
                   console.log(variant.value);
                   if ((variant == null ? void 0 : variant.type) == VariantOptionType.image) {
                     var mediaIndex = product == null ? void 0 : product.media.findIndex((media) => media == variant.value);
-                    setSelectedMediaIndex(mediaIndex);
-                    var el = document.getElementById(`slide-${mediaIndex}`);
+                    var el = document.getElementById(`slide-${mediaIndex + 1}`);
                     el == null ? void 0 : el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
                   }
                   track("ViewContent", {

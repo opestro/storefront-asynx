@@ -41,7 +41,7 @@ export default function Layout() {
                         "--on-p": dartColorToCss(store!.decoration!.onPrimary!),
                     } as React.CSSProperties}
                 >
-                    <Navbar store={store} />
+                    <Navbar store={store} fixed={false} />
                     <Outlet />
                     <Footer store={store} />
                 </div>
