@@ -4,6 +4,7 @@ import Footer from "./parts/footer";
 import { dartColorToCss, initMetaPixel } from "../pishop/helpers";
 import { useEffect } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
+import { cart } from "../services/cart";
 
 
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -31,6 +32,7 @@ export default function Layout() {
     let store = useLoaderData() as StoreEntity;
     useEffect(() => {
         initMetaPixel(store)
+        cart.init()
     }, [])
     return (
         // <CacheProvider value={cacheRtl}>

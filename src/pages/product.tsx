@@ -7,7 +7,7 @@ import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation"
-import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
+import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount, getShippingRateForState } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
 import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
@@ -18,6 +18,7 @@ import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
 import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
+import { cart } from "../services/cart";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -109,8 +110,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [shipping, setShipping] = useState<ShippingInfo>({
         name: "",
         phone: "",
-        doorShipping: 
-            store.metadata?.shipping?.mode == "deskOnly"? false : true,
+        doorShipping:
+            store.metadata?.shipping?.mode == "deskOnly" ? false : true,
         address: {
             street: "",
             city: "1",
@@ -196,6 +197,18 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
+    function getShippingRate() {
+        var rate = getShippingRateForState({
+            state: shipping.address.state,
+            shippingMethod: product.shippingMethod,
+            store,
+        })
+        if (shipping.doorShipping) {
+            return rate?.home;
+        }
+        return rate?.desk;
+    }
+
     function scrollToShippingForm() {
         var el = document.getElementById("order-form");
         el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -257,11 +270,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             shippingState: shipping.address.state,
             status: status,
             storeId: store.id,
-            items: [{
-                productId: product.id,
-                quantity: item.quantity,
-                variantPath: item.variants.join("/"),
-            }],
+            items: cart.hasProduct(product.id) ? cart.items : [
+                {
+                    productId: product.id,
+                    quantity: item.quantity,
+                    variantPath: item.variants.join("/"),
+                }
+            ],
             metadata: {
                 metaPixel: {
                     fbc: fbc,
@@ -314,6 +329,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             track('InitiateCheckout', eventData);
         } else {
             track('Purchase', eventData);
+            cart.clear();
         }
         // Purchase
         // ReactPixel.track('Purchase', eventData);
@@ -335,7 +351,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                 e.preventDefault();
                 sendOrder("pending")
             }}
-            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+            type="submit" className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
             <AsynxWave
                 color="white"
                 width="100%"
@@ -363,14 +379,14 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     x{item.quantity}
                 </span>
             </div>
-            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+            {/* <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
                 {
                     shipping?.address.state ?
                         <b className="px-2 font-extrabold">{getTotal()} دج</b>
                         :
                         <b className="px-2 font-extrabold">)اختر الولاية(</b>
                 }
-            </div>
+            </div> */}
             {/* the basket icon */}
             <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
         </button>
@@ -580,7 +596,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         key={index}
                                         href={`#slide-${index + 1}`}
                                     >
-                                        <button key={index}  className={'overflow-hidden relative ' +
+                                        <button key={index} className={'overflow-hidden relative ' +
                                             (selectedMediaIndex === index ?
                                                 "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
@@ -651,6 +667,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             }
                                             item.variants = path
 
+                                            cart.updateVariantPath(product.id, path.join("/"))
+
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
@@ -658,7 +676,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                             if (variant?.type == VariantOptionType.image) {
                                                 var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
-                                                
+
 
                                                 var el = document.getElementById(`slide-${mediaIndex! + 1}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
@@ -702,9 +720,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             الكمية
                                         </div>
                                         <div className="flex-grow"></div>
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex items-center bg-gray-200 text-gray-700 justify-center border-2 rounded-lg overflow-hidden">
                                             <button
                                                 onClick={() => {
+                                                    cart.updateQuantity(product.id, item.quantity - 1)
                                                     setItem((prevItem) => ({
                                                         ...prevItem,
                                                         quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
@@ -714,27 +733,119 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             >
                                                 -
                                             </button>
-                                            <span className="px-3 py-1 bg-gray-200 text-gray-700">
+                                            <span className="px-3 py-1 ">
                                                 {item.quantity}
                                             </span>
                                             <button
                                                 onClick={() => {
+                                                    cart.updateQuantity(product.id, item.quantity + 1)
                                                     // Increase quantity
                                                     setItem((prevItem) => ({
                                                         ...prevItem,
                                                         quantity: prevItem.quantity + 1,
                                                     }));
                                                 }}
-                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
+                                                className="px-3 py-1 "
                                             >
                                                 +
                                             </button>
                                         </div>
+                                        {/* add to cart */}
+                                        <div className="w-2"></div>
+                                        {
+                                            !cart.hasProduct(product.id) ?
+                                                <button
+                                                    onClick={() => {
+                                                        cart.add({
+                                                            productName: product.name!,
+                                                            productId: product.id,
+                                                            quantity: item.quantity,
+                                                            price: getPriceAfterDiscount(),
+                                                            variantPath: item.variants.join("/"),
+                                                        })
+                                                        // update the ui
+                                                        setItem({ ...item });
+                                                    }}
+                                                    className="px-3 py-1 rounded-lg border-2 border-primary text-primary"
+                                                >
+                                                    إضافة إلى السلة
+                                                </button>
+                                                :
+                                                <button
+                                                    onClick={() => {
+                                                        cart.removeProduct(product.id)
+                                                        // update the ui
+                                                        setItem({ ...item });
+                                                    }}
+                                                    className="px-3 py-1 rounded-lg border-2 border-red-500 text-red-500"
+                                                >
+                                                    إزالة من السلة
+                                                </button>
+                                        }
                                     </div>
                                 </div>
                                 {/* divider */}
                                 <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
                                 <div className="p-4">
+                                    {/* cart.items */}
+                                    <div className="flex items-center justify-center">
+                                        <div className="text-gray-600">
+                                            المنتجات
+                                        </div>
+                                        <div className="flex-grow"></div>
+                                        <div className="text-gray-600 text-end">
+                                            <table>
+
+                                                {
+                                                    cart.items.length > 0 ?
+                                                        cart.items.map((_item) => (
+                                                            <tr key={_item.productId} className="text-gray-600">
+                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}دج */}
+                                                                {/* substring name */}
+                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}دج) */}
+                                                                {/* use table looks better */}
+                                                                <td className="text-gray-600">
+                                                                    {_item.productName && _item.productName.length > 10 ? _item.productName.substring(0, 10) + "..." : _item.productName}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    x{_item.quantity}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    = {_item.price} دج
+                                                                </td>
+                                                                {/* delete */}
+                                                                <td>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            cart.removeProduct(_item.productId)
+                                                                            // force react to update current componenet
+                                                                            setItem({ ...item });
+                                                                        }}
+                                                                        className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
+                                                                    >
+                                                                        إزالة
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                        :
+                                                        <tr className="text-gray-600">
+                                                            <td className="text-gray-600">
+                                                                {product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name}
+                                                            </td>
+                                                            <td className="text-gray-600">
+                                                                x{item.quantity}
+                                                            </td>
+                                                            <td className="text-gray-600">
+                                                                = {getPriceAfterDiscount()} دج
+                                                            </td>
+                                                        </tr>
+
+                                                }
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div className="h-2"></div>
                                     {/* shipping */}
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-600">
@@ -745,11 +856,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             <span className="text-gray-600">{
                                                 shipping?.address.state ?
                                                     <span>{
-                                                        getTotal() &&
-                                                            getTotal()! - getPriceAfterDiscount() > 0 ?
-                                                            getTotal()! - getPriceAfterDiscount() + " دج"
-                                                            : "مجاني"
-                                                    }</span>
+                                                        (getShippingRate() || 0)
+                                                    }دج</span>
                                                     :
                                                     <span>اختر الولاية</span>
                                             }</span>
@@ -763,7 +871,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         </div>
                                         <div className="flex-grow"></div>
                                         <div className="text-gray-600">
-                                            <span className="text-gray-600">{getTotal()} دج</span>
+                                            <span className="text-gray-600">{
+                                                cart.total > 0 ? cart.total + (getShippingRate() || 0) :
+                                                    getTotal()
+                                            } دج</span>
                                         </div>
                                     </div>
                                 </div>
