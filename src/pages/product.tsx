@@ -753,15 +753,15 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         {/* add to cart */}
                                         <div className="w-2"></div>
                                         {
+                                            !cart.canAddProduct(product)? null :
                                             !cart.hasProduct(product.id) ?
                                                 <button
                                                     onClick={() => {
                                                         cart.add({
-                                                            productName: product.name!,
-                                                            productId: product.id,
                                                             quantity: item.quantity,
                                                             price: getPriceAfterDiscount(),
                                                             variantPath: item.variants.join("/"),
+                                                            product: product,
                                                         })
                                                         // update the ui
                                                         setItem({ ...item });
@@ -788,6 +788,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
                                 <div className="p-4">
                                     {/* cart.items */}
+                                    {
+                                        cart.canAddProduct(product) && <>
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-600">
                                             المنتجات
@@ -799,13 +801,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 {
                                                     cart.items.length > 0 ?
                                                         cart.items.map((_item) => (
-                                                            <tr key={_item.productId} className="text-gray-600">
+                                                            <tr key={_item.product.id} className="text-gray-600">
                                                                 {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}دج */}
                                                                 {/* substring name */}
                                                                 {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}دج) */}
                                                                 {/* use table looks better */}
                                                                 <td className="text-gray-600">
-                                                                    {_item.productName && _item.productName.length > 10 ? _item.productName.substring(0, 10) + "..." : _item.productName}
+                                                                    {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
                                                                 </td>
                                                                 <td className="text-gray-600">
                                                                     x{_item.quantity}
@@ -817,7 +819,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                 <td>
                                                                     <button
                                                                         onClick={() => {
-                                                                            cart.removeProduct(_item.productId)
+                                                                            cart.removeProduct(_item.product.id)
                                                                             // force react to update current componenet
                                                                             setItem({ ...item });
                                                                         }}
@@ -845,7 +847,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             </table>
                                         </div>
                                     </div>
-                                    <div className="h-2"></div>
+                                    <div className="h-2"></div></>
+                                }
                                     {/* shipping */}
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-600">
@@ -856,6 +859,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             <span className="text-gray-600">{
                                                 shipping?.address.state ?
                                                     <span>{
+                                                        cart.hasProduct(product.id) ?
+                                                        cart.getShippingRate(
+                                                            shipping,
+                                                            store
+                                                        ) :
                                                         (getShippingRate() || 0)
                                                     }دج</span>
                                                     :

@@ -9,17 +9,17 @@ import * as React from "react";
 import { useState, useCallback, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import { createStaticHandler, createStaticRouter, StaticRouterProvider } from "react-router-dom/server.mjs";
-import { Link, useLoaderData, Outlet, useLocation, redirect } from "react-router-dom";
+import { Link, useLoaderData, useLocation, Outlet, redirect } from "react-router-dom";
 import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBrandTwitter, IconBrandTelegram, IconMail, IconPhoneCall, IconPhone, IconUser, IconLocation, IconLocationCode, IconLocationBolt, IconShoppingBag, IconFlag } from "@tabler/icons-react";
-import axios from "axios";
-import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
-import vine from "@vinejs/vine";
 import StickyBox from "react-sticky-box";
 import { customAlphabet } from "nanoid";
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 import ReactPlayer from "react-player";
 import { SuperSEO } from "react-super-seo";
+import axios from "axios";
+import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
+import vine from "@vinejs/vine";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
@@ -342,606 +342,6 @@ function Footer({ store }) {
       ] })
     ] }) })
   ] }) });
-}
-const cart = {
-  inited: false,
-  // init
-  init() {
-    if (this.inited)
-      return;
-    this.load();
-    this.inited = true;
-  },
-  // load
-  load() {
-    if (typeof localStorage === "undefined")
-      return;
-    let cartl = localStorage.getItem("cart");
-    if (cartl) {
-      this.items = JSON.parse(cartl);
-      console.log("cart loaded", cartl);
-    }
-  },
-  // save
-  save() {
-    if (typeof localStorage === "undefined")
-      return;
-    localStorage.setItem("cart", JSON.stringify(this.items));
-  },
-  items: [],
-  add(item) {
-    this.items.push(item);
-    this.save();
-  },
-  updateQuantity(productId, quantity) {
-    let item = this.items.find((item2) => item2.productId === productId);
-    if (item) {
-      item.quantity = quantity;
-    }
-    this.save();
-  },
-  updatePrice(productId, price) {
-    let item = this.items.find((item2) => item2.productId === productId);
-    if (item) {
-      item.price = price;
-    }
-    this.save();
-  },
-  updateVariantPath(productId, variantPath) {
-    let item = this.items.find((item2) => item2.productId === productId);
-    if (item) {
-      item.variantPath = variantPath;
-    }
-    this.save();
-  },
-  removeProduct(productId) {
-    this.items = this.items.filter((item) => item.productId !== productId);
-    this.save();
-  },
-  get total() {
-    var ttl = 0;
-    this.items.forEach((item) => {
-      ttl += item.price * item.quantity;
-    });
-    console.log("total", this.items);
-    return ttl;
-  },
-  hasProduct(productId) {
-    return this.items.some((item) => item.productId === productId);
-  },
-  clear() {
-    this.items = [];
-    this.save();
-  }
-};
-function Layout() {
-  let store = useLoaderData();
-  useEffect(() => {
-    initMetaPixel();
-    cart.init();
-  }, []);
-  return (
-    // <CacheProvider value={cacheRtl}>
-    ///* <ThemeProvider theme={theme}> */}
-    /* @__PURE__ */ jsxs(
-      "div",
-      {
-        style: {
-          "--p": dartColorToCss(store.decoration.primary),
-          "--on-p": dartColorToCss(store.decoration.onPrimary)
-        },
-        children: [
-          /* @__PURE__ */ jsx(Navbar, { store, fixed: false }),
-          /* @__PURE__ */ jsx(Outlet, {}),
-          /* @__PURE__ */ jsx(Footer, { store })
-        ]
-      }
-    )
-  );
-}
-const AvatarFileSchema = vine.any();
-const ImageFileSchema = vine.any();
-const DomainSchema = vine.object({
-  name: vine.string().minLength(3).maxLength(32),
-  verifiedAt: vine.date().optional(),
-  metadata: vine.object({}).optional()
-});
-const StoreDecorationSchema = vine.object({
-  primary: vine.number().min(0).max(4294967295),
-  onPrimary: vine.number().min(0).max(4294967295),
-  showStoreLogoInHeader: vine.boolean().optional(),
-  logoFullHeight: vine.boolean().optional(),
-  showStoreNameInHeader: vine.boolean().optional(),
-  metadata: vine.any().optional()
-});
-const EmbaddedCategorySchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  photoUrl: vine.string().optional(),
-  ondarkPhotoUrl: vine.string().optional(),
-  photoFile: AvatarFileSchema.optional(),
-  ondarkPhotoFile: AvatarFileSchema.optional(),
-  metadata: vine.object({}).optional()
-});
-const EmbaddedAddressSchema = vine.object({
-  country: vine.string().minLength(2).maxLength(32).optional(),
-  state: vine.string().minLength(2).maxLength(32).optional(),
-  city: vine.string().minLength(2).maxLength(32).optional(),
-  street: vine.string().minLength(2).maxLength(32).optional(),
-  zip: vine.string().minLength(2).maxLength(32).optional(),
-  metadata: vine.object({}).optional().optional()
-});
-const EmbaddedContactSchema = vine.object({
-  type: vine.string().minLength(2).maxLength(32),
-  value: vine.string().minLength(2).maxLength(255),
-  metadata: vine.object({}).optional()
-});
-const StoreBunner = vine.object({
-  url: vine.string().url().optional(),
-  title: vine.string(),
-  enabled: vine.boolean().optional(),
-  metadata: vine.object({}).optional()
-});
-const PhoneShema = vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/);
-vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  email: vine.string(),
-  phone: PhoneShema.optional(),
-  photoFile: ImageFileSchema.optional(),
-  photoUrl: vine.string().optional(),
-  password: vine.string().minLength(8).maxLength(32)
-});
-const SigninSchema = vine.object({
-  email: vine.string().email(),
-  password: vine.string().minLength(8).maxLength(32)
-});
-const AuthUpdateUserSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  email: vine.string().optional(),
-  phone: PhoneShema.optional(),
-  // for upload file
-  photoFile: vine.any(),
-  photoUrl: vine.string().optional(),
-  oldPassword: vine.string().minLength(8).maxLength(32).optional(),
-  newPassword: vine.string().minLength(8).maxLength(32).notSameAs("oldPassword").optional()
-});
-const OrderItemSchema = vine.object({
-  productId: vine.string(),
-  // productId: vine.string().exists(async (db, value, field) => {
-  //   const product = await db.from('products').where('id', value).first()
-  //   return !!product
-  // }),
-  productName: vine.string().optional(),
-  variant: vine.any().optional(),
-  quantity: vine.number(),
-  price: vine.number().optional()
-});
-const GuestOrderItemSchema = vine.object({
-  productId: vine.string(),
-  variantPath: vine.string().optional(),
-  quantity: vine.number()
-});
-const SendOrderSchema = vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: vine.string(),
-  //   customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(GuestOrderItemSchema).minLength(1),
-  //   subtotal: vine.number().optional(),
-  //   shippingPrice: vine.number().optional(),
-  //   total: vine.number().optional(),
-  //   discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(["pending", "draft"]),
-  // TODO: validate storeId is exists and not blocked
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: PhoneShema,
-  customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(OrderItemSchema).minLength(1),
-  subtotal: vine.number().optional(),
-  shippingPrice: vine.number().optional(),
-  total: vine.number().optional(),
-  discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(OrderStatus),
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: PhoneShema.optional(),
-  customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(OrderItemSchema).minLength(1).optional(),
-  subtotal: vine.number().optional(),
-  shippingPrice: vine.number().optional(),
-  total: vine.number().optional(),
-  discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(OrderStatus).optional(),
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-class ModelRepository {
-  /**
-   * Constructs a new instance of the ModelRepository class.
-   * @param resource - The resource name.
-   * @param client - The Axios instance used for making HTTP requests.
-   */
-  constructor(resource, client) {
-    __publicField(this, "resource");
-    // client
-    __publicField(this, "client");
-    this.resource = resource;
-    this.client = client;
-  }
-  /**
-   * Finds a model by its ID or other criteria.
-   * @param options - The options for finding the model.
-   * @returns A promise that resolves to the found model.
-   */
-  async find(options) {
-    const { id, by, params } = options;
-    const res = await this.client.get(`/${this.resource}/${id}`, {
-      params: {
-        by: by || "id",
-        ...params
-      }
-    });
-    return res.data;
-  }
-  /**
-   * Lists models with optional pagination and filtering.
-   * @param options - The options for listing the models.
-   * @returns A promise that resolves to a list of models.
-   */
-  async list(options) {
-    const { page, offset, limit, params } = options || {};
-    const res = await this.client.get(`/${this.resource}`, {
-      params: { page, offset, limit, ...params }
-    });
-    if (Array.isArray(res.data)) {
-      return {
-        data: res.data
-      };
-    } else {
-      return {
-        data: res.data.data,
-        total: res.data.meta.total,
-        page: res.data.meta.currentPage,
-        limit: res.data.meta.perPage
-      };
-    }
-  }
-  /**
-   * Creates a new model.
-   * @param options - The options for creating the model.
-   * @returns A promise that resolves to the created model.
-   */
-  async create(options) {
-    const { data, params } = options;
-    const res = await this.client.post(`/${this.resource}`, data, { params });
-    return res.data;
-  }
-  /**
-   * Updates an existing model.
-   * @param options - The options for updating the model.
-   * @returns A promise that resolves to the updated model.
-   */
-  async update(options) {
-    const { id, data, params } = options;
-    const res = await this.client.put(`/${this.resource}/${id}`, data, {
-      params
-    });
-    return res.data;
-  }
-  /**
-   * Deletes a model by its ID or other criteria.
-   * @param options - The options for deleting the model.
-   * @returns A promise that resolves when the model is deleted.
-   */
-  async delete(options) {
-    const { id, by, params } = options;
-    await this.client.delete(`/${this.resource}/${id}`, {
-      params: {
-        by: by || "id",
-        ...params
-      }
-    });
-  }
-}
-class OrderRepository extends ModelRepository {
-  /**
-   * Constructs a new OrderRepository instance.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("orders", client);
-  }
-  /**
-   * Sends an order from an anonymous user.
-   * @param data - The data representing the order to be sent.
-   * @returns A Promise that resolves to the sent OrderEntity.
-   */
-  async send(data) {
-    const validator = vine.compile(SendOrderSchema);
-    const output = await validator.validate(data);
-    const res = await this.client.post(`/${this.resource}/send`, output);
-    return res.data;
-  }
-}
-class ProductRepository extends ModelRepository {
-  /**
-   * Creates a new instance of the ProductRepository class.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("products", client);
-  }
-}
-const DefaultShippingRatesSchema = vine.array(
-  vine.array(vine.number().min(0).max(1e5).nullable()).nullable()
-);
-const CreateUserStoreSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32),
-  // .unique(async (db, value, field) => {
-  //   const store = await db.from('stores').where('slug', value).first()
-  //   return !store
-  // })
-  domain: vine.object({
-    name: vine.string().minLength(2).maxLength(32)
-  }).optional(),
-  decoration: StoreDecorationSchema.optional(),
-  banner: StoreBunner.optional(),
-  logoUrl: vine.string().optional(),
-  ondarkLogoUrl: vine.string().optional(),
-  logoFile: AvatarFileSchema.optional(),
-  ondarkLogoFile: AvatarFileSchema.optional(),
-  categories: vine.array(EmbaddedCategorySchema).optional(),
-  title: vine.string().minLength(2).maxLength(255).optional(),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  addresses: vine.array(EmbaddedAddressSchema).optional(),
-  metadata: vine.object({}).optional(),
-  contacts: vine.array(
-    vine.object({
-      type: vine.string().minLength(2).maxLength(32),
-      value: vine.string().minLength(2).maxLength(255),
-      metadata: vine.object({}).optional()
-    })
-  ).optional(),
-  defaultShippingRates: DefaultShippingRatesSchema.optional(),
-  integrations: vine.array(vine.any()).optional()
-});
-vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32).optional(),
-  domain: DomainSchema.optional(),
-  decoration: StoreDecorationSchema.optional(),
-  banner: StoreBunner.optional(),
-  logoUrl: vine.string().nullable().optional(),
-  ondarkLogoUrl: vine.string().nullable().optional(),
-  logoFile: AvatarFileSchema.optional(),
-  ondarkLogoFile: AvatarFileSchema.optional(),
-  categories: vine.array(EmbaddedCategorySchema).optional(),
-  title: vine.string().minLength(2).maxLength(255).optional(),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  addresses: vine.array(EmbaddedAddressSchema).optional(),
-  metadata: vine.object({}).optional(),
-  contacts: vine.array(EmbaddedContactSchema).optional(),
-  defaultShippingRates: DefaultShippingRatesSchema.optional(),
-  integrations: vine.array(vine.any()).optional()
-});
-class StoreRepository extends ModelRepository {
-  /**
-   * Constructs a new StoreRepository instance.
-   * @param client The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("stores", client);
-  }
-  /**
-   * Creates a new Store entity.
-   * @param options The options for creating the Store entity.
-   * @returns A Promise that resolves to the created Store entity.
-   */
-  async create(options) {
-    const validator = vine.compile(CreateUserStoreSchema);
-    const output = await validator.validate(options.data);
-    return super.create({ ...options, data: output });
-  }
-}
-const CreateUserSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  email: vine.string(),
-  // .unique(async (db, value, field) => {
-  //   const user = await db.from('users').where('email', value).first()
-  //   return !user
-  // }),
-  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
-  password: vine.string().minLength(8).maxLength(32),
-  // for upload file
-  photoFile: vine.any(),
-  // .file({
-  //   size: '1mb',
-  //   extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-  // })
-  // .optional(),
-  photoUrl: vine.string().optional(),
-  // metadata (any object)
-  metadata: vine.object({}).optional(),
-  // dates
-  emailVerifiedAt: vine.date().optional(),
-  phoneVerifiedAt: vine.date().optional(),
-  verifiedAt: vine.date().optional(),
-  blockedAt: vine.date().optional()
-});
-vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  email: vine.string().optional(),
-  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
-  password: vine.string().minLength(8).maxLength(32).confirmed().optional(),
-  // for upload file
-  photoFile: vine.any(),
-  photoUrl: vine.string().optional(),
-  // metadata (any object)
-  metadata: vine.object({}).optional(),
-  // dates
-  emailVerifiedAt: vine.date().optional(),
-  phoneVerifiedAt: vine.date().optional(),
-  verifiedAt: vine.string().optional(),
-  blockedAt: vine.date().optional()
-});
-class UserRepository extends ModelRepository {
-  /**
-   * Constructs a new UserRepository instance.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("users", client);
-    /**
-     * Represents the authentication response.
-     */
-    __publicField(this, "auth", null);
-  }
-  /**
-   * Signs in a user with the provided credentials.
-   * @param credentials - The user credentials.
-   * @returns A promise that resolves to the authentication response.
-   */
-  async signin(credentials) {
-    const validator = vine.compile(SigninSchema);
-    const output = await validator.validate(credentials);
-    const res = await this.client.post(`/${this.resource}/auth/signin`, output);
-    this.auth = res.data;
-    return res.data;
-  }
-  /**
-   * Signs up a new user with the provided credentials.
-   * @param credentials - The user credentials.
-   * @returns A promise that resolves to the authentication response.
-   */
-  async signup(credentials) {
-    const validator = vine.compile(CreateUserSchema);
-    const output = await validator.validate(credentials);
-    const res = await this.client.post(`/${this.resource}/auth/signup`, output);
-    this.auth = res.data;
-    return res.data;
-  }
-  /**
-   * Signs out the currently authenticated user.
-   * @returns A promise that resolves when the user is signed out.
-   */
-  async signout() {
-    this.auth = null;
-  }
-  /**
-   * Updates the authenticated user's data.
-   * @param data - The updated user data.
-   * @returns A promise that resolves to the updated user entity.
-   */
-  async updateMe(data) {
-    const validator = vine.compile(AuthUpdateUserSchema);
-    const output = await validator.validate(data);
-    const res = await this.client.put(`/${this.resource}/auth`, output);
-    return res.data;
-  }
-}
-class FeeeF {
-  /**
-   * Constructs a new instance of the FeeeF class.
-   * @param {FeeeFConfig} config - The configuration object.
-   * @param {string} config.apiKey - The API key used for authentication.
-   * @param {AxiosInstance} config.client - The Axios instance used for making HTTP requests.
-   * @param {boolean | number} config.cache - The caching configuration. Set to `false` to disable caching, or provide a number to set the cache TTL in milliseconds.
-   */
-  constructor({
-    apiKey,
-    client,
-    cache,
-    baseURL = "http://localhost:3333/api/v1"
-  }) {
-    /**
-     * The API key used for authentication.
-     */
-    __publicField(this, "apiKey");
-    /**
-     * The Axios instance used for making HTTP requests.
-     */
-    __publicField(this, "client");
-    /**
-     * The repository for managing stores.
-     */
-    __publicField(this, "stores");
-    /**
-     * The repository for managing products.
-     */
-    __publicField(this, "products");
-    /**
-     * The repository for managing users.
-     */
-    __publicField(this, "users");
-    /**
-     * The repository for managing orders.
-     */
-    __publicField(this, "orders");
-    this.apiKey = apiKey;
-    if (cache === false) {
-      this.client = client || axios;
-    } else {
-      const isInBrowser = typeof window !== "undefined" && typeof localStorage !== "undefined";
-      this.client = setupCache(client || axios, {
-        ttl: cache === void 0 ? 1e3 * 60 * 5 : Math.max(cache, 1e3),
-        //|| 1 * 60 * 1000, // 1 minute by default
-        // for persistent cache use buildWebStorage
-        storage: isInBrowser ? buildWebStorage(localStorage, "ff:") : buildMemoryStorage()
-      });
-    }
-    this.client.defaults.baseURL = baseURL;
-    this.stores = new StoreRepository(this.client);
-    this.products = new ProductRepository(this.client);
-    this.users = new UserRepository(this.client);
-    this.orders = new OrderRepository(this.client);
-  }
-}
-const ff = new FeeeF({
-  apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
-  baseURL: "https://apis.feeef.net/api/v1",
-  cache: 10
-  // baseURL: "http://localhost:3333/api/v1",
-});
-var currentHost = null;
-function setCurrentHost(url) {
-  currentHost = url;
-}
-function getCurrentHost() {
-  if (typeof window === "undefined") {
-    return currentHost;
-  }
-  return window.location.host;
-}
-function getCurrentUrl(path) {
-  return `https://${getCurrentHost()}${path}`;
 }
 const states = [
   "أدرار",
@@ -2703,77 +2103,6 @@ function Thanks({ order, onDone }) {
     }
   );
 }
-function getShippingRateForState({ shippingMethod, store, state }) {
-  var _a, _b;
-  if (!store || !state)
-    return null;
-  var stateIndex = parseInt(state) - 1;
-  var rate = ((_a = shippingMethod == null ? void 0 : shippingMethod.rates) == null ? void 0 : _a[stateIndex]) || ((_b = store.defaultShippingRates) == null ? void 0 : _b[stateIndex]);
-  return {
-    desk: (rate == null ? void 0 : rate[0]) || null,
-    home: (rate == null ? void 0 : rate[1]) || null
-  };
-}
-function calculateLocalOrderShipping({ shippingMethod, store, localOrder }) {
-  var _a;
-  var rate = getShippingRateForState({
-    shippingMethod,
-    store,
-    state: localOrder.shipping.address.state
-  });
-  return (rate == null ? void 0 : rate[((_a = localOrder.shipping) == null ? void 0 : _a.doorShipping) ? "home" : "desk"]) ?? null;
-}
-function calculateLocalOrderTotal({ shippingMethod, store, localOrder, withShipping = true }) {
-  var shippingPrice = 0;
-  if (withShipping) {
-    shippingPrice = calculateLocalOrderShipping({
-      shippingMethod,
-      store,
-      localOrder
-    });
-    if (shippingPrice == null)
-      return null;
-  }
-  return localOrder.items.reduce((total, item) => {
-    return total + getProductPriceAfterDiscount(item.product, item.variants) * item.quantity;
-  }, 0) + shippingPrice;
-}
-function getProductPriceWithoutVariantsDiscount(product, path) {
-  var price = product.price;
-  var variant = product == null ? void 0 : product.variant;
-  for (let i = 0; i < path.length; i++) {
-    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
-    price = option.price || price;
-    variant = option.child;
-  }
-  return price;
-}
-function getProductPriceAfterDiscount(product, path) {
-  var price = product.price - (product.discount || 0);
-  var variant = product == null ? void 0 : product.variant;
-  for (let i = 0; i < path.length; i++) {
-    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
-    price = (option.price || price) - (option.discount || 0);
-    variant = option.child;
-  }
-  return price;
-}
-function getProductDiscountPercentage(product, path) {
-  var price = getProductPriceWithoutVariantsDiscount(product, path);
-  if (price == 0)
-    return 0;
-  return getProductPriceAfterDiscount(product, path) / price;
-}
-function getProductQuantity(product, path) {
-  var quantity = product.stock;
-  var variant = product == null ? void 0 : product.variant;
-  for (let i = 0; i < path.length; i++) {
-    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
-    quantity = option.stock || quantity;
-    variant = option.child;
-  }
-  return quantity;
-}
 function VariantButton({ variant, selected = false, onClick }) {
   if (variant.type === "color") {
     return /* @__PURE__ */ jsx(ColorVariantButton, { variant, selected, onClick });
@@ -3062,6 +2391,510 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] }) })
     ] })
   ] });
+}
+const AvatarFileSchema = vine.any();
+const ImageFileSchema = vine.any();
+const DomainSchema = vine.object({
+  name: vine.string().minLength(3).maxLength(32),
+  verifiedAt: vine.date().optional(),
+  metadata: vine.object({}).optional()
+});
+const StoreDecorationSchema = vine.object({
+  primary: vine.number().min(0).max(4294967295),
+  onPrimary: vine.number().min(0).max(4294967295),
+  showStoreLogoInHeader: vine.boolean().optional(),
+  logoFullHeight: vine.boolean().optional(),
+  showStoreNameInHeader: vine.boolean().optional(),
+  metadata: vine.any().optional()
+});
+const EmbaddedCategorySchema = vine.object({
+  name: vine.string().minLength(2).maxLength(32),
+  description: vine.string().minLength(2).maxLength(255).optional(),
+  photoUrl: vine.string().optional(),
+  ondarkPhotoUrl: vine.string().optional(),
+  photoFile: AvatarFileSchema.optional(),
+  ondarkPhotoFile: AvatarFileSchema.optional(),
+  metadata: vine.object({}).optional()
+});
+const EmbaddedAddressSchema = vine.object({
+  country: vine.string().minLength(2).maxLength(32).optional(),
+  state: vine.string().minLength(2).maxLength(32).optional(),
+  city: vine.string().minLength(2).maxLength(32).optional(),
+  street: vine.string().minLength(2).maxLength(32).optional(),
+  zip: vine.string().minLength(2).maxLength(32).optional(),
+  metadata: vine.object({}).optional().optional()
+});
+const EmbaddedContactSchema = vine.object({
+  type: vine.string().minLength(2).maxLength(32),
+  value: vine.string().minLength(2).maxLength(255),
+  metadata: vine.object({}).optional()
+});
+const StoreBunner = vine.object({
+  url: vine.string().url().optional(),
+  title: vine.string(),
+  enabled: vine.boolean().optional(),
+  metadata: vine.object({}).optional()
+});
+const PhoneShema = vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/);
+vine.object({
+  name: vine.string().minLength(2).maxLength(32),
+  email: vine.string(),
+  phone: PhoneShema.optional(),
+  photoFile: ImageFileSchema.optional(),
+  photoUrl: vine.string().optional(),
+  password: vine.string().minLength(8).maxLength(32)
+});
+const SigninSchema = vine.object({
+  email: vine.string().email(),
+  password: vine.string().minLength(8).maxLength(32)
+});
+const AuthUpdateUserSchema = vine.object({
+  name: vine.string().minLength(2).maxLength(32).optional(),
+  email: vine.string().optional(),
+  phone: PhoneShema.optional(),
+  // for upload file
+  photoFile: vine.any(),
+  photoUrl: vine.string().optional(),
+  oldPassword: vine.string().minLength(8).maxLength(32).optional(),
+  newPassword: vine.string().minLength(8).maxLength(32).notSameAs("oldPassword").optional()
+});
+const OrderItemSchema = vine.object({
+  productId: vine.string(),
+  // productId: vine.string().exists(async (db, value, field) => {
+  //   const product = await db.from('products').where('id', value).first()
+  //   return !!product
+  // }),
+  productName: vine.string().optional(),
+  variant: vine.any().optional(),
+  quantity: vine.number(),
+  price: vine.number().optional()
+});
+const GuestOrderItemSchema = vine.object({
+  productId: vine.string(),
+  variantPath: vine.string().optional(),
+  quantity: vine.number()
+});
+const SendOrderSchema = vine.object({
+  id: vine.string().optional(),
+  customerName: vine.string().optional(),
+  customerPhone: vine.string(),
+  //   customerIp: vine.string().optional(),
+  shippingAddress: vine.string().optional(),
+  shippingCity: vine.string().optional(),
+  shippingState: vine.string().optional(),
+  shippingMethodId: vine.string().optional(),
+  paymentMethodId: vine.string().optional(),
+  items: vine.array(GuestOrderItemSchema).minLength(1),
+  //   subtotal: vine.number().optional(),
+  //   shippingPrice: vine.number().optional(),
+  //   total: vine.number().optional(),
+  //   discount: vine.number().optional(),
+  coupon: vine.string().optional(),
+  status: vine.enum(["pending", "draft"]),
+  // TODO: validate storeId is exists and not blocked
+  storeId: vine.string(),
+  metadata: vine.any().optional()
+});
+vine.object({
+  id: vine.string().optional(),
+  customerName: vine.string().optional(),
+  customerPhone: PhoneShema,
+  customerIp: vine.string().optional(),
+  shippingAddress: vine.string().optional(),
+  shippingCity: vine.string().optional(),
+  shippingState: vine.string().optional(),
+  shippingMethodId: vine.string().optional(),
+  paymentMethodId: vine.string().optional(),
+  items: vine.array(OrderItemSchema).minLength(1),
+  subtotal: vine.number().optional(),
+  shippingPrice: vine.number().optional(),
+  total: vine.number().optional(),
+  discount: vine.number().optional(),
+  coupon: vine.string().optional(),
+  status: vine.enum(OrderStatus),
+  storeId: vine.string(),
+  metadata: vine.any().optional()
+});
+vine.object({
+  id: vine.string().optional(),
+  customerName: vine.string().optional(),
+  customerPhone: PhoneShema.optional(),
+  customerIp: vine.string().optional(),
+  shippingAddress: vine.string().optional(),
+  shippingCity: vine.string().optional(),
+  shippingState: vine.string().optional(),
+  shippingMethodId: vine.string().optional(),
+  paymentMethodId: vine.string().optional(),
+  items: vine.array(OrderItemSchema).minLength(1).optional(),
+  subtotal: vine.number().optional(),
+  shippingPrice: vine.number().optional(),
+  total: vine.number().optional(),
+  discount: vine.number().optional(),
+  coupon: vine.string().optional(),
+  status: vine.enum(OrderStatus).optional(),
+  storeId: vine.string(),
+  metadata: vine.any().optional()
+});
+class ModelRepository {
+  /**
+   * Constructs a new instance of the ModelRepository class.
+   * @param resource - The resource name.
+   * @param client - The Axios instance used for making HTTP requests.
+   */
+  constructor(resource, client) {
+    __publicField(this, "resource");
+    // client
+    __publicField(this, "client");
+    this.resource = resource;
+    this.client = client;
+  }
+  /**
+   * Finds a model by its ID or other criteria.
+   * @param options - The options for finding the model.
+   * @returns A promise that resolves to the found model.
+   */
+  async find(options) {
+    const { id, by, params } = options;
+    const res = await this.client.get(`/${this.resource}/${id}`, {
+      params: {
+        by: by || "id",
+        ...params
+      }
+    });
+    return res.data;
+  }
+  /**
+   * Lists models with optional pagination and filtering.
+   * @param options - The options for listing the models.
+   * @returns A promise that resolves to a list of models.
+   */
+  async list(options) {
+    const { page, offset, limit, params } = options || {};
+    const res = await this.client.get(`/${this.resource}`, {
+      params: { page, offset, limit, ...params }
+    });
+    if (Array.isArray(res.data)) {
+      return {
+        data: res.data
+      };
+    } else {
+      return {
+        data: res.data.data,
+        total: res.data.meta.total,
+        page: res.data.meta.currentPage,
+        limit: res.data.meta.perPage
+      };
+    }
+  }
+  /**
+   * Creates a new model.
+   * @param options - The options for creating the model.
+   * @returns A promise that resolves to the created model.
+   */
+  async create(options) {
+    const { data, params } = options;
+    const res = await this.client.post(`/${this.resource}`, data, { params });
+    return res.data;
+  }
+  /**
+   * Updates an existing model.
+   * @param options - The options for updating the model.
+   * @returns A promise that resolves to the updated model.
+   */
+  async update(options) {
+    const { id, data, params } = options;
+    const res = await this.client.put(`/${this.resource}/${id}`, data, {
+      params
+    });
+    return res.data;
+  }
+  /**
+   * Deletes a model by its ID or other criteria.
+   * @param options - The options for deleting the model.
+   * @returns A promise that resolves when the model is deleted.
+   */
+  async delete(options) {
+    const { id, by, params } = options;
+    await this.client.delete(`/${this.resource}/${id}`, {
+      params: {
+        by: by || "id",
+        ...params
+      }
+    });
+  }
+}
+class OrderRepository extends ModelRepository {
+  /**
+   * Constructs a new OrderRepository instance.
+   * @param client - The AxiosInstance used for making HTTP requests.
+   */
+  constructor(client) {
+    super("orders", client);
+  }
+  /**
+   * Sends an order from an anonymous user.
+   * @param data - The data representing the order to be sent.
+   * @returns A Promise that resolves to the sent OrderEntity.
+   */
+  async send(data) {
+    const validator = vine.compile(SendOrderSchema);
+    const output = await validator.validate(data);
+    const res = await this.client.post(`/${this.resource}/send`, output);
+    return res.data;
+  }
+}
+class ProductRepository extends ModelRepository {
+  /**
+   * Creates a new instance of the ProductRepository class.
+   * @param client - The AxiosInstance used for making HTTP requests.
+   */
+  constructor(client) {
+    super("products", client);
+  }
+}
+const DefaultShippingRatesSchema = vine.array(
+  vine.array(vine.number().min(0).max(1e5).nullable()).nullable()
+);
+const CreateUserStoreSchema = vine.object({
+  name: vine.string().minLength(2).maxLength(32),
+  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32),
+  // .unique(async (db, value, field) => {
+  //   const store = await db.from('stores').where('slug', value).first()
+  //   return !store
+  // })
+  domain: vine.object({
+    name: vine.string().minLength(2).maxLength(32)
+  }).optional(),
+  decoration: StoreDecorationSchema.optional(),
+  banner: StoreBunner.optional(),
+  logoUrl: vine.string().optional(),
+  ondarkLogoUrl: vine.string().optional(),
+  logoFile: AvatarFileSchema.optional(),
+  ondarkLogoFile: AvatarFileSchema.optional(),
+  categories: vine.array(EmbaddedCategorySchema).optional(),
+  title: vine.string().minLength(2).maxLength(255).optional(),
+  description: vine.string().minLength(2).maxLength(255).optional(),
+  addresses: vine.array(EmbaddedAddressSchema).optional(),
+  metadata: vine.object({}).optional(),
+  contacts: vine.array(
+    vine.object({
+      type: vine.string().minLength(2).maxLength(32),
+      value: vine.string().minLength(2).maxLength(255),
+      metadata: vine.object({}).optional()
+    })
+  ).optional(),
+  defaultShippingRates: DefaultShippingRatesSchema.optional(),
+  integrations: vine.array(vine.any()).optional()
+});
+vine.object({
+  name: vine.string().minLength(2).maxLength(32).optional(),
+  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32).optional(),
+  domain: DomainSchema.optional(),
+  decoration: StoreDecorationSchema.optional(),
+  banner: StoreBunner.optional(),
+  logoUrl: vine.string().nullable().optional(),
+  ondarkLogoUrl: vine.string().nullable().optional(),
+  logoFile: AvatarFileSchema.optional(),
+  ondarkLogoFile: AvatarFileSchema.optional(),
+  categories: vine.array(EmbaddedCategorySchema).optional(),
+  title: vine.string().minLength(2).maxLength(255).optional(),
+  description: vine.string().minLength(2).maxLength(255).optional(),
+  addresses: vine.array(EmbaddedAddressSchema).optional(),
+  metadata: vine.object({}).optional(),
+  contacts: vine.array(EmbaddedContactSchema).optional(),
+  defaultShippingRates: DefaultShippingRatesSchema.optional(),
+  integrations: vine.array(vine.any()).optional()
+});
+class StoreRepository extends ModelRepository {
+  /**
+   * Constructs a new StoreRepository instance.
+   * @param client The AxiosInstance used for making HTTP requests.
+   */
+  constructor(client) {
+    super("stores", client);
+  }
+  /**
+   * Creates a new Store entity.
+   * @param options The options for creating the Store entity.
+   * @returns A Promise that resolves to the created Store entity.
+   */
+  async create(options) {
+    const validator = vine.compile(CreateUserStoreSchema);
+    const output = await validator.validate(options.data);
+    return super.create({ ...options, data: output });
+  }
+}
+const CreateUserSchema = vine.object({
+  name: vine.string().minLength(2).maxLength(32),
+  email: vine.string(),
+  // .unique(async (db, value, field) => {
+  //   const user = await db.from('users').where('email', value).first()
+  //   return !user
+  // }),
+  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
+  password: vine.string().minLength(8).maxLength(32),
+  // for upload file
+  photoFile: vine.any(),
+  // .file({
+  //   size: '1mb',
+  //   extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+  // })
+  // .optional(),
+  photoUrl: vine.string().optional(),
+  // metadata (any object)
+  metadata: vine.object({}).optional(),
+  // dates
+  emailVerifiedAt: vine.date().optional(),
+  phoneVerifiedAt: vine.date().optional(),
+  verifiedAt: vine.date().optional(),
+  blockedAt: vine.date().optional()
+});
+vine.object({
+  name: vine.string().minLength(2).maxLength(32).optional(),
+  email: vine.string().optional(),
+  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
+  password: vine.string().minLength(8).maxLength(32).confirmed().optional(),
+  // for upload file
+  photoFile: vine.any(),
+  photoUrl: vine.string().optional(),
+  // metadata (any object)
+  metadata: vine.object({}).optional(),
+  // dates
+  emailVerifiedAt: vine.date().optional(),
+  phoneVerifiedAt: vine.date().optional(),
+  verifiedAt: vine.string().optional(),
+  blockedAt: vine.date().optional()
+});
+class UserRepository extends ModelRepository {
+  /**
+   * Constructs a new UserRepository instance.
+   * @param client - The AxiosInstance used for making HTTP requests.
+   */
+  constructor(client) {
+    super("users", client);
+    /**
+     * Represents the authentication response.
+     */
+    __publicField(this, "auth", null);
+  }
+  /**
+   * Signs in a user with the provided credentials.
+   * @param credentials - The user credentials.
+   * @returns A promise that resolves to the authentication response.
+   */
+  async signin(credentials) {
+    const validator = vine.compile(SigninSchema);
+    const output = await validator.validate(credentials);
+    const res = await this.client.post(`/${this.resource}/auth/signin`, output);
+    this.auth = res.data;
+    return res.data;
+  }
+  /**
+   * Signs up a new user with the provided credentials.
+   * @param credentials - The user credentials.
+   * @returns A promise that resolves to the authentication response.
+   */
+  async signup(credentials) {
+    const validator = vine.compile(CreateUserSchema);
+    const output = await validator.validate(credentials);
+    const res = await this.client.post(`/${this.resource}/auth/signup`, output);
+    this.auth = res.data;
+    return res.data;
+  }
+  /**
+   * Signs out the currently authenticated user.
+   * @returns A promise that resolves when the user is signed out.
+   */
+  async signout() {
+    this.auth = null;
+  }
+  /**
+   * Updates the authenticated user's data.
+   * @param data - The updated user data.
+   * @returns A promise that resolves to the updated user entity.
+   */
+  async updateMe(data) {
+    const validator = vine.compile(AuthUpdateUserSchema);
+    const output = await validator.validate(data);
+    const res = await this.client.put(`/${this.resource}/auth`, output);
+    return res.data;
+  }
+}
+class FeeeF {
+  /**
+   * Constructs a new instance of the FeeeF class.
+   * @param {FeeeFConfig} config - The configuration object.
+   * @param {string} config.apiKey - The API key used for authentication.
+   * @param {AxiosInstance} config.client - The Axios instance used for making HTTP requests.
+   * @param {boolean | number} config.cache - The caching configuration. Set to `false` to disable caching, or provide a number to set the cache TTL in milliseconds.
+   */
+  constructor({
+    apiKey,
+    client,
+    cache,
+    baseURL = "http://localhost:3333/api/v1"
+  }) {
+    /**
+     * The API key used for authentication.
+     */
+    __publicField(this, "apiKey");
+    /**
+     * The Axios instance used for making HTTP requests.
+     */
+    __publicField(this, "client");
+    /**
+     * The repository for managing stores.
+     */
+    __publicField(this, "stores");
+    /**
+     * The repository for managing products.
+     */
+    __publicField(this, "products");
+    /**
+     * The repository for managing users.
+     */
+    __publicField(this, "users");
+    /**
+     * The repository for managing orders.
+     */
+    __publicField(this, "orders");
+    this.apiKey = apiKey;
+    if (cache === false) {
+      this.client = client || axios;
+    } else {
+      const isInBrowser = typeof window !== "undefined" && typeof localStorage !== "undefined";
+      this.client = setupCache(client || axios, {
+        ttl: cache === void 0 ? 1e3 * 60 * 5 : Math.max(cache, 1e3),
+        //|| 1 * 60 * 1000, // 1 minute by default
+        // for persistent cache use buildWebStorage
+        storage: isInBrowser ? buildWebStorage(localStorage, "ff:") : buildMemoryStorage()
+      });
+    }
+    this.client.defaults.baseURL = baseURL;
+    this.stores = new StoreRepository(this.client);
+    this.products = new ProductRepository(this.client);
+    this.users = new UserRepository(this.client);
+    this.orders = new OrderRepository(this.client);
+  }
+}
+const ff = new FeeeF({
+  apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
+  baseURL: "https://apis.feeef.net/api/v1",
+  cache: 10
+  // baseURL: "http://localhost:3333/api/v1",
+});
+var currentHost = null;
+function setCurrentHost(url) {
+  currentHost = url;
+}
+function getCurrentHost() {
+  if (typeof window === "undefined") {
+    return currentHost;
+  }
+  return window.location.host;
+}
+function getCurrentUrl(path) {
+  return `https://${getCurrentHost()}${path}`;
 }
 const generateOrderId = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 12);
 function ProductPage() {
@@ -3672,16 +3505,15 @@ function Product({ store, product }) {
                   )
                 ] }),
                 /* @__PURE__ */ jsx("div", { className: "w-2" }),
-                !cart.hasProduct(product.id) ? /* @__PURE__ */ jsx(
+                !cart.canAddProduct(product) ? null : !cart.hasProduct(product.id) ? /* @__PURE__ */ jsx(
                   "button",
                   {
                     onClick: () => {
                       cart.add({
-                        productName: product.name,
-                        productId: product.id,
                         quantity: item.quantity,
                         price: getPriceAfterDiscount(),
-                        variantPath: item.variants.join("/")
+                        variantPath: item.variants.join("/"),
+                        product
                       });
                       setItem({ ...item });
                     },
@@ -3703,50 +3535,55 @@ function Product({ store, product }) {
             ] }),
             /* @__PURE__ */ jsx("div", { className: "h-[1px] bg-gray-200 dark:bg-gray-700" }),
             /* @__PURE__ */ jsxs("div", { className: "p-4", children: [
-              /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
-                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "المنتجات" }),
-                /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
-                /* @__PURE__ */ jsx("div", { className: "text-gray-600 text-end", children: /* @__PURE__ */ jsx("table", { children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
-                  /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.productName && _item.productName.length > 10 ? _item.productName.substring(0, 10) + "..." : _item.productName }),
-                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                    "x",
-                    _item.quantity
-                  ] }),
-                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                    "= ",
-                    _item.price,
-                    " دج"
-                  ] }),
-                  /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx(
-                    "button",
-                    {
-                      onClick: () => {
-                        cart.removeProduct(_item.productId);
-                        setItem({ ...item });
-                      },
-                      className: "px-2 ms-2 text-sm rounded-full bg-red-500 text-white",
-                      children: "إزالة"
-                    }
-                  ) })
-                ] }, _item.productId)) : /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
-                  /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name }),
-                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                    "x",
-                    item.quantity
-                  ] }),
-                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                    "= ",
-                    getPriceAfterDiscount(),
-                    " دج"
-                  ] })
-                ] }) }) })
+              cart.canAddProduct(product) && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
+                  /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "المنتجات" }),
+                  /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
+                  /* @__PURE__ */ jsx("div", { className: "text-gray-600 text-end", children: /* @__PURE__ */ jsx("table", { children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                    /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name }),
+                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                      "x",
+                      _item.quantity
+                    ] }),
+                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                      "= ",
+                      _item.price,
+                      " دج"
+                    ] }),
+                    /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx(
+                      "button",
+                      {
+                        onClick: () => {
+                          cart.removeProduct(_item.product.id);
+                          setItem({ ...item });
+                        },
+                        className: "px-2 ms-2 text-sm rounded-full bg-red-500 text-white",
+                        children: "إزالة"
+                      }
+                    ) })
+                  ] }, _item.product.id)) : /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                    /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name }),
+                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                      "x",
+                      item.quantity
+                    ] }),
+                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                      "= ",
+                      getPriceAfterDiscount(),
+                      " دج"
+                    ] })
+                  ] }) }) })
+                ] }),
+                /* @__PURE__ */ jsx("div", { className: "h-2" })
               ] }),
-              /* @__PURE__ */ jsx("div", { className: "h-2" }),
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "الشحن" }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsxs("span", { children: [
-                  getShippingRate() || 0,
+                  cart.hasProduct(product.id) ? cart.getShippingRate(
+                    shipping,
+                    store
+                  ) : getShippingRate() || 0,
                   "دج"
                 ] }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
               ] }),
@@ -3785,6 +3622,223 @@ function getYoutubeVideoIdFromUrl(url) {
     }
   }
   return null;
+}
+function getShippingRateForState({ shippingMethod, store, state }) {
+  var _a, _b;
+  if (!store || !state)
+    return null;
+  var stateIndex = parseInt(state) - 1;
+  var rate = ((_a = shippingMethod == null ? void 0 : shippingMethod.rates) == null ? void 0 : _a[stateIndex]) || ((_b = store.defaultShippingRates) == null ? void 0 : _b[stateIndex]);
+  return {
+    desk: (rate == null ? void 0 : rate[0]) || null,
+    home: (rate == null ? void 0 : rate[1]) || null
+  };
+}
+function calculateLocalOrderShipping({ shippingMethod, store, localOrder }) {
+  var _a;
+  var rate = getShippingRateForState({
+    shippingMethod,
+    store,
+    state: localOrder.shipping.address.state
+  });
+  return (rate == null ? void 0 : rate[((_a = localOrder.shipping) == null ? void 0 : _a.doorShipping) ? "home" : "desk"]) ?? null;
+}
+function calculateLocalOrderTotal({ shippingMethod, store, localOrder, withShipping = true }) {
+  var shippingPrice = 0;
+  if (withShipping) {
+    shippingPrice = calculateLocalOrderShipping({
+      shippingMethod,
+      store,
+      localOrder
+    });
+    if (shippingPrice == null)
+      return null;
+  }
+  return localOrder.items.reduce((total, item) => {
+    return total + getProductPriceAfterDiscount(item.product, item.variants) * item.quantity;
+  }, 0) + shippingPrice;
+}
+function getProductPriceWithoutVariantsDiscount(product, path) {
+  var price = product.price;
+  var variant = product == null ? void 0 : product.variant;
+  for (let i = 0; i < path.length; i++) {
+    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
+    price = option.price || price;
+    variant = option.child;
+  }
+  return price;
+}
+function getProductPriceAfterDiscount(product, path) {
+  var price = product.price - (product.discount || 0);
+  var variant = product == null ? void 0 : product.variant;
+  for (let i = 0; i < path.length; i++) {
+    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
+    price = (option.price || price) - (option.discount || 0);
+    variant = option.child;
+  }
+  return price;
+}
+function getProductDiscountPercentage(product, path) {
+  var price = getProductPriceWithoutVariantsDiscount(product, path);
+  if (price == 0)
+    return 0;
+  return getProductPriceAfterDiscount(product, path) / price;
+}
+function getProductQuantity(product, path) {
+  var quantity = product.stock;
+  var variant = product == null ? void 0 : product.variant;
+  for (let i = 0; i < path.length; i++) {
+    var option = variant == null ? void 0 : variant.options.find((e) => e.name == path[i]);
+    quantity = option.stock || quantity;
+    variant = option.child;
+  }
+  return quantity;
+}
+const cart = {
+  inited: false,
+  // init
+  init() {
+    if (this.inited)
+      return;
+    this.load();
+    this.inited = true;
+  },
+  // load
+  load() {
+    if (typeof localStorage === "undefined")
+      return;
+    try {
+      let cartl = localStorage.getItem("cart");
+      if (cartl) {
+        this.items = JSON.parse(cartl);
+        this.items = this.items.filter((item) => {
+          return item.product && item.product.id;
+        });
+        console.log("cart loaded", cartl);
+      }
+    } catch (e) {
+      console.error("cart load error", e);
+      this.clear();
+    }
+  },
+  // save
+  save() {
+    if (typeof localStorage === "undefined")
+      return;
+    localStorage.setItem("cart", JSON.stringify(this.items));
+  },
+  items: [],
+  getOrderItems() {
+    return this.items.map((item) => {
+      return {
+        productId: item.product.id,
+        productName: item.product.name,
+        variantPath: item.variantPath,
+        quantity: item.quantity,
+        price: item.price
+      };
+    });
+  },
+  add(item) {
+    this.items.push(item);
+    this.save();
+  },
+  updateQuantity(productId, quantity) {
+    let item = this.items.find((item2) => item2.product.id === productId);
+    if (item) {
+      item.quantity = quantity;
+    }
+    this.save();
+  },
+  updatePrice(productId, price) {
+    let item = this.items.find((item2) => item2.product.id === productId);
+    if (item) {
+      item.price = price;
+    }
+    this.save();
+  },
+  updateVariantPath(productId, variantPath) {
+    let item = this.items.find((item2) => item2.product.id === productId);
+    if (item) {
+      item.variantPath = variantPath;
+    }
+    this.save();
+  },
+  removeProduct(productId) {
+    this.items = this.items.filter((item) => item.product.id !== productId);
+    this.save();
+  },
+  get total() {
+    var ttl = 0;
+    this.items.forEach((item) => {
+      ttl += item.price * item.quantity;
+    });
+    console.log("total", this.items);
+    return ttl;
+  },
+  hasProduct(productId) {
+    return this.items.some((item) => item.product.id === productId);
+  },
+  clear() {
+    this.items = [];
+    this.save();
+  },
+  canAddProduct(product) {
+    if (this.items.length === 0)
+      return true;
+    if (this.items[0].product.storeId != product.storeId)
+      return false;
+    if (this.items[0].product.shippingMethodId != product.shippingMethodId)
+      return false;
+    return true;
+  },
+  getShippingRate(shipping, store) {
+    var groups = {};
+    for (let item of this.items) {
+      if (item.product.shippingMethodId) {
+        groups[item.product.shippingMethodId || "null"] = item.product.shippingMethod || null;
+      }
+    }
+    var rate = 0;
+    for (let groupId in groups) {
+      var groupRate = getShippingRateForState({
+        state: shipping.address.state,
+        shippingMethod: groups[groupId],
+        store
+      });
+      if (shipping.doorShipping) {
+        rate += (groupRate == null ? void 0 : groupRate.home) || 0;
+      } else {
+        rate += (groupRate == null ? void 0 : groupRate.desk) || 0;
+      }
+    }
+    return rate;
+  }
+};
+function Layout() {
+  let store = useLoaderData();
+  useEffect(() => {
+    initMetaPixel();
+    cart.init();
+  }, []);
+  return (
+    // <CacheProvider value={cacheRtl}>
+    ///* <ThemeProvider theme={theme}> */}
+    /* @__PURE__ */ jsxs(
+      "div",
+      {
+        style: {
+          "--p": dartColorToCss(store.decoration.primary),
+          "--on-p": dartColorToCss(store.decoration.onPrimary)
+        },
+        children: [
+          /* @__PURE__ */ jsx(Navbar, { store, fixed: false }),
+          /* @__PURE__ */ jsx(Outlet, {}),
+          /* @__PURE__ */ jsx(Footer, { store })
+        ]
+      }
+    )
+  );
 }
 const ProductCard = ({ product }) => {
   var _a;
@@ -3911,7 +3965,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-87f31a69.mjs")
+        lazy: () => import("./assets/lazy-fb436f12.mjs")
       },
       {
         path: "redirect",
