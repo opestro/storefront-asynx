@@ -16,7 +16,7 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-fc960d93.js"
+    "/assets/fb-pixel-5d86554d.js"
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -554,7 +554,7 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-fc960d93.js"
+    "/assets/fb-pixel-5d86554d.js"
   ],
   "node_modules/react-fast-compare/index.js": [
   ],
@@ -569,7 +569,7 @@
   "node_modules/react-player/lib/Player.js": [
   ],
   "node_modules/react-player/lib/Preview.js": [
-    "/assets/Preview-ba9bc503.js"
+    "/assets/Preview-25561162.js"
   ],
   "node_modules/react-player/lib/ReactPlayer.js": [
   ],
@@ -578,43 +578,43 @@
   "node_modules/react-player/lib/patterns.js": [
   ],
   "node_modules/react-player/lib/players/DailyMotion.js": [
-    "/assets/DailyMotion-c74f5c0a.js"
+    "/assets/DailyMotion-3b44d2d2.js"
   ],
   "node_modules/react-player/lib/players/Facebook.js": [
-    "/assets/Facebook-6843ebf8.js"
+    "/assets/Facebook-bf2845df.js"
   ],
   "node_modules/react-player/lib/players/FilePlayer.js": [
-    "/assets/FilePlayer-96050e9a.js"
+    "/assets/FilePlayer-1b8b17de.js"
   ],
   "node_modules/react-player/lib/players/Kaltura.js": [
-    "/assets/Kaltura-e725a3df.js"
+    "/assets/Kaltura-9f9a1d7b.js"
   ],
   "node_modules/react-player/lib/players/Mixcloud.js": [
-    "/assets/Mixcloud-009344ec.js"
+    "/assets/Mixcloud-411e82ca.js"
   ],
   "node_modules/react-player/lib/players/Mux.js": [
-    "/assets/Mux-2f7d4414.js"
+    "/assets/Mux-60e6d431.js"
   ],
   "node_modules/react-player/lib/players/SoundCloud.js": [
-    "/assets/SoundCloud-5bc24c54.js"
+    "/assets/SoundCloud-a349cd05.js"
   ],
   "node_modules/react-player/lib/players/Streamable.js": [
-    "/assets/Streamable-6e6891a8.js"
+    "/assets/Streamable-ab3da828.js"
   ],
   "node_modules/react-player/lib/players/Twitch.js": [
-    "/assets/Twitch-0f52adaf.js"
+    "/assets/Twitch-5f7161f8.js"
   ],
   "node_modules/react-player/lib/players/Vidyard.js": [
-    "/assets/Vidyard-410a88d7.js"
+    "/assets/Vidyard-9415d1d2.js"
   ],
   "node_modules/react-player/lib/players/Vimeo.js": [
-    "/assets/Vimeo-19bf8a08.js"
+    "/assets/Vimeo-0a96b8f0.js"
   ],
   "node_modules/react-player/lib/players/Wistia.js": [
-    "/assets/Wistia-58c8f3b9.js"
+    "/assets/Wistia-5e5abffa.js"
   ],
   "node_modules/react-player/lib/players/YouTube.js": [
-    "/assets/YouTube-3ef1d9fe.js"
+    "/assets/YouTube-83eeeeea.js"
   ],
   "node_modules/react-player/lib/players/index.js": [
   ],
@@ -759,7 +759,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-3a7fa51e.js"
+    "/assets/lazy-38f2431f.js"
   ],
   "src/pages/product.tsx": [
   ],
