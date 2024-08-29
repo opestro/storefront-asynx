@@ -9,7 +9,7 @@ export async function getStore(host: string): Promise<StoreEntity> {
     if (_stores[host]) return _stores[host];
 
     // if contains XXX.feeef.shop use slug, else domain.name
-    const isFeeefShop = host.includes(".feeef.shop");
+    const isFeeefShop = host.includes(".feeef.shop") || host.includes(".khfif.shop");
 
     var store = await ff.stores.find({
         id: isFeeefShop? host.split(".")[0] : host,
