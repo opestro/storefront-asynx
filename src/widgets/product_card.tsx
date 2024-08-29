@@ -67,11 +67,10 @@ export function getCurrencySymbolByStore(store: StoreEntity) {
     try {
         const defaultCurrency = store.configs?.defaultCurrency
         if (!defaultCurrency) {
-            throw new Error("No default currency found")
+            return "دج"
         }
         return store.configs?.currencies[defaultCurrency]?.symbol
     } catch (error) {
-        console.error(error)
         return "دج"
     }
 }

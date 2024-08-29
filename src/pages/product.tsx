@@ -16,7 +16,7 @@ import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
-import {  pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import { pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
 import { cart } from "../services/cart";
 import { getCurrencySymbolByStore } from "../widgets/product_card";
@@ -198,16 +198,16 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
-    function getShippingRate() {
+    function getShippingRate(): number | null {
         var rate = getShippingRateForState({
             state: shipping.address.state,
             shippingMethod: product.shippingMethod,
             store,
         })
         if (shipping.doorShipping) {
-            return rate?.home;
+            return rate?.home === undefined ? null : rate?.home;
         }
-        return rate?.desk;
+        return rate?.desk === undefined ? null : rate?.desk;
     }
 
     function scrollToShippingForm() {
@@ -380,7 +380,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     x{item.quantity}
                 </span>
             </div>
-            {/* <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+            {/* <div className="text-[12px] font-light">المبلغ الكلي مع التوصيل:
                 {
                     shipping?.address.state ?
                         <b className="px-2 font-extrabold">{getTotal()} {getCurrencySymbolByStore(store)}</b>
@@ -754,119 +754,131 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         {/* add to cart */}
                                         <div className="w-2"></div>
                                         {
-                                            !cart.canAddProduct(product)? null :
-                                            !cart.hasProduct(product.id) ?
-                                                <button
-                                                    onClick={() => {
-                                                        cart.add({
-                                                            quantity: item.quantity,
-                                                            price: getPriceAfterDiscount(),
-                                                            variantPath: item.variants.join("/"),
-                                                            product: product,
-                                                        })
-                                                        // update the ui
-                                                        setItem({ ...item });
-                                                    }}
-                                                    className="px-3 py-1 rounded-lg border-2 border-primary text-primary"
-                                                >
-                                                    إضافة إلى السلة
-                                                </button>
-                                                :
-                                                <button
-                                                    onClick={() => {
-                                                        cart.removeProduct(product.id)
-                                                        // update the ui
-                                                        setItem({ ...item });
-                                                    }}
-                                                    className="px-3 py-1 rounded-lg border-2 border-red-500 text-red-500"
-                                                >
-                                                    إزالة من السلة
-                                                </button>
+                                            !cart.canAddProduct(product) ? null :
+                                                !cart.hasProduct(product.id) ?
+                                                    <button
+                                                        onClick={() => {
+                                                            cart.add({
+                                                                quantity: item.quantity,
+                                                                price: getPriceAfterDiscount(),
+                                                                variantPath: item.variants.join("/"),
+                                                                product: product,
+                                                            })
+                                                            // update the ui
+                                                            setItem({ ...item });
+                                                        }}
+                                                        className="px-3 py-1 rounded-lg border-2 border-primary text-primary"
+                                                    >
+                                                        إضافة إلى السلة
+                                                    </button>
+                                                    :
+                                                    <button
+                                                        onClick={() => {
+                                                            cart.removeProduct(product.id)
+                                                            // update the ui
+                                                            setItem({ ...item });
+                                                        }}
+                                                        className="px-3 py-1 rounded-lg border-2 border-red-500 text-red-500"
+                                                    >
+                                                        إزالة من السلة
+                                                    </button>
                                         }
                                     </div>
                                 </div>
                                 {/* divider */}
-                                <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
-                                <div className="p-4">
+                                <div className="flex items-center justify-center">
+                                    <div className="h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow"></div>
+
+                                    <div className="text-gray-600 mx-4">
+                                        ملخص الطلب
+                                    </div>
+                                    <div className="h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow"></div>
+                                </div>
+                                <div className="p-4 pt-1">
                                     {/* cart.items */}
                                     {
                                         cart.canAddProduct(product) && <>
-                                    <div className="flex items-center justify-center">
-                                        <div className="text-gray-600">
-                                            المنتجات
-                                        </div>
-                                        <div className="flex-grow"></div>
-                                        <div className="text-gray-600 text-end">
-                                            <table>
+                                                    <table className="w-full">
 
-                                                {
-                                                    cart.items.length > 0 ?
-                                                        cart.items.map((_item) => (
-                                                            <tr key={_item.product.id} className="text-gray-600">
-                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
-                                                                {/* substring name */}
-                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
-                                                                {/* use table looks better */}
-                                                                <td className="text-gray-600">
-                                                                    {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
-                                                                </td>
-                                                                <td className="text-gray-600">
-                                                                    x{_item.quantity}
-                                                                </td>
-                                                                <td className="text-gray-600">
-                                                                    = {_item.price} {getCurrencySymbolByStore(store)}
-                                                                </td>
-                                                                {/* delete */}
-                                                                <td>
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            cart.removeProduct(_item.product.id)
-                                                                            // force react to update current componenet
-                                                                            setItem({ ...item });
-                                                                        }}
-                                                                        className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
-                                                                    >
-                                                                        إزالة
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                        :
-                                                        <tr className="text-gray-600">
-                                                            <td className="text-gray-600">
-                                                                {product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name}
-                                                            </td>
-                                                            <td className="text-gray-600">
-                                                                x{item.quantity}
-                                                            </td>
-                                                            <td className="text-gray-600">
-                                                                = {getPriceAfterDiscount()} {getCurrencySymbolByStore(store)}
-                                                            </td>
-                                                        </tr>
+                                                        {
+                                                            cart.items.length > 0 ?
+                                                                cart.items.map((_item) => (
+                                                                    <tr key={_item.product.id} className="text-gray-600">
+                                                                        {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
+                                                                        {/* substring name */}
+                                                                        {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
+                                                                        {/* use table looks better */}
 
-                                                }
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div className="h-2"></div></>
-                                }
+                                                                        {/* product image */}
+                                                                        <td>
+                                                                            <img src={_item.product.media[0]} className="w-8 h-8 rounded-lg border-2 border-gray-200" />
+                                                                        </td>
+                                                                        <td className="text-gray-600">
+                                                                            {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
+                                                                        </td>
+                                                                        <td className="text-gray-600">
+                                                                            x{_item.quantity}
+                                                                        </td>
+                                                                        <td className="text-gray-600">
+                                                                            {_item.price} {getCurrencySymbolByStore(store)}
+                                                                        </td>
+                                                                        {/* delete */}
+                                                                        <td className="text-end">
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    cart.removeProduct(_item.product.id)
+                                                                                    // force react to update current componenet
+                                                                                    setItem({ ...item });
+                                                                                }}
+                                                                                className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
+                                                                            >
+                                                                                إزالة
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))
+                                                                :
+                                                                <tr className="text-gray-600 text-center">
+                                                                    <td colSpan={4} className="text-xs">
+                                                                        لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط
+                                                                    </td>
+                                                                </tr>
+
+                                                        }
+                                                    </table>
+                                            <div className="h-2"></div></>
+                                    }
                                     {/* shipping */}
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-600">
-                                            الشحن
+                                            التوصيل
                                         </div>
                                         <div className="flex-grow"></div>
                                         <div className="text-gray-600">
                                             <span className="text-gray-600">{
                                                 shipping?.address.state ?
                                                     <span>{
-                                                        cart.hasProduct(product.id) ?
-                                                        cart.getShippingRate(
-                                                            shipping,
-                                                            store
-                                                        ) :
-                                                        (getShippingRate() || 0)
-                                                    }{getCurrencySymbolByStore(store)}</span>
+                                                        // cart.hasProduct(product.id) ?
+                                                        // cart.getShippingRate(
+                                                        //     shipping,
+                                                        //     store
+                                                        // ) :
+                                                        // (getShippingRate() || 0)
+
+                                                        (() => {
+                                                            var rate: number | null = null;
+                                                            if (cart.hasProduct(product.id)) {
+                                                                rate = cart.getShippingRate(
+                                                                    shipping,
+                                                                    store
+                                                                )
+                                                            } else {
+                                                                rate = getShippingRate();
+                                                            }
+                                                            return rate === 0 ? <span className="text-green-500">توصيل مجاني</span> : rate + " " + getCurrencySymbolByStore(store)
+                                                        })()
+
+                                                    }</span>
                                                     :
                                                     <span>اختر الولاية</span>
                                             }</span>

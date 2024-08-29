@@ -2273,7 +2273,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     return true;
   }
   return /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold flex", children: "معلومات الشحن" }),
+    /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold flex", children: "معلومات التوصيل" }),
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
@@ -3640,7 +3640,7 @@ function Product({ store, product }) {
                 /* @__PURE__ */ jsx("div", { className: "h-2" })
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
-                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "الشحن" }),
+                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "التوصيل" }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsxs("span", { children: [
                   cart.hasProduct(product.id) ? cart.getShippingRate(

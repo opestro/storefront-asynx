@@ -5,7 +5,7 @@ import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser }
 import { getShippingRateForState } from "../pishop/logic";
 import { ShippingMethodEntity } from "feeef/src/core/core";
 import { useState } from 'react';
-import { tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
+import { dartColorToCss, tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
 import TextField from '@mui/material/TextField';
 import { InputAdornment } from "@mui/material";
 import { getCurrencySymbolByStore } from "../widgets/product_card";
@@ -49,17 +49,26 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
         setIsPhoneValid(isValid);
     }
 
-    function canShipToHome(): boolean {
-        return true;
-    }
+    var rates = getShippingRateForState({
+        shippingMethod,
+        store,
+        state: shipping.address.state
+    })//?.[shipping.doorShipping ? "home
+    var rate = rates?.[shipping.doorShipping ? "home" : "desk"];
+    var canShipToHome = rates?.home !== null;
+    var homeRate = rates?.home;
+    var canShipToDesk = rates?.desk !== null;
+    var deskRate = rates?.desk;
+
+
 
     return (
         <div>
-            <h2 className="text-xl font-semibold flex">معلومات الشحن</h2>
+            <h2 className="text-xl font-semibold flex">معلومات التوصيل</h2>
             <div className="h-2"></div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
 
-            <div>
+                <div>
                     <label className="text-sm font-light flex items-center">الهاتف
                         {
                             !isPhoneValid
@@ -75,7 +84,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </label>
                     <div className={
 
-                        "relative border border-gray-500 border-opacity-20 rounded-lg "
+                        "relative border border-gray border-opacity-50 rounded-lg "
                         + (isPhoneValid ? '' : ' text-red-500 pulse')
 
                     }
@@ -85,7 +94,9 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             } as React.CSSProperties
                         }
                     >
-                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} />
+                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} 
+                        color={store.decoration?.primary && dartColorToCss(store.decoration?.primary) || undefined}
+                        />
                         <input
                             style={
                                 {
@@ -161,17 +172,33 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                         >
                             {
                                 states.map((state, index) => {
-                                    var rate = getShippingRateForState({
+                                    var rates = getShippingRateForState({
                                         shippingMethod,
                                         store,
                                         state: (index + 1).toString().padStart(2, '0')
-                                    })?.[shipping.doorShipping ? "home" : "desk"];
+                                    })//?.[shipping.doorShipping ? "home" : "desk"];
+                                    var rate = rates?.[shipping.doorShipping ? "home" : "desk"];
+                                    var canShipToHome = rates?.home !== null;
+                                    var homeRate = rates?.home;
+                                    var canShipToDesk = rates?.desk !== null;
+                                    var deskRate = rates?.desk;
+
                                     return (
                                         <option
-                                            disabled={!rate}
+                                            disabled={canShipToHome === null && canShipToDesk === null}
                                             key={index}
                                             value={index + 1}
-                                        >{state} - {rate !== null && rate !== undefined ? `${rate} ${getCurrencySymbolByStore(store)}` : 'غير متوفر'}
+                                        >
+                                            {state} - {
+                                                rate === 0 ? <span className="text-green-500">توصيل مجاني</span> :
+
+                                                    !canShipToHome && !canShipToDesk ? <span className="text-red-500">غير متوفر</span> :
+                                                        !canShipToHome && canShipToDesk ? <span className="text-red-500">توصيل للمكتب فقط ({deskRate} {getCurrencySymbolByStore(store)})</span> :
+                                                            canShipToHome && !canShipToDesk ? <span className="text-green-500">توصيل للبيت فقط ({homeRate} {getCurrencySymbolByStore(store)})</span> :
+                                                                <span>{rate} {getCurrencySymbolByStore(store)}</span>
+
+                                            }
+
                                         </option>
                                     );
                                 })
@@ -209,9 +236,10 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                 </div>
             </div>
             {
-                shipping.doorShipping && store.metadata?.shipping?.mode !== "deskOnly" &&
+                (shipping.doorShipping && store.metadata?.shipping?.mode !== "deskOnly"
+                    || !canShipToDesk
+                )  && canShipToHome &&
                 <>
-                    <div className="h-2"></div>
                     <div>
                         <label className="text-sm font-light">العنوان</label>
                         <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
@@ -230,11 +258,15 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </div>
                 </>
             }
-            <div className="h-4"></div>{
-                store.metadata?.shipping?.mode === "deskOnly" || store.metadata?.shipping?.mode === "homeOnly" ? null :
+            <div className="h-4"></div>
+            {
+                store.metadata?.shipping?.mode === "deskOnly" || store.metadata?.shipping?.mode === "homeOnly"
+                || !canShipToDesk
+                || !canShipToHome
+                ? null :
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" onChange={() => {
-                            shipping.doorShipping = !shipping.doorShipping && canShipToHome();
+                            shipping.doorShipping = !shipping.doorShipping && canShipToHome;
                             setShipping({ ...shipping })
                         }} checked={shipping.doorShipping} className="sr-only peer" />
                         <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
@@ -251,7 +283,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             {/* <span className="text-xs text-gray-500">حدد هذا الخيار إن كان لديك عنوان توصيل غير عنوانك الحالي</span> */}
                         </div>
                     </label>
-                }
+            }
         </div>
     );
 }
