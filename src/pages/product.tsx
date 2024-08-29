@@ -867,7 +867,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
 
                                                         (() => {
                                                             var rate: number | null = null;
-                                                            if (cart.hasProduct(product.id)) {
+                                                            if (false && cart.hasProduct(product.id)) {
                                                                 rate = cart.getShippingRate(
                                                                     shipping,
                                                                     store

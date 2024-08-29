@@ -34,6 +34,28 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
         let currentCityIndex = (parseInt(shipping!.address.city) || 1) - 1;
         shipping!.address.city = (Math.min(currentCityIndex, baladiyat.length - 1) + 1).toString().padStart(2, '0');
         setShipping({ ...shipping });
+        // if shipping to home is not available, switch to desk
+        // and the other way around
+
+        const { canShipToHome, canShipToDesk } = calc(
+            shipping.address.state,
+            !!shipping.doorShipping
+        );
+
+        if (
+            !canShipToHome && shipping.doorShipping
+        ) {
+            shipping.doorShipping = false;
+            shipping.address.street = "";
+            setShipping({ ...shipping });
+        }
+        if (
+            !canShipToDesk && !shipping.doorShipping
+        ) {
+            shipping.doorShipping = true;
+            shipping.address.street = "عنواني";
+            setShipping({ ...shipping });
+        }
     }
 
     function validatePhone(phone: string) {
@@ -49,16 +71,31 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
         setIsPhoneValid(isValid);
     }
 
-    var rates = getShippingRateForState({
-        shippingMethod,
-        store,
-        state: shipping.address.state
-    })//?.[shipping.doorShipping ? "home
-    var rate = rates?.[shipping.doorShipping ? "home" : "desk"];
-    var canShipToHome = rates?.home !== null;
-    var homeRate = rates?.home;
-    var canShipToDesk = rates?.desk !== null;
-    var deskRate = rates?.desk;
+    function calc(state: string, doorShipping: boolean) {
+        var rates = getShippingRateForState({
+            shippingMethod,
+            store,
+            state: state
+        })
+        var rate = rates?.[doorShipping ? "home" : "desk"];
+        var canShipToHome = rates?.home !== null;
+        var homeRate = rates?.home;
+        var canShipToDesk = rates?.desk !== null;
+        var deskRate = rates?.desk;
+
+        return {
+            rate,
+            canShipToHome,
+            homeRate,
+            canShipToDesk,
+            deskRate
+        }
+    }
+
+    const { rate, canShipToHome, homeRate, canShipToDesk, deskRate } = calc(
+        shipping.address.state,
+        !!shipping.doorShipping
+    );
 
 
 
@@ -172,20 +209,14 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                         >
                             {
                                 states.map((state, index) => {
-                                    var rates = getShippingRateForState({
-                                        shippingMethod,
-                                        store,
-                                        state: (index + 1).toString().padStart(2, '0')
-                                    })//?.[shipping.doorShipping ? "home" : "desk"];
-                                    var rate = rates?.[shipping.doorShipping ? "home" : "desk"];
-                                    var canShipToHome = rates?.home !== null;
-                                    var homeRate = rates?.home;
-                                    var canShipToDesk = rates?.desk !== null;
-                                    var deskRate = rates?.desk;
+                                    const { rate, canShipToHome, homeRate, canShipToDesk, deskRate } = calc(
+                                        (index + 1).toString().padStart(2, '0'),
+                                        !!shipping.doorShipping
+                                    );
 
                                     return (
                                         <option
-                                            disabled={canShipToHome === null && canShipToDesk === null}
+                                            disabled={!canShipToHome && !canShipToDesk }
                                             key={index}
                                             value={index + 1}
                                         >
