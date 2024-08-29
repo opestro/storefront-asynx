@@ -24,10 +24,10 @@ export default function Thanks({ order, onDone }: {
             <div>
                 <h3>سنتصل بك على <b>{order.customerPhone}</b></h3>
             </div>
-            {/* <div className="flex text-[12px]"><h4 className="font-light">بدون شحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order, false)}دج</div></div> */}
-            {/* <div className="flex text-[12px]"><h4 className=" font-light">مبلغ الشحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderShipping(store, order)}دج</div></div> */}
+            {/* <div className="flex text-[12px]"><h4 className="font-light">بدون شحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order, false)}{getCurrencySymbolByStore(store)}</div></div> */}
+            {/* <div className="flex text-[12px]"><h4 className=" font-light">مبلغ الشحن</h4><div className="flex-grow"></div><div>{calculateLocalOrderShipping(store, order)}{getCurrencySymbolByStore(store)}</div></div> */}
             <div className="h-1"></div>
-            {/* <div className="flex"><h4 className="text-sm font-light">المجموع</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order)}دج</div></div> */}
+            {/* <div className="flex"><h4 className="text-sm font-light">المجموع</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order)}{getCurrencySymbolByStore(store)}</div></div> */}
             <div className="h-2"></div>
             <button type="button" className="w-full pulse btn gb" onClick={onDone}>إغلاق</button>
             <div className="h-2"></div>

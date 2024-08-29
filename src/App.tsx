@@ -67,6 +67,10 @@ async function productLoader({ params }: any) {
 
   let slug = params.slug
   let product = await getProduct(slug)
+  // assert product.storeId == store.id
+  if (product.storeId != store.id) {
+    throw new Error("Product not found")
+  }
   return { store, product }
 }
 
@@ -183,7 +187,7 @@ function Home() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {filteredProducts().map((product, index) => (
             <div key={index} >
-              <ProductCard product={product}></ProductCard>
+              <ProductCard product={product} store={store}></ProductCard>
             </div>
           ))}
 

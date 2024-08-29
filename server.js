@@ -36,9 +36,9 @@ async function createServer() {
 
   app.use("*", async (req, res) => {
     // home page dont use SSR
-    if (req.originalUrl === "/") {
-      return res.sendFile(resolve("dist/client/index.html"));
-    }
+    // if (req.originalUrl === "/") {
+    //   return res.sendFile(resolve("dist/client/index.html"));
+    // }
 
     // any assets/* requests will be handled by static file server
     if (req.originalUrl.startsWith("/assets/")) {

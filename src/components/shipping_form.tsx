@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
 import TextField from '@mui/material/TextField';
 import { InputAdornment } from "@mui/material";
+import { getCurrencySymbolByStore } from "../widgets/product_card";
 
 /**
  * Represents a component for managing shipping information.
@@ -170,7 +171,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                             disabled={!rate}
                                             key={index}
                                             value={index + 1}
-                                        >{state} - {rate !== null && rate !== undefined ? `${rate} دج` : 'غير متوفر'}
+                                        >{state} - {rate !== null && rate !== undefined ? `${rate} ${getCurrencySymbolByStore(store)}` : 'غير متوفر'}
                                         </option>
                                     );
                                 })
@@ -239,7 +240,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                         <div className="pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
                         <div className="ms-3 flex flex-col">
                             <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
-                                {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل دج{
+                                {!shipping.doorShipping && "هل تريد "}التوصيل للبيت {!shipping.doorShipping && (<b dir="ltr">مقابل {getCurrencySymbolByStore(store)}{
                                     getShippingRateForState({
                                         shippingMethod,
                                         store,

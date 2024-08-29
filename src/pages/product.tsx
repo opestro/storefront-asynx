@@ -16,9 +16,10 @@ import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
-import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import {  pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
 import { cart } from "../services/cart";
+import { getCurrencySymbolByStore } from "../widgets/product_card";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
 
 var _cachedOrders: LocalOrder[] = [];
@@ -382,7 +383,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             {/* <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
                 {
                     shipping?.address.state ?
-                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                        <b className="px-2 font-extrabold">{getTotal()} {getCurrencySymbolByStore(store)}</b>
                         :
                         <b className="px-2 font-extrabold">)اختر الولاية(</b>
                 }
@@ -632,12 +633,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     {
                                         getPriceAfterDiscount()
                                     }
-                                    دج
+                                    {getCurrencySymbolByStore(store)}
                                 </span>}
                                 {
                                     getPriceAfterDiscount() !== getPriceWithoutVariantsDiscount() &&
                                     <span className="px-1  text-gray-400 line-through text-lg">
-                                        {getPriceWithoutVariantsDiscount()} دج
+                                        {getPriceWithoutVariantsDiscount()} {getCurrencySymbolByStore(store)}
                                     </span>
                                 }
 
@@ -695,7 +696,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 // content_category: 'cloth',
                                                 content_ids: [product?.id],
                                                 content_type: 'product',
-                                                value: getPriceWithoutVariantsDiscount(),
+                                                value: getTotal() ?? 0,
                                                 currency: 'DZD'
                                             });
                                         }}
@@ -802,9 +803,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                     cart.items.length > 0 ?
                                                         cart.items.map((_item) => (
                                                             <tr key={_item.product.id} className="text-gray-600">
-                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}دج */}
+                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
                                                                 {/* substring name */}
-                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}دج) */}
+                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
                                                                 {/* use table looks better */}
                                                                 <td className="text-gray-600">
                                                                     {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
@@ -813,7 +814,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                     x{_item.quantity}
                                                                 </td>
                                                                 <td className="text-gray-600">
-                                                                    = {_item.price} دج
+                                                                    = {_item.price} {getCurrencySymbolByStore(store)}
                                                                 </td>
                                                                 {/* delete */}
                                                                 <td>
@@ -839,7 +840,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                 x{item.quantity}
                                                             </td>
                                                             <td className="text-gray-600">
-                                                                = {getPriceAfterDiscount()} دج
+                                                                = {getPriceAfterDiscount()} {getCurrencySymbolByStore(store)}
                                                             </td>
                                                         </tr>
 
@@ -865,7 +866,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                             store
                                                         ) :
                                                         (getShippingRate() || 0)
-                                                    }دج</span>
+                                                    }{getCurrencySymbolByStore(store)}</span>
                                                     :
                                                     <span>اختر الولاية</span>
                                             }</span>
@@ -882,7 +883,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             <span className="text-gray-600">{
                                                 cart.total > 0 ? cart.total + (getShippingRate() || 0) :
                                                     getTotal()
-                                            } دج</span>
+                                            } {getCurrencySymbolByStore(store)}</span>
                                         </div>
                                     </div>
                                 </div>

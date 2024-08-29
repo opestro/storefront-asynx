@@ -175,6 +175,7 @@ function Navbar({ store, fixed = true }) {
 var OrderStatus = /* @__PURE__ */ ((OrderStatus2) => {
   OrderStatus2["draft"] = "draft";
   OrderStatus2["pending"] = "pending";
+  OrderStatus2["accepted"] = "accepted";
   OrderStatus2["processing"] = "processing";
   OrderStatus2["completed"] = "completed";
   OrderStatus2["cancelled"] = "cancelled";
@@ -2188,6 +2189,64 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }) {
     )
   ] });
 }
+const ProductCard = ({ product, store }) => {
+  var _a;
+  const total = !!product.discount ? (product.price - product.discount).toFixed(0) : product.price.toFixed(0);
+  const discount = !!product.discount ? (product.discount * 100 / product.price).toFixed(0) : null;
+  return /* @__PURE__ */ jsx(Link, { to: `/p/${product.slug}`, children: /* @__PURE__ */ jsxs("div", { className: "gb rounded-2xl p-2", children: [
+    /* @__PURE__ */ jsx("div", { className: "gb rounded-[8px] p-[1px] aspect-square", children: /* @__PURE__ */ jsx(
+      "img",
+      {
+        className: "rounded-[7px] w-full h-full object-cover",
+        src: product.photoUrl ?? "",
+        alt: product.name ?? ""
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "h-2" }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "rounded-md  text-orange-500 text-lg", children: [
+          total,
+          " ",
+          getCurrencySymbolByStore(store)
+        ] }),
+        !!product.discount && /* @__PURE__ */ jsxs("span", { className: "px-1 text-gray-400 line-through text-sm", children: [
+          product.price,
+          " ",
+          getCurrencySymbolByStore(store)
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("h3", { children: product.name }),
+      /* @__PURE__ */ jsx("div", { className: "h-1" }),
+      product.description && /* @__PURE__ */ jsxs("p", { className: "text-gray-400 dark:text-gray-500 text-sm font-light", children: [
+        (_a = product.description) == null ? void 0 : _a.substring(0, 60),
+        "..."
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "h-2" }),
+      /* @__PURE__ */ jsxs("button", { type: "button", className: "btn gb w-full", children: [
+        "اشتري الآن",
+        !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
+          "-",
+          discount,
+          "%"
+        ] })
+      ] })
+    ] })
+  ] }) });
+};
+function getCurrencySymbolByStore(store) {
+  var _a, _b, _c;
+  try {
+    const defaultCurrency = (_a = store.configs) == null ? void 0 : _a.defaultCurrency;
+    if (!defaultCurrency) {
+      throw new Error("No default currency found");
+    }
+    return (_c = (_b = store.configs) == null ? void 0 : _b.currencies[defaultCurrency]) == null ? void 0 : _c.symbol;
+  } catch (error) {
+    console.error(error);
+    return "دج";
+  }
+}
 function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder }) {
   var _a, _b, _c, _d, _e, _f, _g;
   const [isPhoneValid, setIsPhoneValid] = useState(true);
@@ -2307,7 +2366,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                     children: [
                       state,
                       " - ",
-                      rate !== null && rate !== void 0 ? `${rate} دج` : "غير متوفر"
+                      rate !== null && rate !== void 0 ? `${rate} ${getCurrencySymbolByStore(store)}` : "غير متوفر"
                     ]
                   },
                   index
@@ -2381,7 +2440,8 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         !shipping.doorShipping && "هل تريد ",
         "التوصيل للبيت ",
         !shipping.doorShipping && /* @__PURE__ */ jsxs("b", { dir: "ltr", children: [
-          "مقابل دج",
+          "مقابل ",
+          getCurrencySymbolByStore(store),
           (_g = getShippingRateForState({
             shippingMethod,
             store,
@@ -2879,9 +2939,9 @@ class FeeeF {
 }
 const ff = new FeeeF({
   apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
-  baseURL: "https://apis.feeef.net/api/v1",
-  cache: 10
-  // baseURL: "http://localhost:3333/api/v1",
+  // baseURL: "https://apis.feeef.net/api/v1",
+  cache: false,
+  baseURL: "http://localhost:3333/api/v1"
 });
 var currentHost = null;
 function setCurrentHost(url) {
@@ -3405,11 +3465,12 @@ function Product({ store, product }) {
           /* @__PURE__ */ jsxs("div", { className: "flex items-center pb-3 ", children: [
             /* @__PURE__ */ jsxs("span", { className: "rounded-md px-1 text-orange-500 text-2xl", children: [
               getPriceAfterDiscount(),
-              "دج"
+              getCurrencySymbolByStore(store)
             ] }),
             getPriceAfterDiscount() !== getPriceWithoutVariantsDiscount() && /* @__PURE__ */ jsxs("span", { className: "px-1  text-gray-400 line-through text-lg", children: [
               getPriceWithoutVariantsDiscount(),
-              " دج"
+              " ",
+              getCurrencySymbolByStore(store)
             ] }),
             /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
             /* @__PURE__ */ jsxs("span", { className: "px-1  text-gray-400 text-lg", children: [
@@ -3447,7 +3508,7 @@ function Product({ store, product }) {
                     // content_category: 'cloth',
                     content_ids: [product == null ? void 0 : product.id],
                     content_type: "product",
-                    value: getPriceWithoutVariantsDiscount(),
+                    value: getTotal() ?? 0,
                     currency: "DZD"
                   });
                 }
@@ -3548,7 +3609,8 @@ function Product({ store, product }) {
                     /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
                       "= ",
                       _item.price,
-                      " دج"
+                      " ",
+                      getCurrencySymbolByStore(store)
                     ] }),
                     /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx(
                       "button",
@@ -3570,7 +3632,8 @@ function Product({ store, product }) {
                     /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
                       "= ",
                       getPriceAfterDiscount(),
-                      " دج"
+                      " ",
+                      getCurrencySymbolByStore(store)
                     ] })
                   ] }) }) })
                 ] }),
@@ -3584,7 +3647,7 @@ function Product({ store, product }) {
                     shipping,
                     store
                   ) : getShippingRate() || 0,
-                  "دج"
+                  getCurrencySymbolByStore(store)
                 ] }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
               ] }),
               /* @__PURE__ */ jsx("div", { className: "h-2" }),
@@ -3593,7 +3656,8 @@ function Product({ store, product }) {
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsxs("span", { className: "text-gray-600", children: [
                   cart.total > 0 ? cart.total + (getShippingRate() || 0) : getTotal(),
-                  " دج"
+                  " ",
+                  getCurrencySymbolByStore(store)
                 ] }) })
               ] })
             ] })
@@ -3840,49 +3904,6 @@ function Layout() {
     )
   );
 }
-const ProductCard = ({ product }) => {
-  var _a;
-  const total = !!product.discount ? (product.price - product.discount).toFixed(0) : product.price.toFixed(0);
-  const discount = !!product.discount ? (product.discount * 100 / product.price).toFixed(0) : null;
-  return /* @__PURE__ */ jsx(Link, { to: `/p/${product.slug}`, children: /* @__PURE__ */ jsxs("div", { className: "gb rounded-2xl p-2", children: [
-    /* @__PURE__ */ jsx("div", { className: "gb rounded-[8px] p-[1px] aspect-square", children: /* @__PURE__ */ jsx(
-      "img",
-      {
-        className: "rounded-[7px] w-full h-full object-cover",
-        src: product.photoUrl ?? "",
-        alt: product.name ?? ""
-      }
-    ) }),
-    /* @__PURE__ */ jsx("div", { className: "h-2" }),
-    /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
-        /* @__PURE__ */ jsxs("span", { className: "rounded-md  text-orange-500 text-lg", children: [
-          total,
-          " دج"
-        ] }),
-        !!product.discount && /* @__PURE__ */ jsxs("span", { className: "px-1 text-gray-400 line-through text-sm", children: [
-          product.price,
-          " دج"
-        ] })
-      ] }),
-      /* @__PURE__ */ jsx("h3", { children: product.name }),
-      /* @__PURE__ */ jsx("div", { className: "h-1" }),
-      product.description && /* @__PURE__ */ jsxs("p", { className: "text-gray-400 dark:text-gray-500 text-sm font-light", children: [
-        (_a = product.description) == null ? void 0 : _a.substring(0, 60),
-        "..."
-      ] }),
-      /* @__PURE__ */ jsx("div", { className: "h-2" }),
-      /* @__PURE__ */ jsxs("button", { type: "button", className: "btn gb w-full", children: [
-        "اشتري الآن",
-        !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
-          "-",
-          discount,
-          "%"
-        ] })
-      ] })
-    ] })
-  ] }) });
-};
 const CategoryButton = ({
   onClick,
   category,
@@ -3988,6 +4009,9 @@ async function productLoader({ params }) {
   let store = await getStore(getCurrentHost());
   let slug = params.slug;
   let product = await getProduct(slug);
+  if (product.storeId != store.id) {
+    throw new Error("Product not found");
+  }
   return { store, product };
 }
 async function homeLoader() {
@@ -4054,7 +4078,7 @@ function Home() {
     }, selected: (selectedCategory == null ? void 0 : selectedCategory.name) == category.name, category }, index)) }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
     /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: [
-      filteredProducts().map((product, index) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductCard, { product }) }, index)),
+      filteredProducts().map((product, index) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductCard, { product, store }) }, index)),
       !filteredProducts().length && /* @__PURE__ */ jsx("div", { className: "col-span-full", children: /* @__PURE__ */ jsxs("div", { className: "py-4 flex flex-col items-center justify-center", children: [
         /* @__PURE__ */ jsx(IconFlag, {}),
         /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold text-gray-500 dark:text-gray-400", children: "لا يوجد منتجات" }),
