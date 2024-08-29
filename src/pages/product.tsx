@@ -221,11 +221,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
     async function sendOrder(status: "draft" | "pending" = "pending") {
-        console.log("sending...");
+        // console.log("sending...");
         var validationError = validatePhoneNumber(tryFixPhoneNumber(shipping.phone));
         if (validationError) {
             // alert(validationError);
-            console.log("invalid phone number");
+            // console.log("invalid phone number");
             return;
         }
         shipping.phone = tryFixPhoneNumber(shipping.phone);
@@ -245,7 +245,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
 
         if (status == 'draft' && olderOrder) {
-            console.log("draft order already exists");
+            // console.log("draft order already exists");
             return;
         }
 
@@ -255,7 +255,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         // fbc?: string | null
         // fbp?: string | null
         // eventSourceUrl?: string | null
-        console.log("xxx...");
+        // console.log("xxx...");
 
         let urlParams = new URLSearchParams(location.search);
         let fbc = urlParams.get('fbclid');
@@ -334,7 +334,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
         // Purchase
         // ReactPixel.track('Purchase', eventData);
-        console.log("order sent", response);
+        // console.log("order sent", response);
     }
 
 
@@ -673,7 +673,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
-                                            console.log(variant!.value)
+                                            // console.log(variant!.value)
 
                                             if (variant?.type == VariantOptionType.image) {
                                                 var mediaIndex = product?.media.findIndex((media) => media == variant!.value);

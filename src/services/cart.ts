@@ -31,7 +31,7 @@ export const cart = {
                 this.items = this.items.filter((item) => {
                     return item.product && item.product.id;
                 });
-                console.log("cart loaded", cartl);
+                // console.log("cart loaded", cartl);
             }
         } catch (e) {
             console.error("cart load error", e);
@@ -99,7 +99,7 @@ export const cart = {
         this.items.forEach((item) => {
             ttl += item.price * item.quantity;
         });
-        console.log("total", this.items);
+        // console.log("total", this.items);
         return ttl;
     },
 

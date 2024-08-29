@@ -99,13 +99,6 @@ function useInViewport() {
   return { isInViewport, ref: setRef };
 }
 function track(title, data) {
-  console.log("track", title);
-}
-function pageView() {
-  console.log("pageView");
-}
-function initMetaPixel(store) {
-  console.log("init");
 }
 const dartColorToCss = (color) => {
   var colorAsString = color.toString(16);
@@ -156,7 +149,6 @@ function Navbar({ store, fixed = true }) {
             href: ((_d = store == null ? void 0 : store.action) == null ? void 0 : _d.url) || "#!",
             target: "_blank",
             onClick: () => {
-              track("Contact");
             },
             children: ((_e = store == null ? void 0 : store.action) == null ? void 0 : _e.label) && /* @__PURE__ */ jsx(
               "button",
@@ -2256,6 +2248,20 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     let currentCityIndex = (parseInt(shipping.address.city) || 1) - 1;
     shipping.address.city = (Math.min(currentCityIndex, baladiyat.length - 1) + 1).toString().padStart(2, "0");
     setShipping({ ...shipping });
+    const { canShipToHome: canShipToHome2, canShipToDesk: canShipToDesk2 } = calc(
+      shipping.address.state,
+      !!shipping.doorShipping
+    );
+    if (!canShipToHome2 && shipping.doorShipping) {
+      shipping.doorShipping = false;
+      shipping.address.street = "";
+      setShipping({ ...shipping });
+    }
+    if (!canShipToDesk2 && !shipping.doorShipping) {
+      shipping.doorShipping = true;
+      shipping.address.street = "عنواني";
+      setShipping({ ...shipping });
+    }
   }
   function validatePhone(phone) {
     return !validatePhoneNumber(tryFixPhoneNumber(phone));
@@ -2268,16 +2274,29 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     sendOrder("draft");
     setIsPhoneValid(isValid);
   }
-  var rates = getShippingRateForState({
-    shippingMethod,
-    store,
-    state: shipping.address.state
-  });
-  rates == null ? void 0 : rates[shipping.doorShipping ? "home" : "desk"];
-  var canShipToHome = (rates == null ? void 0 : rates.home) !== null;
-  rates == null ? void 0 : rates.home;
-  var canShipToDesk = (rates == null ? void 0 : rates.desk) !== null;
-  rates == null ? void 0 : rates.desk;
+  function calc(state, doorShipping) {
+    var rates = getShippingRateForState({
+      shippingMethod,
+      store,
+      state
+    });
+    var rate2 = rates == null ? void 0 : rates[doorShipping ? "home" : "desk"];
+    var canShipToHome2 = (rates == null ? void 0 : rates.home) !== null;
+    var homeRate2 = rates == null ? void 0 : rates.home;
+    var canShipToDesk2 = (rates == null ? void 0 : rates.desk) !== null;
+    var deskRate2 = rates == null ? void 0 : rates.desk;
+    return {
+      rate: rate2,
+      canShipToHome: canShipToHome2,
+      homeRate: homeRate2,
+      canShipToDesk: canShipToDesk2,
+      deskRate: deskRate2
+    };
+  }
+  const { rate, canShipToHome, homeRate, canShipToDesk, deskRate } = calc(
+    shipping.address.state,
+    !!shipping.doorShipping
+  );
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold flex", children: "معلومات التوصيل" }),
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
@@ -2364,20 +2383,14 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
               },
               defaultValue: shipping.address.state,
               children: states.map((state, index) => {
-                var rates2 = getShippingRateForState({
-                  shippingMethod,
-                  store,
-                  state: (index + 1).toString().padStart(2, "0")
-                });
-                var rate2 = rates2 == null ? void 0 : rates2[shipping.doorShipping ? "home" : "desk"];
-                var canShipToHome2 = (rates2 == null ? void 0 : rates2.home) !== null;
-                var homeRate2 = rates2 == null ? void 0 : rates2.home;
-                var canShipToDesk2 = (rates2 == null ? void 0 : rates2.desk) !== null;
-                var deskRate2 = rates2 == null ? void 0 : rates2.desk;
+                const { rate: rate2, canShipToHome: canShipToHome2, homeRate: homeRate2, canShipToDesk: canShipToDesk2, deskRate: deskRate2 } = calc(
+                  (index + 1).toString().padStart(2, "0"),
+                  !!shipping.doorShipping
+                );
                 return /* @__PURE__ */ jsxs(
                   "option",
                   {
-                    disabled: canShipToHome2 === null && canShipToDesk2 === null,
+                    disabled: !canShipToHome2 && !canShipToDesk2,
                     value: index + 1,
                     children: [
                       state,
@@ -3024,7 +3037,6 @@ function Product({ store, product }) {
     document.title = (product == null ? void 0 : product.name) || store.title || "";
   }, []);
   useEffect(() => {
-    pageView();
   }, []);
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [sentOrder, setSentOrder] = useState(null);
@@ -3134,10 +3146,8 @@ function Product({ store, product }) {
   }
   async function sendOrder(status = "pending") {
     var _a2;
-    console.log("sending...");
     var validationError = validatePhoneNumber(tryFixPhoneNumber(shipping.phone));
     if (validationError) {
-      console.log("invalid phone number");
       return;
     }
     shipping.phone = tryFixPhoneNumber(shipping.phone);
@@ -3154,11 +3164,9 @@ function Product({ store, product }) {
       }
     }
     if (status == "draft" && olderOrder) {
-      console.log("draft order already exists");
       return;
     }
     setLoading(status == "pending");
-    console.log("xxx...");
     let urlParams = new URLSearchParams(location.search);
     let fbc = urlParams.get("fbclid");
     let fbp = urlParams.get("_fbp") ?? ((_a2 = document.cookie.split(";").find((c) => c.trim().startsWith("_fbp"))) == null ? void 0 : _a2.split("=")[1]);
@@ -3220,13 +3228,11 @@ function Product({ store, product }) {
       order_id: response.id
       // content_category
     });
-    if (status == "draft") {
-      track("InitiateCheckout");
-    } else {
-      track("Purchase");
+    if (status == "draft")
+      ;
+    else {
       cart.clear();
     }
-    console.log("order sent", response);
   }
   function SendOrderButton({
     id,
@@ -3526,7 +3532,6 @@ function Product({ store, product }) {
                   return setItem({ ...item });
                 },
                 onSelect: (variant) => {
-                  console.log(variant.value);
                   if ((variant == null ? void 0 : variant.type) == VariantOptionType.image) {
                     var mediaIndex = product == null ? void 0 : product.media.findIndex((media) => media == variant.value);
                     var el = document.getElementById(`slide-${mediaIndex + 1}`);
@@ -3668,12 +3673,7 @@ function Product({ store, product }) {
                   // (getShippingRate() || 0)
                   children: (() => {
                     var rate = null;
-                    if (cart.hasProduct(product.id)) {
-                      rate = cart.getShippingRate(
-                        shipping,
-                        store
-                      );
-                    } else {
+                    {
                       rate = getShippingRate();
                     }
                     return rate === 0 ? /* @__PURE__ */ jsx("span", { className: "text-green-500", children: "توصيل مجاني" }) : rate + " " + getCurrencySymbolByStore(store);
@@ -3808,7 +3808,6 @@ const cart = {
         this.items = this.items.filter((item) => {
           return item.product && item.product.id;
         });
-        console.log("cart loaded", cartl);
       }
     } catch (e) {
       console.error("cart load error", e);
@@ -3867,7 +3866,6 @@ const cart = {
     this.items.forEach((item) => {
       ttl += item.price * item.quantity;
     });
-    console.log("total", this.items);
     return ttl;
   },
   hasProduct(productId) {
@@ -3912,7 +3910,6 @@ const cart = {
 function Layout() {
   let store = useLoaderData();
   useEffect(() => {
-    initMetaPixel();
     cart.init();
   }, []);
   return (

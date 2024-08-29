@@ -102,9 +102,9 @@ export function useInViewport(): { isInViewport: boolean; ref: React.RefCallback
 var _reactFacebookPixel: any = null;
 // meta pixel helpers for ssr
 export function track(title: string, data?: any): void {
-    console.log("track",title)
+    // console.log("track",title)
     if (!import.meta.env.SSR) {
-        console.log("trackSSR",title)
+        // console.log("trackSSR",title)
         if (_reactFacebookPixel == null) {
             import("react-facebook-pixel")
                 .then((ReactPixel) => {
@@ -119,7 +119,7 @@ export function track(title: string, data?: any): void {
 
 // pageView()
 export function pageView(): void {
-    console.log("pageView")
+    // console.log("pageView")
     if (!import.meta.env.SSR) {
         if (_reactFacebookPixel == null) {
             import("react-facebook-pixel")
@@ -135,7 +135,7 @@ export function pageView(): void {
 
 // initMetaPixel
 export function initMetaPixel(store: any): void {
-    console.log("init")
+    // console.log("init")
     if (!import.meta.env.SSR) {
         if (_reactFacebookPixel == null) {
             import("react-facebook-pixel")
