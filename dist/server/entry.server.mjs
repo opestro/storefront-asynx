@@ -3958,10 +3958,10 @@ var _storeProducts = {};
 async function getStore(host) {
   if (_stores[host])
     return _stores[host];
-  let subdomain = host.split(".")[0];
+  const isFeeefShop = host.includes(".feeef.shop");
   var store = await ff.stores.find({
-    id: subdomain,
-    by: "slug"
+    id: isFeeefShop ? host.split(".")[0] : host,
+    by: isFeeefShop ? "slug" : "domain.name"
   });
   _stores[host] = store;
   return store;
