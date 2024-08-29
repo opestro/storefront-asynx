@@ -2392,26 +2392,11 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                   {
                     disabled: !canShipToHome2 && !canShipToDesk2,
                     value: index + 1,
+                    className: rate2 === 0 ? "text-green-500" : rate2 === null ? "text-red-500" : "",
                     children: [
                       state,
                       " - ",
-                      rate2 === 0 ? /* @__PURE__ */ jsx("span", { className: "text-green-500", children: "توصيل مجاني" }) : !canShipToHome2 && !canShipToDesk2 ? /* @__PURE__ */ jsx("span", { className: "text-red-500", children: "غير متوفر" }) : !canShipToHome2 && canShipToDesk2 ? /* @__PURE__ */ jsxs("span", { className: "text-red-500", children: [
-                        "توصيل للمكتب فقط (",
-                        deskRate2,
-                        " ",
-                        getCurrencySymbolByStore(store),
-                        ")"
-                      ] }) : canShipToHome2 && !canShipToDesk2 ? /* @__PURE__ */ jsxs("span", { className: "text-green-500", children: [
-                        "توصيل للبيت فقط (",
-                        homeRate2,
-                        " ",
-                        getCurrencySymbolByStore(store),
-                        ")"
-                      ] }) : /* @__PURE__ */ jsxs("span", { children: [
-                        rate2,
-                        " ",
-                        getCurrencySymbolByStore(store)
-                      ] })
+                      rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? ">غير متوفر" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب فقط (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت فقط (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
                     ]
                   },
                   index
@@ -3635,7 +3620,7 @@ function Product({ store, product }) {
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "p-4 pt-1", children: [
               cart.canAddProduct(product) && /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx("table", { className: "w-full", children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                /* @__PURE__ */ jsx("table", { className: "w-full", children: /* @__PURE__ */ jsx("tbody", { children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
                   /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx("img", { src: _item.product.media[0], className: "w-8 h-8 rounded-lg border-2 border-gray-200" }) }),
                   /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name }),
                   /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
@@ -3658,7 +3643,7 @@ function Product({ store, product }) {
                       children: "إزالة"
                     }
                   ) })
-                ] }, _item.product.id)) : /* @__PURE__ */ jsx("tr", { className: "text-gray-600 text-center", children: /* @__PURE__ */ jsx("td", { colSpan: 4, className: "text-xs", children: "لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط" }) }) }),
+                ] }, _item.product.id)) : /* @__PURE__ */ jsx("tr", { className: "text-gray-600 text-center", children: /* @__PURE__ */ jsx("td", { colSpan: 4, className: "text-xs", children: "لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط" }) }) }) }),
                 /* @__PURE__ */ jsx("div", { className: "h-2" })
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
@@ -3956,7 +3941,7 @@ var _stores = {};
 var _products = {};
 var _storeProducts = {};
 async function getStore(host) {
-  if (_stores[host])
+  if (_stores[host] && false)
     return _stores[host];
   const isFeeefShop = host.includes(".feeef.shop") || host.includes(".khfif.shop") || host.includes(".lvh.me");
   var store = await ff.stores.find({
@@ -3967,7 +3952,7 @@ async function getStore(host) {
   return store;
 }
 async function getProduct(slug) {
-  if (_products[slug])
+  if (_products[slug] && false)
     return _products[slug];
   var product = await ff.products.find({
     id: slug,
@@ -3977,7 +3962,7 @@ async function getProduct(slug) {
   return product;
 }
 async function getProducts(storeId) {
-  if (_storeProducts[storeId])
+  if (_storeProducts[storeId] && false)
     return _storeProducts[storeId];
   var products = await ff.products.list({
     params: {

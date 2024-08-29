@@ -219,14 +219,15 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                             disabled={!canShipToHome && !canShipToDesk }
                                             key={index}
                                             value={index + 1}
+                                            className={rate === 0 ? "text-green-500" : rate === null ? "text-red-500" : ""}
                                         >
                                             {state} - {
-                                                rate === 0 ? <span className="text-green-500">توصيل مجاني</span> :
+                                                rate === 0 ? "توصيل مجاني":
 
-                                                    !canShipToHome && !canShipToDesk ? <span className="text-red-500">غير متوفر</span> :
-                                                        !canShipToHome && canShipToDesk ? <span className="text-red-500">توصيل للمكتب فقط ({deskRate} {getCurrencySymbolByStore(store)})</span> :
-                                                            canShipToHome && !canShipToDesk ? <span className="text-green-500">توصيل للبيت فقط ({homeRate} {getCurrencySymbolByStore(store)})</span> :
-                                                                <span>{rate} {getCurrencySymbolByStore(store)}</span>
+                                                    !canShipToHome && !canShipToDesk ? ">غير متوفر":
+                                                        !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})`:
+                                                            canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})`:
+                                                                `${rate} ${getCurrencySymbolByStore(store)}`
 
                                             }
 

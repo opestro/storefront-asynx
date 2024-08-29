@@ -798,7 +798,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     {/* cart.items */}
                                     {
                                         cart.canAddProduct(product) && <>
-                                                    <table className="w-full">
+                                                    <table className="w-full"><tbody>
 
                                                         {
                                                             cart.items.length > 0 ?
@@ -845,6 +845,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                 </tr>
 
                                                         }
+                                                        </tbody>
                                                     </table>
                                             <div className="h-2"></div></>
                                     }

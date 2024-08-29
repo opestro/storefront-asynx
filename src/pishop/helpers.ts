@@ -1,3 +1,4 @@
+import { StoreEntity } from "feeef/src/core/core";
 import { useCallback, useEffect, useState } from "react";
 
 // Define regex patterns for valid phone numbers
@@ -134,15 +135,14 @@ export function pageView(): void {
 }
 
 // initMetaPixel
-export function initMetaPixel(store: any): void {
+export function initMetaPixel(store: StoreEntity): void {
     // console.log("init")
     if (!import.meta.env.SSR) {
         if (_reactFacebookPixel == null) {
             import("react-facebook-pixel")
                 .then((ReactPixel) => {
                     _reactFacebookPixel = ReactPixel.default;
-                    const metaPixelIntegration = store.integrations?.metaPixel;
-                    const pixels = metaPixelIntegration?.pixels.map((e: any) => e.id);
+                    const pixels = store.metaPixelIds
                     if (pixels) {
                         for (let i = 0; i < pixels.length; i++) {
                             _reactFacebookPixel.init(pixels[i], undefined, {
@@ -153,8 +153,7 @@ export function initMetaPixel(store: any): void {
                     }
                 });
             } else {
-                const metaPixelIntegration = store.integrations?.metaPixel;
-                const pixels = metaPixelIntegration?.pixels.map((e: any) => e.id);
+                const pixels = store.metaPixelIds
                 if (pixels) {
                     for (let i = 0; i < pixels.length; i++) {
                         _reactFacebookPixel.init(pixels[i], undefined, {
