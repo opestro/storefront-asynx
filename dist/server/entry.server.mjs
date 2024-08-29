@@ -2239,16 +2239,15 @@ function getCurrencySymbolByStore(store) {
   try {
     const defaultCurrency = (_a = store.configs) == null ? void 0 : _a.defaultCurrency;
     if (!defaultCurrency) {
-      throw new Error("No default currency found");
+      return "دج";
     }
     return (_c = (_b = store.configs) == null ? void 0 : _b.currencies[defaultCurrency]) == null ? void 0 : _c.symbol;
   } catch (error) {
-    console.error(error);
     return "دج";
   }
 }
 function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder }) {
-  var _a, _b, _c, _d, _e, _f, _g;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i;
   const [isPhoneValid, setIsPhoneValid] = useState(true);
   function updateShippingWilaya(stateCode) {
     const index = parseInt(stateCode) - 1;
@@ -2269,9 +2268,16 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     sendOrder("draft");
     setIsPhoneValid(isValid);
   }
-  function canShipToHome() {
-    return true;
-  }
+  var rates = getShippingRateForState({
+    shippingMethod,
+    store,
+    state: shipping.address.state
+  });
+  rates == null ? void 0 : rates[shipping.doorShipping ? "home" : "desk"];
+  var canShipToHome = (rates == null ? void 0 : rates.home) !== null;
+  rates == null ? void 0 : rates.home;
+  var canShipToDesk = (rates == null ? void 0 : rates.desk) !== null;
+  rates == null ? void 0 : rates.desk;
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold flex", children: "معلومات التوصيل" }),
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
@@ -2284,12 +2290,18 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         /* @__PURE__ */ jsxs(
           "div",
           {
-            className: "relative border border-gray-500 border-opacity-20 rounded-lg " + (isPhoneValid ? "" : " text-red-500 pulse"),
+            className: "relative border border-gray border-opacity-50 rounded-lg " + (isPhoneValid ? "" : " text-red-500 pulse"),
             style: {
               "--p": isPhoneValid ? "transparent" : "rgba(255, 0, 0, .5)"
             },
             children: [
-              /* @__PURE__ */ jsx(IconPhone, { className: `absolute top-2 right-2 ${isPhoneValid ? "text-gray-400" : "text-red-400"}` }),
+              /* @__PURE__ */ jsx(
+                IconPhone,
+                {
+                  className: `absolute top-2 right-2 ${isPhoneValid ? "text-gray-400" : "text-red-400"}`,
+                  color: ((_a = store.decoration) == null ? void 0 : _a.primary) && dartColorToCss((_b = store.decoration) == null ? void 0 : _b.primary) || void 0
+                }
+              ),
               /* @__PURE__ */ jsx(
                 "input",
                 {
@@ -2352,21 +2364,41 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
               },
               defaultValue: shipping.address.state,
               children: states.map((state, index) => {
-                var _a2;
-                var rate = (_a2 = getShippingRateForState({
+                var rates2 = getShippingRateForState({
                   shippingMethod,
                   store,
                   state: (index + 1).toString().padStart(2, "0")
-                })) == null ? void 0 : _a2[shipping.doorShipping ? "home" : "desk"];
+                });
+                var rate2 = rates2 == null ? void 0 : rates2[shipping.doorShipping ? "home" : "desk"];
+                var canShipToHome2 = (rates2 == null ? void 0 : rates2.home) !== null;
+                var homeRate2 = rates2 == null ? void 0 : rates2.home;
+                var canShipToDesk2 = (rates2 == null ? void 0 : rates2.desk) !== null;
+                var deskRate2 = rates2 == null ? void 0 : rates2.desk;
                 return /* @__PURE__ */ jsxs(
                   "option",
                   {
-                    disabled: !rate,
+                    disabled: canShipToHome2 === null && canShipToDesk2 === null,
                     value: index + 1,
                     children: [
                       state,
                       " - ",
-                      rate !== null && rate !== void 0 ? `${rate} ${getCurrencySymbolByStore(store)}` : "غير متوفر"
+                      rate2 === 0 ? /* @__PURE__ */ jsx("span", { className: "text-green-500", children: "توصيل مجاني" }) : !canShipToHome2 && !canShipToDesk2 ? /* @__PURE__ */ jsx("span", { className: "text-red-500", children: "غير متوفر" }) : !canShipToHome2 && canShipToDesk2 ? /* @__PURE__ */ jsxs("span", { className: "text-red-500", children: [
+                        "توصيل للمكتب فقط (",
+                        deskRate2,
+                        " ",
+                        getCurrencySymbolByStore(store),
+                        ")"
+                      ] }) : canShipToHome2 && !canShipToDesk2 ? /* @__PURE__ */ jsxs("span", { className: "text-green-500", children: [
+                        "توصيل للبيت فقط (",
+                        homeRate2,
+                        " ",
+                        getCurrencySymbolByStore(store),
+                        ")"
+                      ] }) : /* @__PURE__ */ jsxs("span", { children: [
+                        rate2,
+                        " ",
+                        getCurrencySymbolByStore(store)
+                      ] })
                     ]
                   },
                   index
@@ -2407,32 +2439,29 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         ] })
       ] })
     ] }),
-    shipping.doorShipping && ((_b = (_a = store.metadata) == null ? void 0 : _a.shipping) == null ? void 0 : _b.mode) !== "deskOnly" && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx("div", { className: "h-2" }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { className: "text-sm font-light", children: "العنوان" }),
-        /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg", children: [
-          /* @__PURE__ */ jsx(IconLocationBolt, { className: "absolute top-2 right-2 text-gray-400" }),
-          /* @__PURE__ */ jsx(
-            "textarea",
-            {
-              required: true,
-              className: "bg-transparent p-2  w-full pr-10",
-              placeholder: "أدخل العنوان كاملا، توصيل لباب البيت",
-              defaultValue: shipping.address.street,
-              onChange: (e) => {
-                shipping.address.street = e.target.value;
-                setShipping({ ...shipping });
-              }
+    (shipping.doorShipping && ((_d = (_c = store.metadata) == null ? void 0 : _c.shipping) == null ? void 0 : _d.mode) !== "deskOnly" || !canShipToDesk) && canShipToHome && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { className: "text-sm font-light", children: "العنوان" }),
+      /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg", children: [
+        /* @__PURE__ */ jsx(IconLocationBolt, { className: "absolute top-2 right-2 text-gray-400" }),
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            required: true,
+            className: "bg-transparent p-2  w-full pr-10",
+            placeholder: "أدخل العنوان كاملا، توصيل لباب البيت",
+            defaultValue: shipping.address.street,
+            onChange: (e) => {
+              shipping.address.street = e.target.value;
+              setShipping({ ...shipping });
             }
-          )
-        ] })
+          }
+        )
       ] })
-    ] }),
+    ] }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    ((_d = (_c = store.metadata) == null ? void 0 : _c.shipping) == null ? void 0 : _d.mode) === "deskOnly" || ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "homeOnly" ? null : /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
+    ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "deskOnly" || ((_h = (_g = store.metadata) == null ? void 0 : _g.shipping) == null ? void 0 : _h.mode) === "homeOnly" || !canShipToDesk || !canShipToHome ? null : /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
       /* @__PURE__ */ jsx("input", { type: "checkbox", onChange: () => {
-        shipping.doorShipping = !shipping.doorShipping && canShipToHome();
+        shipping.doorShipping = !shipping.doorShipping && canShipToHome;
         setShipping({ ...shipping });
       }, checked: shipping.doorShipping, className: "sr-only peer" }),
       /* @__PURE__ */ jsx("div", { className: "pulse w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:m-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary" }),
@@ -2442,11 +2471,11 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         !shipping.doorShipping && /* @__PURE__ */ jsxs("b", { dir: "ltr", children: [
           "مقابل ",
           getCurrencySymbolByStore(store),
-          (_g = getShippingRateForState({
+          (_i = getShippingRateForState({
             shippingMethod,
             store,
             state: shipping.address.state
-          })) == null ? void 0 : _g.home
+          })) == null ? void 0 : _i.home
         ] })
       ] }) })
     ] })
@@ -3091,9 +3120,9 @@ function Product({ store, product }) {
       store
     });
     if (shipping.doorShipping) {
-      return rate == null ? void 0 : rate.home;
+      return (rate == null ? void 0 : rate.home) === void 0 ? null : rate == null ? void 0 : rate.home;
     }
-    return rate == null ? void 0 : rate.desk;
+    return (rate == null ? void 0 : rate.desk) === void 0 ? null : rate == null ? void 0 : rate.desk;
   }
   function scrollToShippingForm() {
     var el = document.getElementById("order-form");
@@ -3594,61 +3623,62 @@ function Product({ store, product }) {
                 )
               ] })
             ] }),
-            /* @__PURE__ */ jsx("div", { className: "h-[1px] bg-gray-200 dark:bg-gray-700" }),
-            /* @__PURE__ */ jsxs("div", { className: "p-4", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
+              /* @__PURE__ */ jsx("div", { className: "h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow" }),
+              /* @__PURE__ */ jsx("div", { className: "text-gray-600 mx-4", children: "ملخص الطلب" }),
+              /* @__PURE__ */ jsx("div", { className: "h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow" })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "p-4 pt-1", children: [
               cart.canAddProduct(product) && /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
-                  /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "المنتجات" }),
-                  /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
-                  /* @__PURE__ */ jsx("div", { className: "text-gray-600 text-end", children: /* @__PURE__ */ jsx("table", { children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
-                    /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name }),
-                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                      "x",
-                      _item.quantity
-                    ] }),
-                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                      "= ",
-                      _item.price,
-                      " ",
-                      getCurrencySymbolByStore(store)
-                    ] }),
-                    /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx(
-                      "button",
-                      {
-                        onClick: () => {
-                          cart.removeProduct(_item.product.id);
-                          setItem({ ...item });
-                        },
-                        className: "px-2 ms-2 text-sm rounded-full bg-red-500 text-white",
-                        children: "إزالة"
-                      }
-                    ) })
-                  ] }, _item.product.id)) : /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
-                    /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: product.name && product.name.length > 10 ? product.name.substring(0, 10) + "..." : product.name }),
-                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                      "x",
-                      item.quantity
-                    ] }),
-                    /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
-                      "= ",
-                      getPriceAfterDiscount(),
-                      " ",
-                      getCurrencySymbolByStore(store)
-                    ] })
-                  ] }) }) })
-                ] }),
+                /* @__PURE__ */ jsx("table", { className: "w-full", children: cart.items.length > 0 ? cart.items.map((_item) => /* @__PURE__ */ jsxs("tr", { className: "text-gray-600", children: [
+                  /* @__PURE__ */ jsx("td", { children: /* @__PURE__ */ jsx("img", { src: _item.product.media[0], className: "w-8 h-8 rounded-lg border-2 border-gray-200" }) }),
+                  /* @__PURE__ */ jsx("td", { className: "text-gray-600", children: _item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    "x",
+                    _item.quantity
+                  ] }),
+                  /* @__PURE__ */ jsxs("td", { className: "text-gray-600", children: [
+                    _item.price,
+                    " ",
+                    getCurrencySymbolByStore(store)
+                  ] }),
+                  /* @__PURE__ */ jsx("td", { className: "text-end", children: /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      onClick: () => {
+                        cart.removeProduct(_item.product.id);
+                        setItem({ ...item });
+                      },
+                      className: "px-2 ms-2 text-sm rounded-full bg-red-500 text-white",
+                      children: "إزالة"
+                    }
+                  ) })
+                ] }, _item.product.id)) : /* @__PURE__ */ jsx("tr", { className: "text-gray-600 text-center", children: /* @__PURE__ */ jsx("td", { colSpan: 4, className: "text-xs", children: "لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط" }) }) }),
                 /* @__PURE__ */ jsx("div", { className: "h-2" })
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: "التوصيل" }),
                 /* @__PURE__ */ jsx("div", { className: "flex-grow" }),
-                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsxs("span", { children: [
-                  cart.hasProduct(product.id) ? cart.getShippingRate(
-                    shipping,
-                    store
-                  ) : getShippingRate() || 0,
-                  getCurrencySymbolByStore(store)
-                ] }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
+                /* @__PURE__ */ jsx("div", { className: "text-gray-600", children: /* @__PURE__ */ jsx("span", { className: "text-gray-600", children: (shipping == null ? void 0 : shipping.address.state) ? /* @__PURE__ */ jsx("span", {
+                  // cart.hasProduct(product.id) ?
+                  // cart.getShippingRate(
+                  //     shipping,
+                  //     store
+                  // ) :
+                  // (getShippingRate() || 0)
+                  children: (() => {
+                    var rate = null;
+                    if (cart.hasProduct(product.id)) {
+                      rate = cart.getShippingRate(
+                        shipping,
+                        store
+                      );
+                    } else {
+                      rate = getShippingRate();
+                    }
+                    return rate === 0 ? /* @__PURE__ */ jsx("span", { className: "text-green-500", children: "توصيل مجاني" }) : rate + " " + getCurrencySymbolByStore(store);
+                  })()
+                }) : /* @__PURE__ */ jsx("span", { children: "اختر الولاية" }) }) })
               ] }),
               /* @__PURE__ */ jsx("div", { className: "h-2" }),
               /* @__PURE__ */ jsxs("div", { className: "flex", children: [
@@ -3694,8 +3724,8 @@ function getShippingRateForState({ shippingMethod, store, state }) {
   var stateIndex = parseInt(state) - 1;
   var rate = ((_a = shippingMethod == null ? void 0 : shippingMethod.rates) == null ? void 0 : _a[stateIndex]) || ((_b = store.defaultShippingRates) == null ? void 0 : _b[stateIndex]);
   return {
-    desk: (rate == null ? void 0 : rate[0]) || null,
-    home: (rate == null ? void 0 : rate[1]) || null
+    desk: (rate == null ? void 0 : rate[0]) === void 0 ? null : rate == null ? void 0 : rate[0],
+    home: (rate == null ? void 0 : rate[1]) === void 0 ? null : rate == null ? void 0 : rate[1]
   };
 }
 function calculateLocalOrderShipping({ shippingMethod, store, localOrder }) {
