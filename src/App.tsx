@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Link, useLoaderData, redirect, useLocation } from "react-router-dom";
 import Layout from "./resources/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentHost } from "./feeef";
 import { EmbaddedCategory, ProductEntity, StoreEntity } from "feeef/src/core/core";
 import Product from "./pages/product";
@@ -248,3 +248,5 @@ function NoMatch() {
     </div>
   );
 }
+
+
