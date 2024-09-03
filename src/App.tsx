@@ -11,7 +11,11 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
+import ReactGA from "react-ga4";
+const trackingId = 'G-PHHZC0B2SR'; // Your Google Analytics tracking ID
 
+
+ReactGA.initialize(trackingId);
 export const routes: RouteObject[] = [
   {
     path: "/",
@@ -92,6 +96,7 @@ function Home() {
     products: ProductEntity[]
   };
   const location = useLocation()
+  ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
 
   const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
 
