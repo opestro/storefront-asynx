@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Link, useLoaderData, redirect, useLocation } from "react-router-dom";
 import Layout from "./resources/layout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getCurrentHost } from "./feeef";
 import { EmbaddedCategory, ProductEntity, StoreEntity } from "feeef/src/core/core";
 import Product from "./pages/product";
@@ -11,14 +11,6 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
-import { loadGtag , loadUmami } from './gtag';  // Import the gtag utility
-const umamiWebsiteId = 'fcafaa72-528b-40e2-9a14-7cc61bf58d0f'; // Your Umami website ID
-import ReactGA from "react-ga4";
-
-
-const trackingId = 'G-PHHZC0B2SR'; // Your Google Analytics tracking ID
-ReactGA.initialize(trackingId);
-
 
 export const routes: RouteObject[] = [
   {
@@ -100,12 +92,9 @@ function Home() {
     products: ProductEntity[]
   };
   const location = useLocation()
-  ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
+
   const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
-  useEffect(() => {
-    loadGtag(trackingId);   // Load gtag.js on component mount
-    loadUmami(umamiWebsiteId); // Load Umami on component mount
-  }, []);
+
   function filteredProducts() {
     return products.filter((product) => !selectedCategory ? true : product.category?.name == selectedCategory?.name)
   }
@@ -252,5 +241,3 @@ function NoMatch() {
     </div>
   );
 }
-
-
