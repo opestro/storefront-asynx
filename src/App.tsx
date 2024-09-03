@@ -13,9 +13,11 @@ import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
 import { loadGtag , loadUmami } from './gtag';  // Import the gtag utility
 const umamiWebsiteId = 'fcafaa72-528b-40e2-9a14-7cc61bf58d0f'; // Your Umami website ID
+import ReactGA from "react-ga4";
+
 
 const trackingId = 'G-PHHZC0B2SR'; // Your Google Analytics tracking ID
-
+ReactGA.initialize(trackingId);
 export const routes: RouteObject[] = [
   {
     path: "/",
