@@ -1,20 +1,20 @@
-let path = require("path");
-let fsp = require("fs/promises");
-let express = require("express");
-let { installGlobals } = require("@remix-run/node");
+const path = require("path");
+const fsp = require("fs/promises");
+const express = require("express");
+const { installGlobals } = require("@remix-run/node");
 
 // Polyfill Web Fetch API
 installGlobals();
 
-let root = process.cwd();
-let isProduction = process.env.NODE_ENV === "production";
+const root = process.cwd();
+const isProduction = process.env.NODE_ENV === "production";
 
 function resolve(p) {
   return path.resolve(__dirname, p);
 }
 
 async function createServer() {
-  let app = express();
+  const app = express();
   /**
    * @type {import('vite').ViteDevServer}
    */
@@ -34,25 +34,30 @@ async function createServer() {
   // Serve favicon.ico from root
   app.use("/favicon.ico", express.static(resolve("favicon.ico")));
 
-  app.use("*", async (req, res) => {
-    // home page dont use SSR
-    // if (req.originalUrl === "/") {
-    //   return res.sendFile(resolve("dist/client/index.html"));
-    // }
+  // Handle assets
+  app.use("/assets", express.static(resolve("dist/client/assets")));
 
-    // any assets/* requests will be handled by static file server
-    if (req.originalUrl.startsWith("/assets/")) {
-      return res.sendFile(resolve(`dist/client${req.originalUrl}`));
+  // Serve CSR for /index route
+  app.get("/", async (req, res) => {
+    if (!isProduction) {
+      const template = await vite.transformIndexHtml(
+        req.originalUrl,
+        await fsp.readFile(resolve("index.html"), "utf8")
+      );
+      return res.status(200).set({ "Content-Type": "text/html" }).end(template);
+    } else {
+      return res.sendFile(resolve("dist/client/index.html"));
     }
+  });
 
-    console.log("GET: ", req.originalUrl);
-    console.log("hostname: ", req.hostname);
-
-    let url = req.originalUrl;
+  // Handle all other routes with SSR
+  app.use("*", async (req, res) => {
+    const url = req.originalUrl;
 
     try {
       let template;
       let render;
+
       if (!isProduction) {
         template = await fsp.readFile(resolve("index.html"), "utf8");
         template = await vite.transformIndexHtml(url, template);
@@ -64,28 +69,25 @@ async function createServer() {
           resolve("dist/client/index.html"),
           "utf8"
         );
-        render = (await import('./dist/server/entry.server.mjs')).render;
+        render = (await import("./dist/server/entry.server.mjs")).render;
       }
 
-      try {
-        console.log("Rendering...");
-        let appHtml = await render(req, res);
-        let html = template.replace("<!--app-html-->", appHtml);
-        res.setHeader("Content-Type", "text/html");
-        return res.status(200).end(html);
-      } catch (e) {
-        console.error(e);
-        if (e instanceof Response && e.status >= 300 && e.status <= 399) {
-          return res.redirect(e.status, e.headers.get("Location"));
-        }
-        throw e;
+      console.log("Rendering...");
+      const appHtml = await render(req, res);
+      const html = template.replace("<!--app-html-->", appHtml);
+
+      res.setHeader("Content-Type", "text/html");
+      return res.status(200).end(html);
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Response && e.status >= 300 && e.status <= 399) {
+        return res.redirect(e.status, e.headers.get("Location"));
       }
-    } catch (error) {
       if (!isProduction) {
-        vite.ssrFixStacktrace(error);
+        vite.ssrFixStacktrace(e);
       }
-      console.log(error.stack);
-      res.status(500).end(error.stack);
+      console.log(e.stack);
+      return res.status(500).end(e.stack);
     }
   });
 
