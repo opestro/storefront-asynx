@@ -17,7 +17,12 @@ import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
 import ReactGA from "react-ga4";
 const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
-
+import TagManager from 'react-gtm-module'
+const tagManagerArgs = {
+  gtmId: 'GTM-T8JWQPMC'
+}
+TagManager.initialize(tagManagerArgs)
+ ReactGA.initialize(trackingId);
 export const routes: RouteObject[] = [
   {
     path: "/",
@@ -87,7 +92,7 @@ async function homeLoader() {
 }
 
 function Home() {
-  ReactGA.initialize(trackingId);
+ 
   let { store, products } = useLoaderData() as {
     store: StoreEntity;
     products: ProductEntity[];
