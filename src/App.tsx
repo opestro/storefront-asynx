@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Link, useLoaderData, redirect, useLocation } from "react-router-dom";
 import Layout from "./resources/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentHost } from "./feeef";
 import {
   EmbaddedCategory,
@@ -21,8 +21,7 @@ import TagManager from 'react-gtm-module'
 const tagManagerArgs = {
   gtmId: 'GTM-T8JWQPMC'
 }
-TagManager.initialize(tagManagerArgs)
- ReactGA.initialize(trackingId);
+
 export const routes: RouteObject[] = [
   {
     path: "/",
@@ -98,7 +97,12 @@ function Home() {
     products: ProductEntity[];
   };
   const location = useLocation();
-  ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
+  useEffect(() =>{
+    TagManager.initialize(tagManagerArgs)
+ ReactGA.initialize(trackingId);
+ ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
+  }, [])
+
 
   const [selectedCategory, setSelectedCategory] =
     useState<EmbaddedCategory | null>(null);
