@@ -11,6 +11,10 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
+import { loadGtag , loadUmami } from './gtag';  // Import the gtag utility
+const umamiWebsiteId = 'fcafaa72-528b-40e2-9a14-7cc61bf58d0f'; // Your Umami website ID
+
+const trackingId = 'G-PHHZC0B2SR'; // Your Google Analytics tracking ID
 
 export const routes: RouteObject[] = [
   {
@@ -94,7 +98,10 @@ function Home() {
   const location = useLocation()
 
   const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
-
+  useEffect(() => {
+    loadGtag(trackingId);   // Load gtag.js on component mount
+    loadUmami(umamiWebsiteId); // Load Umami on component mount
+  }, []);
   function filteredProducts() {
     return products.filter((product) => !selectedCategory ? true : product.category?.name == selectedCategory?.name)
   }
