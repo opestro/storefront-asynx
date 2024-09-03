@@ -15,7 +15,7 @@ import ReactGA from "react-ga4";
 const trackingId = 'G-PHHZC0B2SR'; // Your Google Analytics tracking ID
 
 
-ReactGA.initialize(trackingId);
+
 export const routes: RouteObject[] = [
   {
     path: "/",
@@ -79,6 +79,7 @@ async function productLoader({ params }: any) {
 }
 
 async function homeLoader() {
+
   let store = await getStore(getCurrentHost()!)
 
 
@@ -91,6 +92,7 @@ async function homeLoader() {
 }
 
 function Home() {
+  ReactGA.initialize(trackingId);
   let { store, products } = useLoaderData() as {
     store: StoreEntity,
     products: ProductEntity[]
