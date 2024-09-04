@@ -131,8 +131,8 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             } as React.CSSProperties
                         }
                     >
-                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`} 
-                        color={store.decoration?.primary && dartColorToCss(store.decoration?.primary) || undefined}
+                        <IconPhone className={`absolute top-2 right-2 ${isPhoneValid ? 'text-gray-400' : 'text-red-400'}`}
+                            color={store.decoration?.primary && dartColorToCss(store.decoration?.primary) || undefined}
                         />
                         <input
                             style={
@@ -215,23 +215,28 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                     );
 
                                     return (
-                                        <option
-                                            disabled={!canShipToHome && !canShipToDesk }
-                                            key={index}
-                                            value={index + 1}
-                                            className={rate === 0 ? "text-green-500" : rate === null ? "text-red-500" : ""}
-                                        >
-                                            {state} - {
-                                                rate === 0 ? "توصيل مجاني":
+                                        <>
+                                            {
+                                                // !canShipToHome && !canShipToDesk &&
+                                                <option
+                                                    // disabled={!canShipToHome && !canShipToDesk}
+                                                    key={index}
+                                                    value={index + 1}
+                                                    className={rate === 0 ? "text-green-500" : rate === null ? "text-red-500" : ""}
+                                                >
+                                                    {state} - {
+                                                        rate === 0 ? "توصيل مجاني" :
 
-                                                    !canShipToHome && !canShipToDesk ? ">غير متوفر":
-                                                        !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})`:
-                                                            canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})`:
-                                                                `${rate} ${getCurrencySymbolByStore(store)}`
+                                                            !canShipToHome && !canShipToDesk ? "" :
+                                                                !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})` :
+                                                                    canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})` :
+                                                                        `${rate} ${getCurrencySymbolByStore(store)}`
 
+                                                    }
+
+                                                </option>
                                             }
-
-                                        </option>
+                                        </>
                                     );
                                 })
                             }
@@ -270,7 +275,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             {
                 (shipping.doorShipping && store.metadata?.shipping?.mode !== "deskOnly"
                     || !canShipToDesk
-                )  && canShipToHome &&
+                ) && canShipToHome &&
                 <>
                     <div>
                         <label className="text-sm font-light">العنوان</label>
@@ -293,9 +298,9 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             <div className="h-4"></div>
             {
                 store.metadata?.shipping?.mode === "deskOnly" || store.metadata?.shipping?.mode === "homeOnly"
-                || !canShipToDesk
-                || !canShipToHome
-                ? null :
+                    || !canShipToDesk
+                    || !canShipToHome
+                    ? null :
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" onChange={() => {
                             shipping.doorShipping = !shipping.doorShipping && canShipToHome;
