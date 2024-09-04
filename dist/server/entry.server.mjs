@@ -2387,20 +2387,22 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                   (index + 1).toString().padStart(2, "0"),
                   !!shipping.doorShipping
                 );
-                return /* @__PURE__ */ jsxs(
-                  "option",
-                  {
-                    disabled: !canShipToHome2 && !canShipToDesk2,
-                    value: index + 1,
-                    className: rate2 === 0 ? "text-green-500" : rate2 === null ? "text-red-500" : "",
-                    children: [
-                      state,
-                      " - ",
-                      rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? ">غير متوفر" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب فقط (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت فقط (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
-                    ]
-                  },
-                  index
-                );
+                return /* @__PURE__ */ jsx(Fragment, {
+                  // !canShipToHome && !canShipToDesk &&
+                  children: /* @__PURE__ */ jsxs(
+                    "option",
+                    {
+                      value: index + 1,
+                      className: rate2 === 0 ? "text-green-500" : rate2 === null ? "text-red-500" : "",
+                      children: [
+                        state,
+                        " - ",
+                        rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? "" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب فقط (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت فقط (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
+                      ]
+                    },
+                    index
+                  )
+                });
               })
             }
           )
@@ -3018,11 +3020,6 @@ function Product({ store, product }) {
   let location = useLocation();
   const [loading, setLoading] = useState(false);
   const [orderId] = useState(generateOrderId());
-  useEffect(() => {
-    document.title = (product == null ? void 0 : product.name) || store.title || "";
-  }, []);
-  useEffect(() => {
-  }, []);
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [sentOrder, setSentOrder] = useState(null);
   const isInView = useInViewport();
@@ -3088,9 +3085,6 @@ function Product({ store, product }) {
       });
     }
   }
-  useEffect(() => {
-    updateShippingWilaya(shipping.address.state);
-  }, []);
   function getTotal() {
     var localOrder = {
       id: orderId,
@@ -3276,6 +3270,10 @@ function Product({ store, product }) {
       }
     );
   }
+  useEffect(() => {
+    document.title = (product == null ? void 0 : product.name) || store.title || "";
+    updateShippingWilaya(shipping.address.state);
+  }, []);
   return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
     /* @__PURE__ */ jsx(
       "div",

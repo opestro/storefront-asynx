@@ -72,25 +72,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
 
-    useEffect(() => {
-        // set the title to the product name (only first time)
-        document.title = product?.name || store.title || "";
-    }, [])
 
-    // view page ReactPixel
-    useEffect(() => {
-        pageView();
-        // ViewContent
-        // ReactPixel.track('ViewContent', {
-        //     content_name: product?.name,
-        //     content_category: 'cloth',
-        //     content_ids: [product?.id, product?.slug],
-        //     content_type: 'product',
-        //     value: getPriceWithoutVariantsDiscount(),
-        //     currency: 'DZD'
-        // });
-        // on scrol
-    }, [])
 
 
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
@@ -138,6 +120,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             item.variants
         );
     }
+
     function getPriceAfterDiscount(): number {
         return getProductPriceAfterDiscount(
             product!,
@@ -173,9 +156,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
     }
 
-    useEffect(() => {
-        updateShippingWilaya(shipping!.address.state);
-    }, [])
 
     function getTotal() {
         var localOrder: LocalOrder = {
@@ -393,6 +373,16 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         </button>
     }
 
+
+    useEffect(() => {
+        // set the title to the product name (only first time)
+        document.title = product?.name || store.title || "";
+        pageView();
+        updateShippingWilaya(shipping!.address.state);
+    }, [])    // view page ReactPixel
+
+
+
     return (
         <div className="relative">
             {/* show fixed in the button SendOrderButton(id=dynamic), it shown only when SendOrderButton(id=fixed) not in view */}
@@ -420,9 +410,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 maxWidth: '500px',
                                 margin: 'auto',
                             } as React.CSSProperties
-                        }
-                    >
-
+                        }>
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
@@ -491,7 +479,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     </div>
                 </div>
             }
-
             {
                 sentOrder && sentOrder.status == "pending" &&
                 <div className="overflow-auto flex items-center justify-center fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -798,55 +785,55 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     {/* cart.items */}
                                     {
                                         cart.canAddProduct(product) && <>
-                                                    <table className="w-full"><tbody>
+                                            <table className="w-full"><tbody>
 
-                                                        {
-                                                            cart.items.length > 0 ?
-                                                                cart.items.map((_item) => (
-                                                                    <tr key={_item.product.id} className="text-gray-600">
-                                                                        {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
-                                                                        {/* substring name */}
-                                                                        {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
-                                                                        {/* use table looks better */}
+                                                {
+                                                    cart.items.length > 0 ?
+                                                        cart.items.map((_item) => (
+                                                            <tr key={_item.product.id} className="text-gray-600">
+                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
+                                                                {/* substring name */}
+                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
+                                                                {/* use table looks better */}
 
-                                                                        {/* product image */}
-                                                                        <td>
-                                                                            <img src={_item.product.media[0]} className="w-8 h-8 rounded-lg border-2 border-gray-200" />
-                                                                        </td>
-                                                                        <td className="text-gray-600">
-                                                                            {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
-                                                                        </td>
-                                                                        <td className="text-gray-600">
-                                                                            x{_item.quantity}
-                                                                        </td>
-                                                                        <td className="text-gray-600">
-                                                                            {_item.price} {getCurrencySymbolByStore(store)}
-                                                                        </td>
-                                                                        {/* delete */}
-                                                                        <td className="text-end">
-                                                                            <button
-                                                                                onClick={() => {
-                                                                                    cart.removeProduct(_item.product.id)
-                                                                                    // force react to update current componenet
-                                                                                    setItem({ ...item });
-                                                                                }}
-                                                                                className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
-                                                                            >
-                                                                                إزالة
-                                                                            </button>
-                                                                        </td>
-                                                                    </tr>
-                                                                ))
-                                                                :
-                                                                <tr className="text-gray-600 text-center">
-                                                                    <td colSpan={4} className="text-xs">
-                                                                        لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط
-                                                                    </td>
-                                                                </tr>
+                                                                {/* product image */}
+                                                                <td>
+                                                                    <img src={_item.product.media[0]} className="w-8 h-8 rounded-lg border-2 border-gray-200" />
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    x{_item.quantity}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    {_item.price} {getCurrencySymbolByStore(store)}
+                                                                </td>
+                                                                {/* delete */}
+                                                                <td className="text-end">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            cart.removeProduct(_item.product.id)
+                                                                            // force react to update current componenet
+                                                                            setItem({ ...item });
+                                                                        }}
+                                                                        className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
+                                                                    >
+                                                                        إزالة
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                        :
+                                                        <tr className="text-gray-600 text-center">
+                                                            <td colSpan={4} className="text-xs">
+                                                                لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط
+                                                            </td>
+                                                        </tr>
 
-                                                        }
-                                                        </tbody>
-                                                    </table>
+                                                }
+                                            </tbody>
+                                            </table>
                                             <div className="h-2"></div></>
                                     }
                                     {/* shipping */}
