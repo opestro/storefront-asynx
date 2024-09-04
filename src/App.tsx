@@ -1,9 +1,13 @@
 import type { RouteObject } from "react-router-dom";
 import { Link, useLoaderData, redirect, useLocation } from "react-router-dom";
 import Layout from "./resources/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentHost } from "./feeef";
-import { EmbaddedCategory, ProductEntity, StoreEntity } from "feeef/src/core/core";
+import {
+  EmbaddedCategory,
+  ProductEntity,
+  StoreEntity,
+} from "feeef/src/core/core";
 import Product from "./pages/product";
 import AsynxWave from "./widgets/asynx_wave";
 import { ProductCard } from "./widgets/product_card";
@@ -11,6 +15,12 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
+import ReactGA from "react-ga4";
+const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
+import TagManager from 'react-gtm-module'
+const tagManagerArgs = {
+  gtmId: 'GTM-T8JWQPMC'
+}
 
 export const routes: RouteObject[] = [
   {
@@ -49,107 +59,132 @@ export const routes: RouteObject[] = [
   },
 ];
 
-
 const sleep = (n = 500) => new Promise((r) => setTimeout(r, n));
 const rand = () => Math.round(Math.random() * 100);
 
-
-
 async function layoutLoader() {
-  let store = await getStore(getCurrentHost()!)
-  return store
+  let store = await getStore(getCurrentHost()!);
+  return store;
 }
 
-
-
 async function productLoader({ params }: any) {
-  let store = await getStore(getCurrentHost()!)
+  let store = await getStore(getCurrentHost()!);
 
-  let slug = params.slug
-  let product = await getProduct(slug)
+  let slug = params.slug;
+  let product = await getProduct(slug);
   // assert product.storeId == store.id
   if (product.storeId != store.id) {
-    throw new Error("Product not found")
+    throw new Error("Product not found");
   }
-  return { store, product }
+  return { store, product };
 }
 
 async function homeLoader() {
-  let store = await getStore(getCurrentHost()!)
+  let store = await getStore(getCurrentHost()!);
 
-
-  let products = await getProducts(store.id)
+  let products = await getProducts(store.id);
 
   return {
     store,
-    products
-  }
+    products,
+  };
 }
 
 function Home() {
+ 
   let { store, products } = useLoaderData() as {
-    store: StoreEntity,
-    products: ProductEntity[]
+    store: StoreEntity;
+    products: ProductEntity[];
   };
-  const location = useLocation()
+  const location = useLocation();
+  useEffect(() =>{
+    TagManager.initialize(tagManagerArgs)
+ ReactGA.initialize(trackingId);
+ ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
+  }, [])
 
-  const [selectedCategory, setSelectedCategory] = useState<EmbaddedCategory | null>(null)
+
+  const [selectedCategory, setSelectedCategory] =
+    useState<EmbaddedCategory | null>(null);
 
   function filteredProducts() {
-    return products.filter((product) => !selectedCategory ? true : product.category?.name == selectedCategory?.name)
+    return products.filter((product) =>
+      !selectedCategory
+        ? true
+        : product.category?.name == selectedCategory?.name
+    );
   }
 
   return (
     <>
-            <SuperSEO
-            // title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
-            // description={product.description || undefined}
-            // lang="ar"
-            // openGraph={{
-            //     ogTitle: store.title + "|" + (product.name || ""),
-            //     ogDescription: product.description || undefined,
-            //     ogUrl: getCurrentUrl(pathname),
-            //     ogImage: {
-            //         ogImage: product.media[0],
-            //         ogImageAlt: product.name || product.title || store.title || "",
-            //     },
-            //     ogSiteName: store.name || store.title || undefined,
-            //     ogType: "product",
-            //     ogLocale: "ar_AR",
-            //     ogDeterminer: "auto",
-            //     ogLocaleAlternate: ["en_US"],
-            // }}
+      <head>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: ` window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-            title={store.name + " - " + store.title || ""}
-            description={store.description || undefined}
-            lang="ar"
-            openGraph={{
-                ogTitle: store.name + " - " + store.title || "",
-                ogDescription: store.description || undefined,
-                ogUrl: getCurrentHost() + location.pathname,
-                ogImage: {
-                    ogImage: store.logoUrl || undefined,
-                    ogImageAlt: store.name || store.title || "",
-                },
-                ogSiteName: store.name || store.title || undefined,
-                ogType: "website",
-                ogLocale: "ar_AR",
-                ogDeterminer: "auto",
-                ogLocaleAlternate: ["en_US"],
-            }}
+  gtag('config', 'G-PHHZC0B2SR');`,
+          }}
+        />
+        <script dangerouslySetInnerHTML={{__html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T8JWQPMC');`}}></script>
+      </head>
 
-        >
-        </SuperSEO>
+      <SuperSEO
+        // title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
+        // description={product.description || undefined}
+        // lang="ar"
+        // openGraph={{
+        //     ogTitle: store.title + "|" + (product.name || ""),
+        //     ogDescription: product.description || undefined,
+        //     ogUrl: getCurrentUrl(pathname),
+        //     ogImage: {
+        //         ogImage: product.media[0],
+        //         ogImageAlt: product.name || product.title || store.title || "",
+        //     },
+        //     ogSiteName: store.name || store.title || undefined,
+        //     ogType: "product",
+        //     ogLocale: "ar_AR",
+        //     ogDeterminer: "auto",
+        //     ogLocaleAlternate: ["en_US"],
+        // }}
+
+        title={store.name + " - " + store.title || ""}
+        description={store.description || undefined}
+        lang="ar"
+        openGraph={{
+          ogTitle: store.name + " - " + store.title || "",
+          ogDescription: store.description || undefined,
+          ogUrl: getCurrentHost() + location.pathname,
+          ogImage: {
+            ogImage: store.logoUrl || undefined,
+            ogImageAlt: store.name || store.title || "",
+          },
+          ogSiteName: store.name || store.title || undefined,
+          ogType: "website",
+          ogLocale: "ar_AR",
+          ogDeterminer: "auto",
+          ogLocaleAlternate: ["en_US"],
+        }}
+      ></SuperSEO>
 
       {/* main container */}
       <div className="text-center relative max-w-screen-xl mx-auto px-4  sm:px-6 py-10 lg:px-8">
-        <AsynxWave
-          className='pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl'
-        ></AsynxWave>
+        <AsynxWave className="pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl"></AsynxWave>
         <div className="z-10 relative">
-          <div className='relative flex items-center justify-center'>
-            <h4 className=" absolute
-          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase">
+          <div className="relative flex items-center justify-center">
+            <h4
+              className=" absolute
+          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase"
+            >
               {store?.name}
             </h4>
             <AsynxWave></AsynxWave>
@@ -157,12 +192,14 @@ function Home() {
           <h1 className="title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl">
             {store?.title}
           </h1>
-          <p className="max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400
+          <p
+            className="max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400
             font-extralight
             text-s
             md:text-m
             lg:text-l
-          ">
+          "
+          >
             {store?.description}
           </p>
         </div>
@@ -172,10 +209,16 @@ function Home() {
       <div className="container">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {store?.categories?.map((category, index) => (
-            <CategoryButton key={index} onClick={() => {
-              return (selectedCategory == category) ? setSelectedCategory(null) :
-                setSelectedCategory(category)
-            }} selected={selectedCategory?.name == category.name} category={category}></CategoryButton>
+            <CategoryButton
+              key={index}
+              onClick={() => {
+                return selectedCategory == category
+                  ? setSelectedCategory(null)
+                  : setSelectedCategory(category);
+              }}
+              selected={selectedCategory?.name == category.name}
+              category={category}
+            ></CategoryButton>
           ))}
         </div>
       </div>
@@ -186,30 +229,41 @@ function Home() {
       <div className="container">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {filteredProducts().map((product, index) => (
-            <div key={index} >
+            <div key={index}>
               <ProductCard product={product} store={store}></ProductCard>
             </div>
           ))}
 
-          {
-            !filteredProducts().length &&
+          {!filteredProducts().length && (
             <div className="col-span-full">
               <div className="py-4 flex flex-col items-center justify-center">
                 <IconFlag></IconFlag>
-                <h3 className="text-xl font-semibold text-gray-500 dark:text-gray-400">لا يوجد منتجات</h3>
-                <p className="text-gray-400 dark:text-gray-500">لا يوجد منتجات في هذه الفئة</p>
+                <h3 className="text-xl font-semibold text-gray-500 dark:text-gray-400">
+                  لا يوجد منتجات
+                </h3>
+                <p className="text-gray-400 dark:text-gray-500">
+                  لا يوجد منتجات في هذه الفئة
+                </p>
                 {/* remove selected cate */}
                 <div className="h-3"></div>
-                <button onClick={() => setSelectedCategory(null)} className="gb btn">إزالة التصفية</button>
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className="gb btn"
+                >
+                  إزالة التصفية
+                </button>
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8JWQPMC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
     </>
   );
 }
-
 
 async function dashboardLoader() {
   await sleep();
