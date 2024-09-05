@@ -15,12 +15,12 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
-import ReactGA from "react-ga4";
-const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
-import TagManager from 'react-gtm-module'
-const tagManagerArgs = {
-  gtmId: 'GTM-T8JWQPMC'
-}
+// import ReactGA from "react-ga4";
+// const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
+// import TagManager from 'react-gtm-module'
+// const tagManagerArgs = {
+//   gtmId: 'GTM-T8JWQPMC'
+// }
 
 export const routes: RouteObject[] = [
   {
