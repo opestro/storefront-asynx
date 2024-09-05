@@ -29,14 +29,20 @@ export default function Thanks({ order, onDone }: {
             <div className="h-1"></div>
             {/* <div className="flex"><h4 className="text-sm font-light">المجموع</h4><div className="flex-grow"></div><div>{calculateLocalOrderTotal(store, order)}{getCurrencySymbolByStore(store)}</div></div> */}
             <div className="h-2"></div>
-            <button type="button" className="w-full pulse btn gb" onClick={onDone}>إغلاق</button>
+            <button 
+                aria-label="إغلاق"
+            type="button" className="w-full pulse btn gb" onClick={onDone}>إغلاق</button>
             <div className="h-2"></div>
             {/* تتبع حالة الطلب https://track.feeef.net/track/:id */}
             <div className="p-2 bg-gray-100 text-center">
-                <a href={`https://track.feeef.net/track/${order.id}`} target="_blank" className="text-blue-500">تتبع حالة الطلب</a>
+                <a 
+                    aria-label="تتبع حالة الطلب"
+                href={`https://track.feeef.net/track/${order.id}`} target="_blank" className="text-blue-500">تتبع حالة الطلب</a>
             </div>
             <div className="h-2"></div>
-            <Link to="/"><button type="button" className="w-full btn gb">باقي المنتجات</button></Link>
+            <Link to="/"><button
+                aria-label="باقي المنتجات"
+            type="button" className="w-full btn gb">باقي المنتجات</button></Link>
         </div>
     )
 }

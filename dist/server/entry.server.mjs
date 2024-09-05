@@ -115,7 +115,15 @@ function Navbar({ store, fixed = true }) {
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     (store == null ? void 0 : store.banner) && /* @__PURE__ */ jsxs(Fragment, { children: [
       /* @__PURE__ */ jsx("div", { className: "h-8" }),
-      /* @__PURE__ */ jsx("a", { className: "h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50", href: store.banner.url || "#!", children: store == null ? void 0 : store.banner.title })
+      /* @__PURE__ */ jsx(
+        "a",
+        {
+          "aria-label": store.banner.title,
+          className: "h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50",
+          href: store.banner.url || "#!",
+          children: store == null ? void 0 : store.banner.title
+        }
+      )
     ] }),
     /* @__PURE__ */ jsx("div", { className: fixed ? `sticky ${(store == null ? void 0 : store.banner) ? "top-8" : "top-0"} z-50` : "", children: /* @__PURE__ */ jsx("nav", { className: `w-screen backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900   z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600`, children: /* @__PURE__ */ jsxs("div", { className: "h-16 container flex flex-wrap items-center justify-between mx-auto", children: [
       /* @__PURE__ */ jsxs(
@@ -135,6 +143,7 @@ function Navbar({ store, fixed = true }) {
           "button",
           {
             type: "button",
+            "aria-label": "تبديل الوضع",
             onClick: () => {
               document.body.classList.toggle("dark");
             },
@@ -154,6 +163,7 @@ function Navbar({ store, fixed = true }) {
             children: ((_e = store == null ? void 0 : store.action) == null ? void 0 : _e.label) && /* @__PURE__ */ jsx(
               "button",
               {
+                "aria-label": store.action.label,
                 type: "button",
                 className: "text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary",
                 children: store.action.label
@@ -201,6 +211,7 @@ const TextButton = ({ children, href, target, className }) => {
   var child = /* @__PURE__ */ jsx(
     "button",
     {
+      "aria-label": "button",
       type: "button",
       className: className + " btn",
       children
@@ -331,7 +342,16 @@ function Footer({ store }) {
       /* @__PURE__ */ jsx("br", {}),
       /* @__PURE__ */ jsxs("span", { className: "text-sm font-extralight", children: [
         "created by ",
-        /* @__PURE__ */ jsx("a", { href: "https://feeef.net/?ref=footer_copyrights", target: "_blank", className: "text-primary", children: "feeef®" }),
+        /* @__PURE__ */ jsx(
+          "a",
+          {
+            "aria-label": "feeef",
+            href: "https://feeef.net/?ref=footer_copyrights",
+            target: "_blank",
+            className: "text-primary",
+            children: "feeef®"
+          }
+        ),
         " created your store. startig for free!"
       ] })
     ] }) })
@@ -2088,11 +2108,37 @@ function Thanks({ order, onDone }) {
         ] }) }),
         /* @__PURE__ */ jsx("div", { className: "h-1" }),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx("button", { type: "button", className: "w-full pulse btn gb", onClick: onDone, children: "إغلاق" }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            "aria-label": "إغلاق",
+            type: "button",
+            className: "w-full pulse btn gb",
+            onClick: onDone,
+            children: "إغلاق"
+          }
+        ),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx("div", { className: "p-2 bg-gray-100 text-center", children: /* @__PURE__ */ jsx("a", { href: `https://track.feeef.net/track/${order.id}`, target: "_blank", className: "text-blue-500", children: "تتبع حالة الطلب" }) }),
+        /* @__PURE__ */ jsx("div", { className: "p-2 bg-gray-100 text-center", children: /* @__PURE__ */ jsx(
+          "a",
+          {
+            "aria-label": "تتبع حالة الطلب",
+            href: `https://track.feeef.net/track/${order.id}`,
+            target: "_blank",
+            className: "text-blue-500",
+            children: "تتبع حالة الطلب"
+          }
+        ) }),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx("button", { type: "button", className: "w-full btn gb", children: "باقي المنتجات" }) })
+        /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx(
+          "button",
+          {
+            "aria-label": "باقي المنتجات",
+            type: "button",
+            className: "w-full btn gb",
+            children: "باقي المنتجات"
+          }
+        ) })
       ]
     }
   );
@@ -2216,14 +2262,22 @@ const ProductCard = ({ product, store }) => {
         "..."
       ] }),
       /* @__PURE__ */ jsx("div", { className: "h-2" }),
-      /* @__PURE__ */ jsxs("button", { type: "button", className: "btn gb w-full", children: [
-        "اشتري الآن",
-        !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
-          "-",
-          discount,
-          "%"
-        ] })
-      ] })
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          "aria-label": "اشتري الآن",
+          type: "button",
+          className: "btn gb w-full",
+          children: [
+            "اشتري الآن",
+            !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
+              "-",
+              discount,
+              "%"
+            ] })
+          ]
+        }
+      )
     ] })
   ] }) });
 };
@@ -2398,7 +2452,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                       children: [
                         state,
                         " - ",
-                        rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? "" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب فقط (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت فقط (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
+                        rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? "" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
                       ]
                     },
                     index
@@ -3230,6 +3284,7 @@ function Product({ store, product }) {
     return /* @__PURE__ */ jsxs(
       "button",
       {
+        "aria-label": "إرسال الطلب",
         ref,
         id: "send-order-btn-" + id,
         onClick: (e) => {
@@ -3308,6 +3363,7 @@ function Product({ store, product }) {
             children: /* @__PURE__ */ jsxs(
               "button",
               {
+                "aria-label": "إرسال الطلب",
                 onClick: (e) => {
                   e.preventDefault();
                   scrollToShippingForm();
@@ -3464,14 +3520,22 @@ function Product({ store, product }) {
           {
             className: "pointer-events-auto",
             href: `#slide-${index + 1}`,
-            children: /* @__PURE__ */ jsx("button", { className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
-              "img",
+            children: /* @__PURE__ */ jsx(
+              "button",
               {
-                src: media,
-                className: "overflow-hidden w-full h-full object-cover ",
-                alt: "صورة " + (product == null ? void 0 : product.name) + " " + index
-              }
-            ) }, index)
+                "aria-label": "صورة " + (product == null ? void 0 : product.name) + " " + index,
+                className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out",
+                children: /* @__PURE__ */ jsx(
+                  "img",
+                  {
+                    src: media,
+                    className: "overflow-hidden w-full h-full object-cover ",
+                    alt: "صورة " + (product == null ? void 0 : product.name) + " " + index
+                  }
+                )
+              },
+              index
+            )
           },
           index
         )) })
@@ -3565,6 +3629,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "تقليل الكمية",
                       onClick: () => {
                         cart.updateQuantity(product.id, item.quantity - 1);
                         setItem((prevItem) => ({
@@ -3580,6 +3645,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "زيادة الكمية",
                       onClick: () => {
                         cart.updateQuantity(product.id, item.quantity + 1);
                         setItem((prevItem) => ({
@@ -3596,6 +3662,7 @@ function Product({ store, product }) {
                 !cart.canAddProduct(product) ? null : !cart.hasProduct(product.id) ? /* @__PURE__ */ jsx(
                   "button",
                   {
+                    "aria-label": "إضافة الى السلة",
                     onClick: () => {
                       cart.add({
                         quantity: item.quantity,
@@ -3611,6 +3678,7 @@ function Product({ store, product }) {
                 ) : /* @__PURE__ */ jsx(
                   "button",
                   {
+                    "aria-label": "إزالة من السلة",
                     onClick: () => {
                       cart.removeProduct(product.id);
                       setItem({ ...item });
@@ -3643,6 +3711,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx("td", { className: "text-end", children: /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "إزالة",
                       onClick: () => {
                         cart.removeProduct(_item.product.id);
                         setItem({ ...item });
@@ -3932,6 +4001,7 @@ const CategoryButton = ({
   return /* @__PURE__ */ jsxs(
     "button",
     {
+      "aria-label": category.name,
       onClick,
       className: (selected ? "gb border-transparent" : "") + " border flex items-center justify-start  bg-transparent hover:bg-white hover:bg-opacity-10     focus:bg-opacity-10 font-medium rounded-lg text-sm px-4 py-2 text-center",
       children: [
@@ -4149,6 +4219,7 @@ function Home() {
           {
             onClick: () => setSelectedCategory(null),
             className: "gb btn",
+            "aria-label": "إزالة التصفية",
             children: "إزالة التصفية"
           }
         )

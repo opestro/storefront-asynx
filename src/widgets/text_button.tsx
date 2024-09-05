@@ -2,6 +2,7 @@ const TextButton = ({ children, href, target, className }: React.DetailedHTMLPro
     ) => {
       var child = (
         <button
+          aria-label={"button"}
           type="button" className={className + " btn"}>
           {/* slot */}
           {children}

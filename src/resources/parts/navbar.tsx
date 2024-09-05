@@ -13,7 +13,9 @@ function Navbar({ store, fixed = true }: { fixed: boolean, store: StoreEntity })
         store?.banner && <>
           <div className="h-8">
           </div>
-          <a className="h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50" href={store!.banner!.url || "#!"}>
+          <a 
+            aria-label={store.banner.title}
+          className="h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50" href={store!.banner!.url || "#!"}>
             {store?.banner.title}
           </a>
         </>
@@ -51,7 +53,7 @@ function Navbar({ store, fixed = true }: { fixed: boolean, store: StoreEntity })
             </Link>
             <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
               <button type="button"
-
+                aria-label="تبديل الوضع"
                 onClick={() => {
                   document.body.classList.toggle("dark")
                 }}
@@ -69,6 +71,7 @@ function Navbar({ store, fixed = true }: { fixed: boolean, store: StoreEntity })
                 {
                   store?.action?.label &&
                   <button
+                    aria-label={store.action.label}
                     // on click lunch url
                     type="button" className="text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary">
                     {store.action.label}

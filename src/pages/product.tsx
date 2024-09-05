@@ -335,6 +335,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         ref?: React.LegacyRef<HTMLButtonElement> | undefined
     }): JSX.Element {
         return <button
+            aria-label="إرسال الطلب"
             ref={ref}
             id={"send-order-btn-" + id}
             onClick={(e) => {
@@ -421,6 +422,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             } as React.CSSProperties
                         }>
                         <button
+                            aria-label="إرسال الطلب"
                             onClick={(e) => {
                                 e.preventDefault();
                                 scrollToShippingForm();
@@ -583,7 +585,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         key={index}
                                         href={`#slide-${index + 1}`}
                                     >
-                                        <button key={index} className={'overflow-hidden relative ' +
+                                        <button
+                                            aria-label={"صورة " + product?.name + " " + index}
+                                        key={index} className={'overflow-hidden relative ' +
                                             (selectedMediaIndex === index ?
                                                 "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
@@ -709,6 +713,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         <div className="flex-grow"></div>
                                         <div className="flex items-center bg-gray-200 text-gray-700 justify-center border-2 rounded-lg overflow-hidden">
                                             <button
+                                                aria-label="تقليل الكمية"
                                                 onClick={() => {
                                                     cart.updateQuantity(product.id, item.quantity - 1)
                                                     setItem((prevItem) => ({
@@ -724,6 +729,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 {item.quantity}
                                             </span>
                                             <button
+                                                aria-label="زيادة الكمية"
                                                 onClick={() => {
                                                     cart.updateQuantity(product.id, item.quantity + 1)
                                                     // Increase quantity
@@ -743,6 +749,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             !cart.canAddProduct(product) ? null :
                                                 !cart.hasProduct(product.id) ?
                                                     <button
+                                                        aria-label="إضافة الى السلة"
                                                         onClick={() => {
                                                             cart.add({
                                                                 quantity: item.quantity,
@@ -759,6 +766,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                     </button>
                                                     :
                                                     <button
+                                                        aria-label="إزالة من السلة"
                                                         onClick={() => {
                                                             cart.removeProduct(product.id)
                                                             // update the ui
@@ -811,6 +819,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                 {/* delete */}
                                                                 <td className="text-end">
                                                                     <button
+                                                                        aria-label="إزالة"
                                                                         onClick={() => {
                                                                             cart.removeProduct(_item.product.id)
                                                                             // force react to update current componenet

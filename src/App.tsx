@@ -249,6 +249,7 @@ function Home() {
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className="gb btn"
+                  aria-label="إزالة التصفية"
                 >
                   إزالة التصفية
                 </button>
