@@ -84,7 +84,7 @@ async function createServer() {
       res.setHeader('X-Cache', 'HIT')
       const seconds = Math.floor((cached.expiration - Date.now()) / 1000)
       res.setHeader('X-Cache-Expires-In', seconds)
-      return res.status(200).end(seconds.toString());
+      return res.status(200).end(cached.data);
     }
 
     try {
