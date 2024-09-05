@@ -224,8 +224,8 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                                 rate === 0 ? "توصيل مجاني" :
 
                                                     !canShipToHome && !canShipToDesk ? "" :
-                                                        !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})` :
-                                                            canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})` :
+                                                        !canShipToHome && canShipToDesk ? `توصيل للمكتب (${deskRate} ${getCurrencySymbolByStore(store)})` :
+                                                            canShipToHome && !canShipToDesk ? `توصيل للبيت (${homeRate} ${getCurrencySymbolByStore(store)})` :
                                                                 `${rate} ${getCurrencySymbolByStore(store)}`
 
                                             }
