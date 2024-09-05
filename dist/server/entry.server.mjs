@@ -20,6 +20,7 @@ import { SuperSEO } from "react-super-seo";
 import axios from "axios";
 import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
 import vine from "@vinejs/vine";
+import "react-ga4";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
@@ -2387,9 +2388,9 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                   (index + 1).toString().padStart(2, "0"),
                   !!shipping.doorShipping
                 );
-                return /* @__PURE__ */ jsx(Fragment, {
+                return (
                   // !canShipToHome && !canShipToDesk &&
-                  children: /* @__PURE__ */ jsxs(
+                  /* @__PURE__ */ jsxs(
                     "option",
                     {
                       value: index + 1,
@@ -2402,7 +2403,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                     },
                     index
                   )
-                });
+                );
               })
             }
           )
@@ -3996,7 +3997,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-fb436f12.mjs")
+        lazy: () => import("./assets/lazy-847355c9.mjs")
       },
       {
         path: "redirect",
@@ -4038,12 +4039,37 @@ function Home() {
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   function filteredProducts() {
-    return products.filter((product) => {
-      var _a2;
-      return !selectedCategory ? true : ((_a2 = product.category) == null ? void 0 : _a2.name) == (selectedCategory == null ? void 0 : selectedCategory.name);
-    });
+    return products.filter(
+      (product) => {
+        var _a2;
+        return !selectedCategory ? true : ((_a2 = product.category) == null ? void 0 : _a2.name) == (selectedCategory == null ? void 0 : selectedCategory.name);
+      }
+    );
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs("head", { children: [
+      /* @__PURE__ */ jsx(
+        "script",
+        {
+          async: true,
+          defer: true,
+          src: "https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "script",
+        {
+          dangerouslySetInnerHTML: {
+            __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PHHZC0B2SR', { 'send_page_view': false });
+      `
+          }
+        }
+      )
+    ] }),
     /* @__PURE__ */ jsx(
       SuperSEO,
       {
@@ -4067,25 +4093,40 @@ function Home() {
       }
     ),
     /* @__PURE__ */ jsxs("div", { className: "text-center relative max-w-screen-xl mx-auto px-4  sm:px-6 py-10 lg:px-8", children: [
-      /* @__PURE__ */ jsx(
-        AsynxWave,
-        {
-          className: "pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl"
-        }
-      ),
+      /* @__PURE__ */ jsx(AsynxWave, { className: "pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl" }),
       /* @__PURE__ */ jsxs("div", { className: "z-10 relative", children: [
         /* @__PURE__ */ jsxs("div", { className: "relative flex items-center justify-center", children: [
-          /* @__PURE__ */ jsx("h4", { className: " absolute\n          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase", children: store == null ? void 0 : store.name }),
+          /* @__PURE__ */ jsx(
+            "h4",
+            {
+              className: " absolute\n          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase",
+              children: store == null ? void 0 : store.name
+            }
+          ),
           /* @__PURE__ */ jsx(AsynxWave, {})
         ] }),
         /* @__PURE__ */ jsx("h1", { className: "title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl", children: store == null ? void 0 : store.title }),
-        /* @__PURE__ */ jsx("p", { className: "max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400\n            font-extralight\n            text-s\n            md:text-m\n            lg:text-l\n          ", children: store == null ? void 0 : store.description })
+        /* @__PURE__ */ jsx(
+          "p",
+          {
+            className: "max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400\n            font-extralight\n            text-s\n            md:text-m\n            lg:text-l\n          ",
+            children: store == null ? void 0 : store.description
+          }
+        )
       ] })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: (_a = store == null ? void 0 : store.categories) == null ? void 0 : _a.map((category, index) => /* @__PURE__ */ jsx(CategoryButton, { onClick: () => {
-      return selectedCategory == category ? setSelectedCategory(null) : setSelectedCategory(category);
-    }, selected: (selectedCategory == null ? void 0 : selectedCategory.name) == category.name, category }, index)) }) }),
+    /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: (_a = store == null ? void 0 : store.categories) == null ? void 0 : _a.map((category, index) => /* @__PURE__ */ jsx(
+      CategoryButton,
+      {
+        onClick: () => {
+          return selectedCategory == category ? setSelectedCategory(null) : setSelectedCategory(category);
+        },
+        selected: (selectedCategory == null ? void 0 : selectedCategory.name) == category.name,
+        category
+      },
+      index
+    )) }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
     /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: [
       filteredProducts().map((product, index) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductCard, { product, store }) }, index)),
@@ -4094,7 +4135,14 @@ function Home() {
         /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold text-gray-500 dark:text-gray-400", children: "لا يوجد منتجات" }),
         /* @__PURE__ */ jsx("p", { className: "text-gray-400 dark:text-gray-500", children: "لا يوجد منتجات في هذه الفئة" }),
         /* @__PURE__ */ jsx("div", { className: "h-3" }),
-        /* @__PURE__ */ jsx("button", { onClick: () => setSelectedCategory(null), className: "gb btn", children: "إزالة التصفية" })
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setSelectedCategory(null),
+            className: "gb btn",
+            children: "إزالة التصفية"
+          }
+        )
       ] }) })
     ] }) })
   ] });

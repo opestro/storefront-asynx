@@ -4,18 +4,27 @@ const express = require("express");
 const { installGlobals } = require("@remix-run/node");
 
 
-import { BentoCache, bentostore } from 'bentocache'
-import { memoryDriver } from 'bentocache/drivers/memory'
-
-const bento = new BentoCache({
-  default: 'default',
-  stores: {
-    // A first cache store named "myCache" using 
-    // only L1 in-memory cache
-    default: bentostore()
-      .useL1Layer(memoryDriver({ maxSize: 100_000 })),  }
-})
-
+// simple cache system
+const cache = new Map();
+const expiration = 5; // 5s
+// get cached item
+async function getCachedItem(key) {
+  const item = cache.get(key);
+  if (!item) return null;
+  if (item.expiration < Date.now()) {
+    cache.delete(key);
+    return null;
+  }
+  return item;
+}
+// set cache item
+async function setCacheItem(key, data, expirationInSecends = expiration) {
+  cache.set(key, { data, expiration: Date.now() + expirationInSecends * 1000 });
+}
+// delete cache item
+async function deleteCacheItem(key) {
+  cache.delete(key);
+}
 
 
 // Polyfill Web Fetch API
@@ -69,11 +78,13 @@ async function createServer() {
   app.use("*", async (req, res) => {
     const url = req.originalUrl;
     const cacheKey = `ssr:${url}`;
-    const cached = await bento.get(cacheKey);
+    const cached = await getCachedItem(cacheKey);
     if (cached) {
       // header X-Cache: HIT
       res.setHeader('X-Cache', 'HIT')
-      return res.status(200).end(cached);
+      const seconds = Math.floor((cached.expiration - Date.now()) / 1000)
+      res.setHeader('X-Cache-Expires-In', seconds)
+      return res.status(200).end(seconds.toString());
     }
 
     try {
@@ -99,8 +110,11 @@ async function createServer() {
       const html = template.replace("<!--app-html-->", appHtml);
 
       res.setHeader("Content-Type", "text/html");
-      res.setHeader('X-Cache', 'MISS')
-      await bento.set(cacheKey, html, { ttl: "5s" })
+      res.setHeader('X-Cache', 'MISS');
+      setCacheItem(cacheKey, html,
+        // get cache expiration from request params
+        req.query.cache ? parseInt(req.query.cache) : undefined
+      );
       return res.status(200).end(html);
     } catch (e) {
       console.error(e);
@@ -111,7 +125,8 @@ async function createServer() {
         vite.ssrFixStacktrace(e);
       }
       console.log(e.stack);
-      res.setHeader('X-Cache', 'MISS')
+      res.setHeader('X-Cache', 'MISS');
+      deleteCacheItem(cacheKey);
       return res.status(500).end(e.stack);
     }
   });

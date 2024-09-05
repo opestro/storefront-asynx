@@ -6,8 +6,6 @@ import { getShippingRateForState } from "../pishop/logic";
 import { ShippingMethodEntity } from "feeef/src/core/core";
 import { useState } from 'react';
 import { dartColorToCss, tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
-import TextField from '@mui/material/TextField';
-import { InputAdornment } from "@mui/material";
 import { getCurrencySymbolByStore } from "../widgets/product_card";
 
 /**
@@ -215,28 +213,24 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                     );
 
                                     return (
-                                        <>
-                                            {
-                                                // !canShipToHome && !canShipToDesk &&
-                                                <option
-                                                    // disabled={!canShipToHome && !canShipToDesk}
-                                                    key={index}
-                                                    value={index + 1}
-                                                    className={rate === 0 ? "text-green-500" : rate === null ? "text-red-500" : ""}
-                                                >
-                                                    {state} - {
-                                                        rate === 0 ? "توصيل مجاني" :
+                                        // !canShipToHome && !canShipToDesk &&
+                                        <option
+                                            // disabled={!canShipToHome && !canShipToDesk}
+                                            key={index}
+                                            value={index + 1}
+                                            className={rate === 0 ? "text-green-500" : rate === null ? "text-red-500" : ""}
+                                        >
+                                            {state} - {
+                                                rate === 0 ? "توصيل مجاني" :
 
-                                                            !canShipToHome && !canShipToDesk ? "" :
-                                                                !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})` :
-                                                                    canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})` :
-                                                                        `${rate} ${getCurrencySymbolByStore(store)}`
+                                                    !canShipToHome && !canShipToDesk ? "" :
+                                                        !canShipToHome && canShipToDesk ? `توصيل للمكتب فقط (${deskRate} ${getCurrencySymbolByStore(store)})` :
+                                                            canShipToHome && !canShipToDesk ? `توصيل للبيت فقط (${homeRate} ${getCurrencySymbolByStore(store)})` :
+                                                                `${rate} ${getCurrencySymbolByStore(store)}`
 
-                                                    }
-
-                                                </option>
                                             }
-                                        </>
+
+                                        </option>
                                     );
                                 })
                             }
