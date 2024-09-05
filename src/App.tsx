@@ -17,10 +17,10 @@ import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
 import ReactGA from "react-ga4";
 const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
-import TagManager from "react-gtm-module";
+import TagManager from 'react-gtm-module'
 const tagManagerArgs = {
-  gtmId: "GTM-T8JWQPMC",
-};
+  gtmId: 'GTM-T8JWQPMC'
+}
 
 export const routes: RouteObject[] = [
   {
@@ -91,20 +91,18 @@ async function homeLoader() {
 }
 
 function Home() {
+ 
   let { store, products } = useLoaderData() as {
     store: StoreEntity;
     products: ProductEntity[];
   };
   const location = useLocation();
-  // useEffect(() => {
-  //   TagManager.initialize(tagManagerArgs);
-  //   ReactGA.initialize(trackingId);
-  //   ReactGA.send({
-  //     hitType: "pageview",
-  //     page: "/",
-  //     title: store.title || "non",
-  //   });
-  // }, []);
+  useEffect(() =>{
+    TagManager.initialize(tagManagerArgs)
+ ReactGA.initialize(trackingId);
+ ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
+  }, [])
+
 
   const [selectedCategory, setSelectedCategory] =
     useState<EmbaddedCategory | null>(null);
@@ -122,19 +120,22 @@ function Home() {
       <head>
         <script
           async
-          defer
           src="https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
         ></script>
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-PHHZC0B2SR', { 'send_page_view': false });
-      `,
+            __html: ` window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PHHZC0B2SR');`,
           }}
         />
+        <script dangerouslySetInnerHTML={{__html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T8JWQPMC');`}}></script>
       </head>
 
       <SuperSEO
@@ -257,14 +258,9 @@ function Home() {
         </div>
       </div>
 
-      <noscript>
-        <iframe
-          src="https://www.googletagmanager.com/ns.html?id=GTM-T8JWQPMC"
-          height="0"
-          width="0"
-          style="display:none;visibility:hidden"
-        ></iframe>
-      </noscript>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8JWQPMC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
     </>
   );
 }
