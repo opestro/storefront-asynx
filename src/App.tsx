@@ -15,8 +15,8 @@ import { IconFlag } from "@tabler/icons-react";
 import CategoryButton from "./widgets/category_button";
 import { getProduct, getProducts, getStore } from "./usecases";
 import { SuperSEO } from "react-super-seo";
-// import ReactGA from "react-ga4";
-// const trackingId = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
+import ReactGA from "react-ga4";
+const TRACKING_ID = "G-PHHZC0B2SR"; // Your Google Analytics tracking ID
 // import TagManager from 'react-gtm-module'
 // const tagManagerArgs = {
 //   gtmId: 'GTM-T8JWQPMC'
@@ -92,11 +92,16 @@ async function homeLoader() {
 }
 
 function Home() {
- 
+
   let { store, products } = useLoaderData() as {
     store: StoreEntity;
     products: ProductEntity[];
   };
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+    // Send pageview with a custom path
+    ReactGA.send({ hitType: "pageview", page: "/", title: store.name + " | " + store.title });
+}, [])
   const location = useLocation();
 
 
@@ -114,7 +119,7 @@ function Home() {
 
   return (
     <>
-    <head>
+    {/* <head>
       <script
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
@@ -128,7 +133,7 @@ gtag('js', new Date());
 gtag('config', 'G-PHHZC0B2SR');`,
         }}
       />
-    </head>
+    </head> */}
 
       <SuperSEO
         // title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
