@@ -3,6 +3,21 @@ const fsp = require("fs/promises");
 const express = require("express");
 const { installGlobals } = require("@remix-run/node");
 
+
+import { BentoCache, bentostore } from 'bentocache'
+import { memoryDriver } from 'bentocache/drivers/memory'
+
+const bento = new BentoCache({
+  default: 'default',
+  stores: {
+    // A first cache store named "myCache" using 
+    // only L1 in-memory cache
+    default: bentostore()
+      .useL1Layer(memoryDriver({ maxSize: 100_000 })),  }
+})
+
+
+
 // Polyfill Web Fetch API
 installGlobals();
 
@@ -53,6 +68,13 @@ async function createServer() {
   // Handle all other routes with SSR
   app.use("*", async (req, res) => {
     const url = req.originalUrl;
+    const cacheKey = `ssr:${url}`;
+    const cached = await bento.get(cacheKey);
+    if (cached) {
+      // header X-Cache: HIT
+      res.setHeader('X-Cache', 'HIT')
+      return res.status(200).end(cached);
+    }
 
     try {
       let template;
@@ -77,6 +99,8 @@ async function createServer() {
       const html = template.replace("<!--app-html-->", appHtml);
 
       res.setHeader("Content-Type", "text/html");
+      res.setHeader('X-Cache', 'MISS')
+      await bento.set(cacheKey, html, { ttl: "5s" })
       return res.status(200).end(html);
     } catch (e) {
       console.error(e);
@@ -87,6 +111,7 @@ async function createServer() {
         vite.ssrFixStacktrace(e);
       }
       console.log(e.stack);
+      res.setHeader('X-Cache', 'MISS')
       return res.status(500).end(e.stack);
     }
   });
