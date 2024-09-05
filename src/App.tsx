@@ -47,6 +47,7 @@ export const routes: RouteObject[] = [
         path: "lazy",
         lazy: () => import("./lazy"),
       },
+      
       {
         path: "redirect",
         loader: redirectLoader,

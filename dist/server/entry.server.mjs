@@ -2970,7 +2970,7 @@ class FeeeF {
 const ff = new FeeeF({
   apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
   baseURL: "https://apis.feeef.net/api/v1",
-  cache: 5
+  cache: 10
   // baseURL: "http://localhost:3333/api/v1",
 });
 var currentHost = null;
@@ -3022,6 +3022,15 @@ function Product({ store, product }) {
   const [loading, setLoading] = useState(false);
   const [orderId] = useState(generateOrderId());
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+  const [mountPlayer, setMountPlayer] = useState(false);
+  useEffect(() => {
+    if (product == null ? void 0 : product.media.length) {
+      var media = product.media[selectedMediaIndex];
+      if (getYoutubeVideoIdFromUrl(media) != null) {
+        setMountPlayer(true);
+      }
+    }
+  }, [selectedMediaIndex]);
   const [sentOrder, setSentOrder] = useState(null);
   const isInView = useInViewport();
   const sendOrderButtonRef = isInView.ref;
@@ -3419,7 +3428,7 @@ function Product({ store, product }) {
                   opacity: selectedMediaIndex == index ? 1 : 0
                 },
                 className: "bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
-                children: /* @__PURE__ */ jsx(
+                children: mountPlayer && /* @__PURE__ */ jsx(
                   ReactPlayer,
                   {
                     url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
@@ -3427,7 +3436,7 @@ function Product({ store, product }) {
                     height: "100%",
                     playing: selectedMediaIndex === index
                   }
-                )
+                ) || /* @__PURE__ */ jsx("img", { src: `https://img.youtube.com/vi/${getYoutubeVideoIdFromUrl(media)}/maxresdefault.jpg`, className: "object-cover w-full h-full" })
               }
             ) : /* @__PURE__ */ jsx(
               "img",
@@ -3997,7 +4006,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-847355c9.mjs")
+        lazy: () => import("./assets/lazy-46d0baa9.mjs")
       },
       {
         path: "redirect",

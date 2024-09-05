@@ -105,7 +105,6 @@ async function createServer() {
         render = (await import("./dist/server/entry.server.mjs")).render;
       }
 
-      console.log("Rendering...");
       const appHtml = await render(req, res);
       const html = template.replace("<!--app-html-->", appHtml);
 
@@ -124,7 +123,6 @@ async function createServer() {
       if (!isProduction) {
         vite.ssrFixStacktrace(e);
       }
-      console.log(e.stack);
       res.setHeader('X-Cache', 'MISS');
       deleteCacheItem(cacheKey);
       return res.status(500).end(e.stack);

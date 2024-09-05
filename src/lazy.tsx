@@ -5,7 +5,7 @@ interface LazyLoaderData {
 }
 
 export const loader = async (): Promise<LazyLoaderData> => {
-  await new Promise((r) => setTimeout(r, 500));
+  await new Promise((r) => setTimeout(r, 5000));
   return {
     date: new Date().toISOString(),
   };

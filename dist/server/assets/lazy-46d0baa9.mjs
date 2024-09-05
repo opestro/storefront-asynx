@@ -16,7 +16,7 @@ import "axios-cache-interceptor";
 import "@vinejs/vine";
 import "react-ga4";
 const loader = async () => {
-  await new Promise((r) => setTimeout(r, 500));
+  await new Promise((r) => setTimeout(r, 5e3));
   return {
     date: (/* @__PURE__ */ new Date()).toISOString()
   };

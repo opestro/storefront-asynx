@@ -36,13 +36,13 @@ export function saveOrder(order: LocalOrder) {
 
 // ProductPage resposible for load the product
 function ProductPage() {
-   
+
     let { product, store } = useLoaderData() as {
         product: ProductEntity,
         store: StoreEntity
     };
     const Home = () => {
-        ReactGA.send({ hitType: "pageview", page: "/", title:( store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
+        ReactGA.send({ hitType: "pageview", page: "/", title: (store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
     }
     let pathname = useLocation().pathname
     return <>
@@ -76,19 +76,23 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     let location = useLocation()
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
-
-
-
-
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+    const [mountPlayer, setMountPlayer] = useState(false);
+
+    useEffect(() => {
+        if (product?.media.length) {
+            var media = product.media[selectedMediaIndex];
+            if (getYoutubeVideoIdFromUrl(media) != null) {
+                setMountPlayer(true);
+            }
+        }
+    }, [selectedMediaIndex]);
 
     const [sentOrder, setSentOrder] = useState<OrderEntity | null>(null);
-
     // isSendOrderButtonInView
     const isInView = useInViewport();
     const sendOrderButtonRef = isInView.ref
     const isSendOrderButtonInView = isInView.isInViewport
-
     const [item, setItem] = useState<LocalOrderItem>({
         product: product!,
         quantity: 1,
@@ -534,29 +538,19 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         opacity: selectedMediaIndex == index ? 1 : 0,
                                                     }}
                                                     className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
-                                                    <ReactPlayer
-                                                        url={
-                                                            `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
-                                                        }
-                                                        width="100%"
-                                                        height="100%"
-                                                        // controls
-                                                        playing={selectedMediaIndex === index}
-                                                    // config={{
-                                                    //     youtube: {
-                                                    //         // hide controls
-                                                    //         playerVars: {
-                                                    //             controls: 0,
-                                                    //             modestbranding: 1,
-                                                    //             showinfo: 0,
-                                                    //             rel: 0,
-                                                    //             loop: selectedMediaIndex == index,
-                                                    //             autoplay: selectedMediaIndex == index,
-                                                    //             // mute: selectedMediaIndex != index,
-                                                    //         }
-                                                    //     }
-                                                    // }}
-                                                    />
+                                                    {
+                                                        mountPlayer &&
+                                                        <ReactPlayer
+                                                            url={
+                                                                `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
+                                                            }
+                                                            width="100%"
+                                                            height="100%"
+                                                            // controls
+                                                            playing={selectedMediaIndex === index}
+                                                        />
+                                                        || <img src={`https://img.youtube.com/vi/${getYoutubeVideoIdFromUrl(media)}/maxresdefault.jpg`} className="object-cover w-full h-full" />
+                                                    }
                                                 </div> :
                                                 <img
                                                     src={media} className={
