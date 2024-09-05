@@ -2357,7 +2357,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "الهاتف",
           !isPhoneValid && tryFixPhoneNumber(shipping.phone) != "0" && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-p", children: tryFixPhoneNumber(shipping.phone) })
         ] }),
@@ -2397,7 +2397,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         )
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { className: "text-sm font-light flex items-center", children: "الاسم" }),
+        /* @__PURE__ */ jsx("span", { className: "text-sm font-light flex items-center", children: "الاسم" }),
         /* @__PURE__ */ jsxs("div", { className: "relative border border-gray-500 border-opacity-20 rounded-lg", children: [
           /* @__PURE__ */ jsx(IconUser, { className: "absolute top-2 right-2 text-gray-400" }),
           /* @__PURE__ */ jsx(
@@ -2418,7 +2418,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "الولاية",
           shipping.address.state && /* @__PURE__ */ jsxs("span", { className: "mx-2 text-xs text-red-500", children: [
             "(",
@@ -2464,7 +2464,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "البلدية",
           !shipping.address.state && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-red-500", children: "(اختر الولاية أولاً)" })
         ] }),
@@ -2495,7 +2495,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] })
     ] }),
     (shipping.doorShipping && ((_d = (_c = store.metadata) == null ? void 0 : _c.shipping) == null ? void 0 : _d.mode) !== "deskOnly" || !canShipToDesk) && canShipToHome && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { className: "text-sm font-light", children: "العنوان" }),
+      /* @__PURE__ */ jsx("span", { className: "text-sm font-light", children: "العنوان" }),
       /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg", children: [
         /* @__PURE__ */ jsx(IconLocationBolt, { className: "absolute top-2 right-2 text-gray-400" }),
         /* @__PURE__ */ jsx(
@@ -2514,7 +2514,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] })
     ] }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "deskOnly" || ((_h = (_g = store.metadata) == null ? void 0 : _g.shipping) == null ? void 0 : _h.mode) === "homeOnly" || !canShipToDesk || !canShipToHome ? null : /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
+    ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "deskOnly" || ((_h = (_g = store.metadata) == null ? void 0 : _g.shipping) == null ? void 0 : _h.mode) === "homeOnly" || !canShipToDesk || !canShipToHome ? null : /* @__PURE__ */ jsxs("span", { className: "relative inline-flex items-center cursor-pointer", children: [
       /* @__PURE__ */ jsx("input", { type: "checkbox", onChange: () => {
         shipping.doorShipping = !shipping.doorShipping && canShipToHome;
         setShipping({ ...shipping });
@@ -3458,8 +3458,8 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_c = store == null ? void 0 : store.banner) == null ? void 0 : _c.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "overflow-hidden slider relative rounded-2xl", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxs(StickyBox, { offsetTop: 78 + (((_c = store == null ? void 0 : store.banner) == null ? void 0 : _c.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: [
+        /* @__PURE__ */ jsx("div", { className: "overflow-hidden slider relative rounded-2xl", children: /* @__PURE__ */ jsx(
           "div",
           {
             className: "slides overflow-hidden",
@@ -3514,17 +3514,18 @@ function Product({ store, product }) {
               }
             ) }, index))
           }
-        ),
-        /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
+        ) }),
+        /* @__PURE__ */ jsx("div", { className: " bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
           "a",
           {
             className: "pointer-events-auto",
             href: `#slide-${index + 1}`,
+            "aria-label": "صورة " + (product == null ? void 0 : product.name) + " " + index,
             children: /* @__PURE__ */ jsx(
               "button",
               {
                 "aria-label": "صورة " + (product == null ? void 0 : product.name) + " " + index,
-                className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out",
+                className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-16" : " w-14 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out",
                 children: /* @__PURE__ */ jsx(
                   "img",
                   {
@@ -3539,7 +3540,7 @@ function Product({ store, product }) {
           },
           index
         )) })
-      ] }) }),
+      ] }),
       /* @__PURE__ */ jsx("div", { className: "w-4" }),
       /* @__PURE__ */ jsxs("div", { className: "w-full md:w-1/2 z-10", children: [
         /* @__PURE__ */ jsxs("div", { className: "px-4 pt-5 product-gradient", children: [

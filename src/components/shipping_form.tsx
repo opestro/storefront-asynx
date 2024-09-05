@@ -104,7 +104,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
 
                 <div>
-                    <label className="text-sm font-light flex items-center">الهاتف
+                    <span className="text-sm font-light flex items-center">الهاتف
                         {
                             !isPhoneValid
                             &&
@@ -116,7 +116,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                                 }
                             </span>
                         }
-                    </label>
+                    </span>
                     <div className={
 
                         "relative border border-gray border-opacity-50 rounded-lg "
@@ -153,7 +153,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </div>
                 </div>
                 <div>
-                    <label className="text-sm font-light flex items-center">الاسم</label>
+                    <span className="text-sm font-light flex items-center">الاسم</span>
                     <div className="relative border border-gray-500 border-opacity-20 rounded-lg">
                         <IconUser className="absolute top-2 right-2 text-gray-400" />
                         <input
@@ -191,12 +191,12 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
             </div>
             <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
                 <div>
-                    <label className="text-sm font-light flex items-center">الولاية
+                    <span className="text-sm font-light flex items-center">الولاية
                         {
                             shipping!.address.state &&
                             <span className="mx-2 text-xs text-red-500">({shipping!.address.state})</span>
                         }
-                    </label>
+                    </span>
                     <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
                         <IconLocation className="absolute top-2 right-2 text-gray-400" />
                         <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit] focus:first-letter:outline-2" required
@@ -238,12 +238,12 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     </div>
                 </div>
                 <div>
-                    <label className="text-sm font-light flex items-center">البلدية
+                    <span className="text-sm font-light flex items-center">البلدية
                         {
                             !shipping!.address.state &&
                             <span className="mx-2 text-xs text-red-500">(اختر الولاية أولاً)</span>
                         }
-                    </label>
+                    </span>
                     <div className="relative overflow-visible border border-gray-500 border-opacity-20 rounded-lg">
                         <IconLocationCode className="absolute top-2 right-2 text-gray-400" />
                         <select className="bg-transparent p-2 h-10 w-full pr-10 rounded-[inherit]" required
@@ -272,7 +272,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                 ) && canShipToHome &&
                 <>
                     <div>
-                        <label className="text-sm font-light">العنوان</label>
+                        <span className="text-sm font-light">العنوان</span>
                         <div className="relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg">
                             <IconLocationBolt className="absolute top-2 right-2 text-gray-400" />
                             <textarea
@@ -295,7 +295,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                     || !canShipToDesk
                     || !canShipToHome
                     ? null :
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <span className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" onChange={() => {
                             shipping.doorShipping = !shipping.doorShipping && canShipToHome;
                             setShipping({ ...shipping })
@@ -313,7 +313,7 @@ export function ShippingForm({ store, shipping, shippingMethod, setShipping, sen
                             </span>
                             {/* <span className="text-xs text-gray-500">حدد هذا الخيار إن كان لديك عنوان توصيل غير عنوانك الحالي</span> */}
                         </div>
-                    </label>
+                    </span>
             }
         </div>
     );

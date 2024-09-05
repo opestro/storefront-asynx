@@ -577,19 +577,21 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     ))
                                 }
                             </div>
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
+                        </div>
+                            <div className=" bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
 
                                 {product?.media.map((media, index) => (
                                     <a
                                         className="pointer-events-auto"
                                         key={index}
                                         href={`#slide-${index + 1}`}
+                                        aria-label={"صورة " + product?.name + " " + index}
                                     >
                                         <button
                                             aria-label={"صورة " + product?.name + " " + index}
                                         key={index} className={'overflow-hidden relative ' +
                                             (selectedMediaIndex === index ?
-                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                                "border-primary border-[2px] w-16" : " w-14 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
                                             <img src={media} className="overflow-hidden w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
@@ -599,7 +601,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 ))}
 
                             </div>
-                        </div>
                     </StickyBox>
                     {/* detail */}
                     <div className="w-4"></div>
