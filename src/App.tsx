@@ -47,6 +47,7 @@ export const routes: RouteObject[] = [
         path: "lazy",
         lazy: () => import("./lazy"),
       },
+      
       {
         path: "redirect",
         loader: redirectLoader,
@@ -97,11 +98,7 @@ function Home() {
     products: ProductEntity[];
   };
   const location = useLocation();
-  useEffect(() =>{
-    TagManager.initialize(tagManagerArgs)
- ReactGA.initialize(trackingId);
- ReactGA.send({ hitType: "pageview", page: "/", title: store.title || "non" });
-  }, [])
+
 
 
   const [selectedCategory, setSelectedCategory] =
@@ -117,26 +114,21 @@ function Home() {
 
   return (
     <>
-      <head>
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: ` window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <head>
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
+      ></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: ` window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
 
-  gtag('config', 'G-PHHZC0B2SR');`,
-          }}
-        />
-        <script dangerouslySetInnerHTML={{__html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-T8JWQPMC');`}}></script>
-      </head>
+gtag('config', 'G-PHHZC0B2SR');`,
+        }}
+      />
+    </head>
 
       <SuperSEO
         // title={store.name + " | " + (product.name || "") + (!!product.title? " - " + product.title: "")}
@@ -249,6 +241,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className="gb btn"
+                  aria-label="إزالة التصفية"
                 >
                   إزالة التصفية
                 </button>
@@ -257,10 +250,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           )}
         </div>
       </div>
-
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8JWQPMC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-
     </>
   );
 }

@@ -36,13 +36,13 @@ export function saveOrder(order: LocalOrder) {
 
 // ProductPage resposible for load the product
 function ProductPage() {
-   
+
     let { product, store } = useLoaderData() as {
         product: ProductEntity,
         store: StoreEntity
     };
     const Home = () => {
-        ReactGA.send({ hitType: "pageview", page: "/", title:( store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
+        ReactGA.send({ hitType: "pageview", page: "/", title: (store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
     }
     let pathname = useLocation().pathname
     return <>
@@ -76,19 +76,23 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     let location = useLocation()
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
-
-
-
-
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+    const [mountPlayer, setMountPlayer] = useState(false);
+
+    useEffect(() => {
+        if (product?.media.length) {
+            var media = product.media[selectedMediaIndex];
+            if (getYoutubeVideoIdFromUrl(media) != null) {
+                setMountPlayer(true);
+            }
+        }
+    }, [selectedMediaIndex]);
 
     const [sentOrder, setSentOrder] = useState<OrderEntity | null>(null);
-
     // isSendOrderButtonInView
     const isInView = useInViewport();
     const sendOrderButtonRef = isInView.ref
     const isSendOrderButtonInView = isInView.isInViewport
-
     const [item, setItem] = useState<LocalOrderItem>({
         product: product!,
         quantity: 1,
@@ -331,6 +335,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         ref?: React.LegacyRef<HTMLButtonElement> | undefined
     }): JSX.Element {
         return <button
+            aria-label="إرسال الطلب"
             ref={ref}
             id={"send-order-btn-" + id}
             onClick={(e) => {
@@ -417,6 +422,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             } as React.CSSProperties
                         }>
                         <button
+                            aria-label="إرسال الطلب"
                             onClick={(e) => {
                                 e.preventDefault();
                                 scrollToShippingForm();
@@ -534,29 +540,19 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                         opacity: selectedMediaIndex == index ? 1 : 0,
                                                     }}
                                                     className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
-                                                    <ReactPlayer
-                                                        url={
-                                                            `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
-                                                        }
-                                                        width="100%"
-                                                        height="100%"
-                                                        // controls
-                                                        playing={selectedMediaIndex === index}
-                                                    // config={{
-                                                    //     youtube: {
-                                                    //         // hide controls
-                                                    //         playerVars: {
-                                                    //             controls: 0,
-                                                    //             modestbranding: 1,
-                                                    //             showinfo: 0,
-                                                    //             rel: 0,
-                                                    //             loop: selectedMediaIndex == index,
-                                                    //             autoplay: selectedMediaIndex == index,
-                                                    //             // mute: selectedMediaIndex != index,
-                                                    //         }
-                                                    //     }
-                                                    // }}
-                                                    />
+                                                    {
+                                                        mountPlayer &&
+                                                        <ReactPlayer
+                                                            url={
+                                                                `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
+                                                            }
+                                                            width="100%"
+                                                            height="100%"
+                                                            // controls
+                                                            playing={selectedMediaIndex === index}
+                                                        />
+                                                        || <img src={`https://img.youtube.com/vi/${getYoutubeVideoIdFromUrl(media)}/maxresdefault.jpg`} className="object-cover w-full h-full" />
+                                                    }
                                                 </div> :
                                                 <img
                                                     src={media} className={
@@ -581,17 +577,21 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     ))
                                 }
                             </div>
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
+                        </div>
+                            <div className=" bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
 
                                 {product?.media.map((media, index) => (
                                     <a
                                         className="pointer-events-auto"
                                         key={index}
                                         href={`#slide-${index + 1}`}
+                                        aria-label={"صورة " + product?.name + " " + index}
                                     >
-                                        <button key={index} className={'overflow-hidden relative ' +
+                                        <button
+                                            aria-label={"صورة " + product?.name + " " + index}
+                                        key={index} className={'overflow-hidden relative ' +
                                             (selectedMediaIndex === index ?
-                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                                "border-primary border-[2px] w-16" : " w-14 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
                                             <img src={media} className="overflow-hidden w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
@@ -601,7 +601,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 ))}
 
                             </div>
-                        </div>
                     </StickyBox>
                     {/* detail */}
                     <div className="w-4"></div>
@@ -715,6 +714,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         <div className="flex-grow"></div>
                                         <div className="flex items-center bg-gray-200 text-gray-700 justify-center border-2 rounded-lg overflow-hidden">
                                             <button
+                                                aria-label="تقليل الكمية"
                                                 onClick={() => {
                                                     cart.updateQuantity(product.id, item.quantity - 1)
                                                     setItem((prevItem) => ({
@@ -730,6 +730,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 {item.quantity}
                                             </span>
                                             <button
+                                                aria-label="زيادة الكمية"
                                                 onClick={() => {
                                                     cart.updateQuantity(product.id, item.quantity + 1)
                                                     // Increase quantity
@@ -749,6 +750,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             !cart.canAddProduct(product) ? null :
                                                 !cart.hasProduct(product.id) ?
                                                     <button
+                                                        aria-label="إضافة الى السلة"
                                                         onClick={() => {
                                                             cart.add({
                                                                 quantity: item.quantity,
@@ -765,6 +767,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                     </button>
                                                     :
                                                     <button
+                                                        aria-label="إزالة من السلة"
                                                         onClick={() => {
                                                             cart.removeProduct(product.id)
                                                             // update the ui
@@ -817,6 +820,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                                 {/* delete */}
                                                                 <td className="text-end">
                                                                     <button
+                                                                        aria-label="إزالة"
                                                                         onClick={() => {
                                                                             cart.removeProduct(_item.product.id)
                                                                             // force react to update current componenet

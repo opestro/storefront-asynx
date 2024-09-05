@@ -20,6 +20,7 @@ import { SuperSEO } from "react-super-seo";
 import axios from "axios";
 import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
 import vine from "@vinejs/vine";
+import "react-ga4";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
@@ -114,7 +115,15 @@ function Navbar({ store, fixed = true }) {
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     (store == null ? void 0 : store.banner) && /* @__PURE__ */ jsxs(Fragment, { children: [
       /* @__PURE__ */ jsx("div", { className: "h-8" }),
-      /* @__PURE__ */ jsx("a", { className: "h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50", href: store.banner.url || "#!", children: store == null ? void 0 : store.banner.title })
+      /* @__PURE__ */ jsx(
+        "a",
+        {
+          "aria-label": store.banner.title,
+          className: "h-8 block py-1 bg-primary text-center fixed left-0 right-0 top-0 z-50",
+          href: store.banner.url || "#!",
+          children: store == null ? void 0 : store.banner.title
+        }
+      )
     ] }),
     /* @__PURE__ */ jsx("div", { className: fixed ? `sticky ${(store == null ? void 0 : store.banner) ? "top-8" : "top-0"} z-50` : "", children: /* @__PURE__ */ jsx("nav", { className: `w-screen backdrop-blur-xl bg-opacity-40 dark:bg-opacity-40 bg-gray-50 dark:bg-gray-900   z-20 top-0 start-0 border-b border-opacity-20 dark:border-opacity-30 border-gray-600`, children: /* @__PURE__ */ jsxs("div", { className: "h-16 container flex flex-wrap items-center justify-between mx-auto", children: [
       /* @__PURE__ */ jsxs(
@@ -134,6 +143,7 @@ function Navbar({ store, fixed = true }) {
           "button",
           {
             type: "button",
+            "aria-label": "تبديل الوضع",
             onClick: () => {
               document.body.classList.toggle("dark");
             },
@@ -153,6 +163,7 @@ function Navbar({ store, fixed = true }) {
             children: ((_e = store == null ? void 0 : store.action) == null ? void 0 : _e.label) && /* @__PURE__ */ jsx(
               "button",
               {
+                "aria-label": store.action.label,
                 type: "button",
                 className: "text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-4 py-2 text-center  dark:focus:ring-primary",
                 children: store.action.label
@@ -200,6 +211,7 @@ const TextButton = ({ children, href, target, className }) => {
   var child = /* @__PURE__ */ jsx(
     "button",
     {
+      "aria-label": "button",
       type: "button",
       className: className + " btn",
       children
@@ -330,7 +342,16 @@ function Footer({ store }) {
       /* @__PURE__ */ jsx("br", {}),
       /* @__PURE__ */ jsxs("span", { className: "text-sm font-extralight", children: [
         "created by ",
-        /* @__PURE__ */ jsx("a", { href: "https://feeef.net/?ref=footer_copyrights", target: "_blank", className: "text-primary", children: "feeef®" }),
+        /* @__PURE__ */ jsx(
+          "a",
+          {
+            "aria-label": "feeef",
+            href: "https://feeef.net/?ref=footer_copyrights",
+            target: "_blank",
+            className: "text-primary",
+            children: "feeef®"
+          }
+        ),
         " created your store. startig for free!"
       ] })
     ] }) })
@@ -2087,11 +2108,37 @@ function Thanks({ order, onDone }) {
         ] }) }),
         /* @__PURE__ */ jsx("div", { className: "h-1" }),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx("button", { type: "button", className: "w-full pulse btn gb", onClick: onDone, children: "إغلاق" }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            "aria-label": "إغلاق",
+            type: "button",
+            className: "w-full pulse btn gb",
+            onClick: onDone,
+            children: "إغلاق"
+          }
+        ),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx("div", { className: "p-2 bg-gray-100 text-center", children: /* @__PURE__ */ jsx("a", { href: `https://track.feeef.net/track/${order.id}`, target: "_blank", className: "text-blue-500", children: "تتبع حالة الطلب" }) }),
+        /* @__PURE__ */ jsx("div", { className: "p-2 bg-gray-100 text-center", children: /* @__PURE__ */ jsx(
+          "a",
+          {
+            "aria-label": "تتبع حالة الطلب",
+            href: `https://track.feeef.net/track/${order.id}`,
+            target: "_blank",
+            className: "text-blue-500",
+            children: "تتبع حالة الطلب"
+          }
+        ) }),
         /* @__PURE__ */ jsx("div", { className: "h-2" }),
-        /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx("button", { type: "button", className: "w-full btn gb", children: "باقي المنتجات" }) })
+        /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx(
+          "button",
+          {
+            "aria-label": "باقي المنتجات",
+            type: "button",
+            className: "w-full btn gb",
+            children: "باقي المنتجات"
+          }
+        ) })
       ]
     }
   );
@@ -2215,14 +2262,22 @@ const ProductCard = ({ product, store }) => {
         "..."
       ] }),
       /* @__PURE__ */ jsx("div", { className: "h-2" }),
-      /* @__PURE__ */ jsxs("button", { type: "button", className: "btn gb w-full", children: [
-        "اشتري الآن",
-        !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
-          "-",
-          discount,
-          "%"
-        ] })
-      ] })
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          "aria-label": "اشتري الآن",
+          type: "button",
+          className: "btn gb w-full",
+          children: [
+            "اشتري الآن",
+            !!product.discount && /* @__PURE__ */ jsxs("span", { dir: "ltr", className: "mx-2 bg-primary text-white rounded-sm px-1", children: [
+              "-",
+              discount,
+              "%"
+            ] })
+          ]
+        }
+      )
     ] })
   ] }) });
 };
@@ -2302,7 +2357,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     /* @__PURE__ */ jsx("div", { className: "h-2" }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "الهاتف",
           !isPhoneValid && tryFixPhoneNumber(shipping.phone) != "0" && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-p", children: tryFixPhoneNumber(shipping.phone) })
         ] }),
@@ -2342,7 +2397,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
         )
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { className: "text-sm font-light flex items-center", children: "الاسم" }),
+        /* @__PURE__ */ jsx("span", { className: "text-sm font-light flex items-center", children: "الاسم" }),
         /* @__PURE__ */ jsxs("div", { className: "relative border border-gray-500 border-opacity-20 rounded-lg", children: [
           /* @__PURE__ */ jsx(IconUser, { className: "absolute top-2 right-2 text-gray-400" }),
           /* @__PURE__ */ jsx(
@@ -2363,7 +2418,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-x-4 gap-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "الولاية",
           shipping.address.state && /* @__PURE__ */ jsxs("span", { className: "mx-2 text-xs text-red-500", children: [
             "(",
@@ -2387,9 +2442,9 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                   (index + 1).toString().padStart(2, "0"),
                   !!shipping.doorShipping
                 );
-                return /* @__PURE__ */ jsx(Fragment, {
+                return (
                   // !canShipToHome && !canShipToDesk &&
-                  children: /* @__PURE__ */ jsxs(
+                  /* @__PURE__ */ jsxs(
                     "option",
                     {
                       value: index + 1,
@@ -2397,19 +2452,19 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
                       children: [
                         state,
                         " - ",
-                        rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? "" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب فقط (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت فقط (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
+                        rate2 === 0 ? "توصيل مجاني" : !canShipToHome2 && !canShipToDesk2 ? "" : !canShipToHome2 && canShipToDesk2 ? `توصيل للمكتب (${deskRate2} ${getCurrencySymbolByStore(store)})` : canShipToHome2 && !canShipToDesk2 ? `توصيل للبيت (${homeRate2} ${getCurrencySymbolByStore(store)})` : `${rate2} ${getCurrencySymbolByStore(store)}`
                       ]
                     },
                     index
                   )
-                });
+                );
               })
             }
           )
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("label", { className: "text-sm font-light flex items-center", children: [
+        /* @__PURE__ */ jsxs("span", { className: "text-sm font-light flex items-center", children: [
           "البلدية",
           !shipping.address.state && /* @__PURE__ */ jsx("span", { className: "mx-2 text-xs text-red-500", children: "(اختر الولاية أولاً)" })
         ] }),
@@ -2440,7 +2495,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] })
     ] }),
     (shipping.doorShipping && ((_d = (_c = store.metadata) == null ? void 0 : _c.shipping) == null ? void 0 : _d.mode) !== "deskOnly" || !canShipToDesk) && canShipToHome && /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { className: "text-sm font-light", children: "العنوان" }),
+      /* @__PURE__ */ jsx("span", { className: "text-sm font-light", children: "العنوان" }),
       /* @__PURE__ */ jsxs("div", { className: "relative overflow-hidden border border-gray-500 border-opacity-20 rounded-lg", children: [
         /* @__PURE__ */ jsx(IconLocationBolt, { className: "absolute top-2 right-2 text-gray-400" }),
         /* @__PURE__ */ jsx(
@@ -2459,7 +2514,7 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
       ] })
     ] }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "deskOnly" || ((_h = (_g = store.metadata) == null ? void 0 : _g.shipping) == null ? void 0 : _h.mode) === "homeOnly" || !canShipToDesk || !canShipToHome ? null : /* @__PURE__ */ jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
+    ((_f = (_e = store.metadata) == null ? void 0 : _e.shipping) == null ? void 0 : _f.mode) === "deskOnly" || ((_h = (_g = store.metadata) == null ? void 0 : _g.shipping) == null ? void 0 : _h.mode) === "homeOnly" || !canShipToDesk || !canShipToHome ? null : /* @__PURE__ */ jsxs("span", { className: "relative inline-flex items-center cursor-pointer", children: [
       /* @__PURE__ */ jsx("input", { type: "checkbox", onChange: () => {
         shipping.doorShipping = !shipping.doorShipping && canShipToHome;
         setShipping({ ...shipping });
@@ -2969,7 +3024,7 @@ class FeeeF {
 const ff = new FeeeF({
   apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
   baseURL: "https://apis.feeef.net/api/v1",
-  cache: 5
+  cache: 10
   // baseURL: "http://localhost:3333/api/v1",
 });
 var currentHost = null;
@@ -3021,6 +3076,15 @@ function Product({ store, product }) {
   const [loading, setLoading] = useState(false);
   const [orderId] = useState(generateOrderId());
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+  const [mountPlayer, setMountPlayer] = useState(false);
+  useEffect(() => {
+    if (product == null ? void 0 : product.media.length) {
+      var media = product.media[selectedMediaIndex];
+      if (getYoutubeVideoIdFromUrl(media) != null) {
+        setMountPlayer(true);
+      }
+    }
+  }, [selectedMediaIndex]);
   const [sentOrder, setSentOrder] = useState(null);
   const isInView = useInViewport();
   const sendOrderButtonRef = isInView.ref;
@@ -3220,6 +3284,7 @@ function Product({ store, product }) {
     return /* @__PURE__ */ jsxs(
       "button",
       {
+        "aria-label": "إرسال الطلب",
         ref,
         id: "send-order-btn-" + id,
         onClick: (e) => {
@@ -3298,6 +3363,7 @@ function Product({ store, product }) {
             children: /* @__PURE__ */ jsxs(
               "button",
               {
+                "aria-label": "إرسال الطلب",
                 onClick: (e) => {
                   e.preventDefault();
                   scrollToShippingForm();
@@ -3392,8 +3458,8 @@ function Product({ store, product }) {
       /* @__PURE__ */ jsx(Thanks, { store, order: sentOrder, onDone: clearOrder })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto pt-4 ", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row", children: [
-      /* @__PURE__ */ jsx(StickyBox, { offsetTop: 78 + (((_c = store == null ? void 0 : store.banner) == null ? void 0 : _c.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: /* @__PURE__ */ jsxs("div", { className: "overflow-hidden slider relative rounded-2xl", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxs(StickyBox, { offsetTop: 78 + (((_c = store == null ? void 0 : store.banner) == null ? void 0 : _c.enabled) ? 40 : 0), className: "top-0 md:top-[78px]  h-full w-full md:w-1/2", children: [
+        /* @__PURE__ */ jsx("div", { className: "overflow-hidden slider relative rounded-2xl", children: /* @__PURE__ */ jsx(
           "div",
           {
             className: "slides overflow-hidden",
@@ -3418,7 +3484,7 @@ function Product({ store, product }) {
                   opacity: selectedMediaIndex == index ? 1 : 0
                 },
                 className: "bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0",
-                children: /* @__PURE__ */ jsx(
+                children: mountPlayer && /* @__PURE__ */ jsx(
                   ReactPlayer,
                   {
                     url: `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`,
@@ -3426,7 +3492,7 @@ function Product({ store, product }) {
                     height: "100%",
                     playing: selectedMediaIndex === index
                   }
-                )
+                ) || /* @__PURE__ */ jsx("img", { src: `https://img.youtube.com/vi/${getYoutubeVideoIdFromUrl(media)}/maxresdefault.jpg`, className: "object-cover w-full h-full" })
               }
             ) : /* @__PURE__ */ jsx(
               "img",
@@ -3448,24 +3514,33 @@ function Product({ store, product }) {
               }
             ) }, index))
           }
-        ),
-        /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
+        ) }),
+        /* @__PURE__ */ jsx("div", { className: " bottom-0 w-full flex justify-center p-2 items-end pointer-events-none", children: product == null ? void 0 : product.media.map((media, index) => /* @__PURE__ */ jsx(
           "a",
           {
             className: "pointer-events-auto",
             href: `#slide-${index + 1}`,
-            children: /* @__PURE__ */ jsx("button", { className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out", children: /* @__PURE__ */ jsx(
-              "img",
+            "aria-label": "صورة " + (product == null ? void 0 : product.name) + " " + index,
+            children: /* @__PURE__ */ jsx(
+              "button",
               {
-                src: media,
-                className: "overflow-hidden w-full h-full object-cover ",
-                alt: "صورة " + (product == null ? void 0 : product.name) + " " + index
-              }
-            ) }, index)
+                "aria-label": "صورة " + (product == null ? void 0 : product.name) + " " + index,
+                className: "overflow-hidden relative " + (selectedMediaIndex === index ? "border-primary border-[2px] w-16" : " w-14 border-[2px] dark:border-white border-white ") + " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out",
+                children: /* @__PURE__ */ jsx(
+                  "img",
+                  {
+                    src: media,
+                    className: "overflow-hidden w-full h-full object-cover ",
+                    alt: "صورة " + (product == null ? void 0 : product.name) + " " + index
+                  }
+                )
+              },
+              index
+            )
           },
           index
         )) })
-      ] }) }),
+      ] }),
       /* @__PURE__ */ jsx("div", { className: "w-4" }),
       /* @__PURE__ */ jsxs("div", { className: "w-full md:w-1/2 z-10", children: [
         /* @__PURE__ */ jsxs("div", { className: "px-4 pt-5 product-gradient", children: [
@@ -3555,6 +3630,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "تقليل الكمية",
                       onClick: () => {
                         cart.updateQuantity(product.id, item.quantity - 1);
                         setItem((prevItem) => ({
@@ -3570,6 +3646,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "زيادة الكمية",
                       onClick: () => {
                         cart.updateQuantity(product.id, item.quantity + 1);
                         setItem((prevItem) => ({
@@ -3586,6 +3663,7 @@ function Product({ store, product }) {
                 !cart.canAddProduct(product) ? null : !cart.hasProduct(product.id) ? /* @__PURE__ */ jsx(
                   "button",
                   {
+                    "aria-label": "إضافة الى السلة",
                     onClick: () => {
                       cart.add({
                         quantity: item.quantity,
@@ -3601,6 +3679,7 @@ function Product({ store, product }) {
                 ) : /* @__PURE__ */ jsx(
                   "button",
                   {
+                    "aria-label": "إزالة من السلة",
                     onClick: () => {
                       cart.removeProduct(product.id);
                       setItem({ ...item });
@@ -3633,6 +3712,7 @@ function Product({ store, product }) {
                   /* @__PURE__ */ jsx("td", { className: "text-end", children: /* @__PURE__ */ jsx(
                     "button",
                     {
+                      "aria-label": "إزالة",
                       onClick: () => {
                         cart.removeProduct(_item.product.id);
                         setItem({ ...item });
@@ -3922,6 +4002,7 @@ const CategoryButton = ({
   return /* @__PURE__ */ jsxs(
     "button",
     {
+      "aria-label": category.name,
       onClick,
       className: (selected ? "gb border-transparent" : "") + " border flex items-center justify-start  bg-transparent hover:bg-white hover:bg-opacity-10     focus:bg-opacity-10 font-medium rounded-lg text-sm px-4 py-2 text-center",
       children: [
@@ -3996,7 +4077,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-fb436f12.mjs")
+        lazy: () => import("./assets/lazy-46d0baa9.mjs")
       },
       {
         path: "redirect",
@@ -4038,12 +4119,37 @@ function Home() {
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   function filteredProducts() {
-    return products.filter((product) => {
-      var _a2;
-      return !selectedCategory ? true : ((_a2 = product.category) == null ? void 0 : _a2.name) == (selectedCategory == null ? void 0 : selectedCategory.name);
-    });
+    return products.filter(
+      (product) => {
+        var _a2;
+        return !selectedCategory ? true : ((_a2 = product.category) == null ? void 0 : _a2.name) == (selectedCategory == null ? void 0 : selectedCategory.name);
+      }
+    );
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs("head", { children: [
+      /* @__PURE__ */ jsx(
+        "script",
+        {
+          async: true,
+          defer: true,
+          src: "https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "script",
+        {
+          dangerouslySetInnerHTML: {
+            __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PHHZC0B2SR', { 'send_page_view': false });
+      `
+          }
+        }
+      )
+    ] }),
     /* @__PURE__ */ jsx(
       SuperSEO,
       {
@@ -4067,25 +4173,40 @@ function Home() {
       }
     ),
     /* @__PURE__ */ jsxs("div", { className: "text-center relative max-w-screen-xl mx-auto px-4  sm:px-6 py-10 lg:px-8", children: [
-      /* @__PURE__ */ jsx(
-        AsynxWave,
-        {
-          className: "pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl"
-        }
-      ),
+      /* @__PURE__ */ jsx(AsynxWave, { className: "pointer-events-none scale-150 z-0 absolute inset-0 aspect-square h-full m-auto blur-xl" }),
       /* @__PURE__ */ jsxs("div", { className: "z-10 relative", children: [
         /* @__PURE__ */ jsxs("div", { className: "relative flex items-center justify-center", children: [
-          /* @__PURE__ */ jsx("h4", { className: " absolute\n          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase", children: store == null ? void 0 : store.name }),
+          /* @__PURE__ */ jsx(
+            "h4",
+            {
+              className: " absolute\n          font-extrabold text-base dark:text-gray-50 tracking-wide uppercase",
+              children: store == null ? void 0 : store.name
+            }
+          ),
           /* @__PURE__ */ jsx(AsynxWave, {})
         ] }),
         /* @__PURE__ */ jsx("h1", { className: "title-font font-light mt-1 text-4xl text-gray-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-4xl", children: store == null ? void 0 : store.title }),
-        /* @__PURE__ */ jsx("p", { className: "max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400\n            font-extralight\n            text-s\n            md:text-m\n            lg:text-l\n          ", children: store == null ? void 0 : store.description })
+        /* @__PURE__ */ jsx(
+          "p",
+          {
+            className: "max-w-xl mt-5 mx-auto  text-gray-500 dark:text-gray-400\n            font-extralight\n            text-s\n            md:text-m\n            lg:text-l\n          ",
+            children: store == null ? void 0 : store.description
+          }
+        )
       ] })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
-    /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: (_a = store == null ? void 0 : store.categories) == null ? void 0 : _a.map((category, index) => /* @__PURE__ */ jsx(CategoryButton, { onClick: () => {
-      return selectedCategory == category ? setSelectedCategory(null) : setSelectedCategory(category);
-    }, selected: (selectedCategory == null ? void 0 : selectedCategory.name) == category.name, category }, index)) }) }),
+    /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: (_a = store == null ? void 0 : store.categories) == null ? void 0 : _a.map((category, index) => /* @__PURE__ */ jsx(
+      CategoryButton,
+      {
+        onClick: () => {
+          return selectedCategory == category ? setSelectedCategory(null) : setSelectedCategory(category);
+        },
+        selected: (selectedCategory == null ? void 0 : selectedCategory.name) == category.name,
+        category
+      },
+      index
+    )) }) }),
     /* @__PURE__ */ jsx("div", { className: "h-4" }),
     /* @__PURE__ */ jsx("div", { className: "container", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4", children: [
       filteredProducts().map((product, index) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductCard, { product, store }) }, index)),
@@ -4094,7 +4215,15 @@ function Home() {
         /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold text-gray-500 dark:text-gray-400", children: "لا يوجد منتجات" }),
         /* @__PURE__ */ jsx("p", { className: "text-gray-400 dark:text-gray-500", children: "لا يوجد منتجات في هذه الفئة" }),
         /* @__PURE__ */ jsx("div", { className: "h-3" }),
-        /* @__PURE__ */ jsx("button", { onClick: () => setSelectedCategory(null), className: "gb btn", children: "إزالة التصفية" })
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setSelectedCategory(null),
+            className: "gb btn",
+            "aria-label": "إزالة التصفية",
+            children: "إزالة التصفية"
+          }
+        )
       ] }) })
     ] }) })
   ] });

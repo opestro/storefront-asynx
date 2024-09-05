@@ -3,6 +3,30 @@ const fsp = require("fs/promises");
 const express = require("express");
 const { installGlobals } = require("@remix-run/node");
 
+
+// simple cache system
+const cache = new Map();
+const expiration = 5; // 5s
+// get cached item
+async function getCachedItem(key) {
+  const item = cache.get(key);
+  if (!item) return null;
+  if (item.expiration < Date.now()) {
+    cache.delete(key);
+    return null;
+  }
+  return item;
+}
+// set cache item
+async function setCacheItem(key, data, expirationInSecends = expiration) {
+  cache.set(key, { data, expiration: Date.now() + expirationInSecends * 1000 });
+}
+// delete cache item
+async function deleteCacheItem(key) {
+  cache.delete(key);
+}
+
+
 // Polyfill Web Fetch API
 installGlobals();
 
@@ -53,6 +77,15 @@ async function createServer() {
   // Handle all other routes with SSR
   app.use("*", async (req, res) => {
     const url = req.originalUrl;
+    const cacheKey = `ssr:${url}`;
+    const cached = await getCachedItem(cacheKey);
+    if (cached) {
+      // header X-Cache: HIT
+      res.setHeader('X-Cache', 'HIT')
+      const seconds = Math.floor((cached.expiration - Date.now()) / 1000)
+      res.setHeader('X-Cache-Expires-In', seconds)
+      return res.status(200).end(cached.data);
+    }
 
     try {
       let template;
@@ -72,11 +105,15 @@ async function createServer() {
         render = (await import("./dist/server/entry.server.mjs")).render;
       }
 
-      console.log("Rendering...");
       const appHtml = await render(req, res);
       const html = template.replace("<!--app-html-->", appHtml);
 
       res.setHeader("Content-Type", "text/html");
+      res.setHeader('X-Cache', 'MISS');
+      setCacheItem(cacheKey, html,
+        // get cache expiration from request params
+        req.query.cache ? parseInt(req.query.cache) : undefined
+      );
       return res.status(200).end(html);
     } catch (e) {
       console.error(e);
@@ -86,7 +123,8 @@ async function createServer() {
       if (!isProduction) {
         vite.ssrFixStacktrace(e);
       }
-      console.log(e.stack);
+      res.setHeader('X-Cache', 'MISS');
+      deleteCacheItem(cacheKey);
       return res.status(500).end(e.stack);
     }
   });

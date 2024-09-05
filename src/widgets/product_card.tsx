@@ -48,7 +48,9 @@ export const ProductCard: React.FunctionComponent<{
                         </p>
                     )}
                     <div className="h-2"></div>
-                    <button type="button" className="btn gb w-full">
+                    <button 
+                        aria-label="اشتري الآن"
+                        type="button" className="btn gb w-full">
                         اشتري الآن
                         {!!product.discount && (
                             <span dir="ltr" className="mx-2 bg-primary text-white rounded-sm px-1">
