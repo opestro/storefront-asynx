@@ -1,4 +1,4 @@
-import { StoreEntity } from "feeef/src/core/entities/store";
+import { StoreEntity } from "feeef";
 import { ShippingInfo } from "../pishop/models";
 import { cities, states } from "../cities";
 import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser } from "@tabler/icons-react";
