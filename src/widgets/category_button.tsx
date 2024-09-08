@@ -1,4 +1,4 @@
-import { EmbaddedCategory } from "feeef/src/core/core";
+import { EmbaddedCategory } from "feeef";
 
 // it take category form store as praameter
 /**

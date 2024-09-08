@@ -10,7 +10,7 @@ import { TypeAnimation } from "react-type-animation"
 import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount, getShippingRateForState } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
-import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
+import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef";
 // import { setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";

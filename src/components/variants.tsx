@@ -1,4 +1,4 @@
-import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
+import { ProductVariant, ProductVariantOption } from "feeef";
 import { dartColorToCss } from "../pishop/helpers";
 
 /**

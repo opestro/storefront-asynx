@@ -1,4 +1,4 @@
-import { EmbaddedContactType, StoreEntity } from "feeef/src/core/core";
+import { EmbaddedContactType, StoreEntity } from "feeef";
 import TextButton from "../../widgets/text_button";
 import { IconBrandFacebook, IconBrandInstagram, IconBrandTelegram, IconBrandTwitter, IconLink, IconMail, IconPhoneCall } from "@tabler/icons-react";
 

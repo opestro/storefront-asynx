@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { IconBrightness } from "@tabler/icons-react";
-import { StoreEntity } from "feeef/src/core/core";
+import { StoreEntity } from "feeef";
 import { track } from "../../pishop/helpers";
 
 

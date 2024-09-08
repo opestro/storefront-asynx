@@ -1,4 +1,4 @@
-import { OrderItem, ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef/src/core/core";
+import { OrderItem, ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef";
 import { getShippingRateForState } from "../pishop/logic";
 import { ShippingInfo } from "src/pishop/models";
 

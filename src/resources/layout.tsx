@@ -1,5 +1,5 @@
 import Navbar from "./parts/navbar";
-import { StoreEntity } from "feeef/src/core/core";
+import { StoreEntity } from "feeef";
 import Footer from "./parts/footer";
 import { dartColorToCss, initMetaPixel } from "../pishop/helpers";
 import { useEffect } from "react";

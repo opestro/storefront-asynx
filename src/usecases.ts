@@ -1,5 +1,5 @@
 
-import { ProductEntity, StoreEntity } from "feeef/src/core/core";
+import { ProductEntity, StoreEntity } from "feeef";
 import { ff } from "./feeef"
 var _stores: Record<string, StoreEntity> = {};
 var _products: Record<string, ProductEntity> = {};

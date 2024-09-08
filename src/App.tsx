@@ -7,7 +7,7 @@ import {
   EmbaddedCategory,
   ProductEntity,
   StoreEntity,
-} from "feeef/src/core/core";
+} from "feeef";
 import Product from "./pages/product";
 import AsynxWave from "./widgets/asynx_wave";
 import { ProductCard } from "./widgets/product_card";

@@ -1,4 +1,4 @@
-import { ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef/src/core/core";
+import { ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef";
 import { generateOrderId } from "../pages/product";
 import { ShippingInfo, LocalOrderItem } from "./models";
 

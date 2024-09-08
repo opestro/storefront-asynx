@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ProductEntity, StoreEntity } from "feeef/src/core/core";
+import { ProductEntity, StoreEntity } from "feeef";
 
 /**
  * ProductCard component displays a card for a product.

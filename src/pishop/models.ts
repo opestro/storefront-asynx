@@ -1,6 +1,6 @@
 
 
-import { EmbaddedAddress, EmbaddedCategory, EmbaddedContact, ProductEntity, StoreBanner, StoreDecoration, StoreDomain, StoreEntity, UserEntity } from 'feeef/src/core/core';
+import { EmbaddedAddress, EmbaddedCategory, EmbaddedContact, ProductEntity, StoreBanner, StoreDecoration, StoreDomain, StoreEntity, UserEntity } from 'feeef';
 /**
  * Represents a store model.
  */

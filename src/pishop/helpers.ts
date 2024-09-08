@@ -1,4 +1,4 @@
-import { StoreEntity } from "feeef/src/core/core";
+import { StoreEntity } from "feeef";
 import { useCallback, useEffect, useState } from "react";
 
 // Define regex patterns for valid phone numbers

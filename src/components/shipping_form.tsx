@@ -3,7 +3,7 @@ import { ShippingInfo } from "../pishop/models";
 import { cities, states } from "../cities";
 import { IconLocation, IconLocationBolt, IconLocationCode, IconPhone, IconUser } from "@tabler/icons-react";
 import { getShippingRateForState } from "../pishop/logic";
-import { ShippingMethodEntity } from "feeef/src/core/core";
+import { ShippingMethodEntity } from "feeef";
 import { useState } from 'react';
 import { dartColorToCss, tryFixPhoneNumber, validatePhoneNumber } from "../pishop/helpers";
 import { getCurrencySymbolByStore } from "../widgets/product_card";
