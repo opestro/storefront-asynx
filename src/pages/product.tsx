@@ -22,7 +22,7 @@ import { cart } from "../services/cart";
 import { getCurrencySymbolByStore } from "../widgets/product_card";
 import ReactGA from "react-ga4";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
-
+const TRACKING_ID = "G-PHHZC0B2SR"; 
 var _cachedOrders: LocalOrder[] = [];
 export function getOrders() {
     _cachedOrders = JSON.parse(localStorage.orders || '[]')
@@ -41,9 +41,14 @@ function ProductPage() {
         product: ProductEntity,
         store: StoreEntity
     };
-    const Home = () => {
+    useEffect(() => {
+        ReactGA.initialize(TRACKING_ID);
+        // Send pageview with a custom path
+
         ReactGA.send({ hitType: "pageview", page: "/", title: (store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
-    }
+    
+    }, [])
+
     let pathname = useLocation().pathname
     return <>
         <SuperSEO
