@@ -1,9 +1,3 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 import * as jsxRuntime from "react/jsx-runtime";
 import * as React from "react";
 import { useState, useCallback, useEffect } from "react";
@@ -11,16 +5,14 @@ import ReactDOMServer from "react-dom/server";
 import { createStaticHandler, createStaticRouter, StaticRouterProvider } from "react-router-dom/server.mjs";
 import { Link, useLoaderData, useLocation, Outlet, redirect } from "react-router-dom";
 import { IconBrightness, IconBrandFacebook, IconBrandInstagram, IconLink, IconBrandTwitter, IconBrandTelegram, IconMail, IconPhoneCall, IconPhone, IconUser, IconLocation, IconLocationCode, IconLocationBolt, IconShoppingBag, IconFlag } from "@tabler/icons-react";
+import { EmbaddedContactType, FeeeF, VariantOptionType } from "feeef";
 import StickyBox from "react-sticky-box";
 import { customAlphabet } from "nanoid";
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation";
 import ReactPlayer from "react-player";
 import { SuperSEO } from "react-super-seo";
-import axios from "axios";
-import { setupCache, buildWebStorage, buildMemoryStorage } from "axios-cache-interceptor";
-import vine from "@vinejs/vine";
-import "react-ga4";
+import ReactGA from "react-ga4";
 const Fragment = jsxRuntime.Fragment;
 const jsx = jsxRuntime.jsx;
 const jsxs = jsxRuntime.jsxs;
@@ -175,38 +167,6 @@ function Navbar({ store, fixed = true }) {
     ] }) }) })
   ] });
 }
-var OrderStatus = /* @__PURE__ */ ((OrderStatus2) => {
-  OrderStatus2["draft"] = "draft";
-  OrderStatus2["pending"] = "pending";
-  OrderStatus2["accepted"] = "accepted";
-  OrderStatus2["processing"] = "processing";
-  OrderStatus2["completed"] = "completed";
-  OrderStatus2["cancelled"] = "cancelled";
-  return OrderStatus2;
-})(OrderStatus || {});
-var VariantOptionType = /* @__PURE__ */ ((VariantOptionType2) => {
-  VariantOptionType2["color"] = "color";
-  VariantOptionType2["image"] = "image";
-  VariantOptionType2["text"] = "text";
-  return VariantOptionType2;
-})(VariantOptionType || {});
-var EmbaddedContactType = /* @__PURE__ */ ((EmbaddedContactType2) => {
-  EmbaddedContactType2["phone"] = "phone";
-  EmbaddedContactType2["email"] = "email";
-  EmbaddedContactType2["facebook"] = "facebook";
-  EmbaddedContactType2["twitter"] = "twitter";
-  EmbaddedContactType2["instagram"] = "instagram";
-  EmbaddedContactType2["linkedin"] = "linkedin";
-  EmbaddedContactType2["website"] = "website";
-  EmbaddedContactType2["whatsapp"] = "whatsapp";
-  EmbaddedContactType2["telegram"] = "telegram";
-  EmbaddedContactType2["signal"] = "signal";
-  EmbaddedContactType2["viber"] = "viber";
-  EmbaddedContactType2["skype"] = "skype";
-  EmbaddedContactType2["zoom"] = "zoom";
-  EmbaddedContactType2["other"] = "other";
-  return EmbaddedContactType2;
-})(EmbaddedContactType || {});
 const TextButton = ({ children, href, target, className }) => {
   var child = /* @__PURE__ */ jsx(
     "button",
@@ -2536,491 +2496,6 @@ function ShippingForm({ store, shipping, shippingMethod, setShipping, sendOrder 
     ] })
   ] });
 }
-const AvatarFileSchema = vine.any();
-const ImageFileSchema = vine.any();
-const DomainSchema = vine.object({
-  name: vine.string().minLength(3).maxLength(32),
-  verifiedAt: vine.date().optional(),
-  metadata: vine.object({}).optional()
-});
-const StoreDecorationSchema = vine.object({
-  primary: vine.number().min(0).max(4294967295),
-  onPrimary: vine.number().min(0).max(4294967295),
-  showStoreLogoInHeader: vine.boolean().optional(),
-  logoFullHeight: vine.boolean().optional(),
-  showStoreNameInHeader: vine.boolean().optional(),
-  metadata: vine.any().optional()
-});
-const EmbaddedCategorySchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  photoUrl: vine.string().optional(),
-  ondarkPhotoUrl: vine.string().optional(),
-  photoFile: AvatarFileSchema.optional(),
-  ondarkPhotoFile: AvatarFileSchema.optional(),
-  metadata: vine.object({}).optional()
-});
-const EmbaddedAddressSchema = vine.object({
-  country: vine.string().minLength(2).maxLength(32).optional(),
-  state: vine.string().minLength(2).maxLength(32).optional(),
-  city: vine.string().minLength(2).maxLength(32).optional(),
-  street: vine.string().minLength(2).maxLength(32).optional(),
-  zip: vine.string().minLength(2).maxLength(32).optional(),
-  metadata: vine.object({}).optional().optional()
-});
-const EmbaddedContactSchema = vine.object({
-  type: vine.string().minLength(2).maxLength(32),
-  value: vine.string().minLength(2).maxLength(255),
-  metadata: vine.object({}).optional()
-});
-const StoreBunner = vine.object({
-  url: vine.string().url().optional(),
-  title: vine.string(),
-  enabled: vine.boolean().optional(),
-  metadata: vine.object({}).optional()
-});
-const PhoneShema = vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/);
-vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  email: vine.string(),
-  phone: PhoneShema.optional(),
-  photoFile: ImageFileSchema.optional(),
-  photoUrl: vine.string().optional(),
-  password: vine.string().minLength(8).maxLength(32)
-});
-const SigninSchema = vine.object({
-  email: vine.string().email(),
-  password: vine.string().minLength(8).maxLength(32)
-});
-const AuthUpdateUserSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  email: vine.string().optional(),
-  phone: PhoneShema.optional(),
-  // for upload file
-  photoFile: vine.any(),
-  photoUrl: vine.string().optional(),
-  oldPassword: vine.string().minLength(8).maxLength(32).optional(),
-  newPassword: vine.string().minLength(8).maxLength(32).notSameAs("oldPassword").optional()
-});
-const OrderItemSchema = vine.object({
-  productId: vine.string(),
-  // productId: vine.string().exists(async (db, value, field) => {
-  //   const product = await db.from('products').where('id', value).first()
-  //   return !!product
-  // }),
-  productName: vine.string().optional(),
-  variant: vine.any().optional(),
-  quantity: vine.number(),
-  price: vine.number().optional()
-});
-const GuestOrderItemSchema = vine.object({
-  productId: vine.string(),
-  variantPath: vine.string().optional(),
-  quantity: vine.number()
-});
-const SendOrderSchema = vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: vine.string(),
-  //   customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(GuestOrderItemSchema).minLength(1),
-  //   subtotal: vine.number().optional(),
-  //   shippingPrice: vine.number().optional(),
-  //   total: vine.number().optional(),
-  //   discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(["pending", "draft"]),
-  // TODO: validate storeId is exists and not blocked
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: PhoneShema,
-  customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(OrderItemSchema).minLength(1),
-  subtotal: vine.number().optional(),
-  shippingPrice: vine.number().optional(),
-  total: vine.number().optional(),
-  discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(OrderStatus),
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-vine.object({
-  id: vine.string().optional(),
-  customerName: vine.string().optional(),
-  customerPhone: PhoneShema.optional(),
-  customerIp: vine.string().optional(),
-  shippingAddress: vine.string().optional(),
-  shippingCity: vine.string().optional(),
-  shippingState: vine.string().optional(),
-  shippingMethodId: vine.string().optional(),
-  paymentMethodId: vine.string().optional(),
-  items: vine.array(OrderItemSchema).minLength(1).optional(),
-  subtotal: vine.number().optional(),
-  shippingPrice: vine.number().optional(),
-  total: vine.number().optional(),
-  discount: vine.number().optional(),
-  coupon: vine.string().optional(),
-  status: vine.enum(OrderStatus).optional(),
-  storeId: vine.string(),
-  metadata: vine.any().optional()
-});
-class ModelRepository {
-  /**
-   * Constructs a new instance of the ModelRepository class.
-   * @param resource - The resource name.
-   * @param client - The Axios instance used for making HTTP requests.
-   */
-  constructor(resource, client) {
-    __publicField(this, "resource");
-    // client
-    __publicField(this, "client");
-    this.resource = resource;
-    this.client = client;
-  }
-  /**
-   * Finds a model by its ID or other criteria.
-   * @param options - The options for finding the model.
-   * @returns A promise that resolves to the found model.
-   */
-  async find(options) {
-    const { id, by, params } = options;
-    const res = await this.client.get(`/${this.resource}/${id}`, {
-      params: {
-        by: by || "id",
-        ...params
-      }
-    });
-    return res.data;
-  }
-  /**
-   * Lists models with optional pagination and filtering.
-   * @param options - The options for listing the models.
-   * @returns A promise that resolves to a list of models.
-   */
-  async list(options) {
-    const { page, offset, limit, params } = options || {};
-    const res = await this.client.get(`/${this.resource}`, {
-      params: { page, offset, limit, ...params }
-    });
-    if (Array.isArray(res.data)) {
-      return {
-        data: res.data
-      };
-    } else {
-      return {
-        data: res.data.data,
-        total: res.data.meta.total,
-        page: res.data.meta.currentPage,
-        limit: res.data.meta.perPage
-      };
-    }
-  }
-  /**
-   * Creates a new model.
-   * @param options - The options for creating the model.
-   * @returns A promise that resolves to the created model.
-   */
-  async create(options) {
-    const { data, params } = options;
-    const res = await this.client.post(`/${this.resource}`, data, { params });
-    return res.data;
-  }
-  /**
-   * Updates an existing model.
-   * @param options - The options for updating the model.
-   * @returns A promise that resolves to the updated model.
-   */
-  async update(options) {
-    const { id, data, params } = options;
-    const res = await this.client.put(`/${this.resource}/${id}`, data, {
-      params
-    });
-    return res.data;
-  }
-  /**
-   * Deletes a model by its ID or other criteria.
-   * @param options - The options for deleting the model.
-   * @returns A promise that resolves when the model is deleted.
-   */
-  async delete(options) {
-    const { id, by, params } = options;
-    await this.client.delete(`/${this.resource}/${id}`, {
-      params: {
-        by: by || "id",
-        ...params
-      }
-    });
-  }
-}
-class OrderRepository extends ModelRepository {
-  /**
-   * Constructs a new OrderRepository instance.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("orders", client);
-  }
-  /**
-   * Sends an order from an anonymous user.
-   * @param data - The data representing the order to be sent.
-   * @returns A Promise that resolves to the sent OrderEntity.
-   */
-  async send(data) {
-    const validator = vine.compile(SendOrderSchema);
-    const output = await validator.validate(data);
-    const res = await this.client.post(`/${this.resource}/send`, output);
-    return res.data;
-  }
-}
-class ProductRepository extends ModelRepository {
-  /**
-   * Creates a new instance of the ProductRepository class.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("products", client);
-  }
-}
-const DefaultShippingRatesSchema = vine.array(
-  vine.array(vine.number().min(0).max(1e5).nullable()).nullable()
-);
-const CreateUserStoreSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32),
-  // .unique(async (db, value, field) => {
-  //   const store = await db.from('stores').where('slug', value).first()
-  //   return !store
-  // })
-  domain: vine.object({
-    name: vine.string().minLength(2).maxLength(32)
-  }).optional(),
-  decoration: StoreDecorationSchema.optional(),
-  banner: StoreBunner.optional(),
-  logoUrl: vine.string().optional(),
-  ondarkLogoUrl: vine.string().optional(),
-  logoFile: AvatarFileSchema.optional(),
-  ondarkLogoFile: AvatarFileSchema.optional(),
-  categories: vine.array(EmbaddedCategorySchema).optional(),
-  title: vine.string().minLength(2).maxLength(255).optional(),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  addresses: vine.array(EmbaddedAddressSchema).optional(),
-  metadata: vine.object({}).optional(),
-  contacts: vine.array(
-    vine.object({
-      type: vine.string().minLength(2).maxLength(32),
-      value: vine.string().minLength(2).maxLength(255),
-      metadata: vine.object({}).optional()
-    })
-  ).optional(),
-  defaultShippingRates: DefaultShippingRatesSchema.optional(),
-  integrations: vine.array(vine.any()).optional()
-});
-vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  slug: vine.string().regex(/^[a-z0-9-]+$/).minLength(2).maxLength(32).optional(),
-  domain: DomainSchema.optional(),
-  decoration: StoreDecorationSchema.optional(),
-  banner: StoreBunner.optional(),
-  logoUrl: vine.string().nullable().optional(),
-  ondarkLogoUrl: vine.string().nullable().optional(),
-  logoFile: AvatarFileSchema.optional(),
-  ondarkLogoFile: AvatarFileSchema.optional(),
-  categories: vine.array(EmbaddedCategorySchema).optional(),
-  title: vine.string().minLength(2).maxLength(255).optional(),
-  description: vine.string().minLength(2).maxLength(255).optional(),
-  addresses: vine.array(EmbaddedAddressSchema).optional(),
-  metadata: vine.object({}).optional(),
-  contacts: vine.array(EmbaddedContactSchema).optional(),
-  defaultShippingRates: DefaultShippingRatesSchema.optional(),
-  integrations: vine.array(vine.any()).optional()
-});
-class StoreRepository extends ModelRepository {
-  /**
-   * Constructs a new StoreRepository instance.
-   * @param client The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("stores", client);
-  }
-  /**
-   * Creates a new Store entity.
-   * @param options The options for creating the Store entity.
-   * @returns A Promise that resolves to the created Store entity.
-   */
-  async create(options) {
-    const validator = vine.compile(CreateUserStoreSchema);
-    const output = await validator.validate(options.data);
-    return super.create({ ...options, data: output });
-  }
-}
-const CreateUserSchema = vine.object({
-  name: vine.string().minLength(2).maxLength(32),
-  email: vine.string(),
-  // .unique(async (db, value, field) => {
-  //   const user = await db.from('users').where('email', value).first()
-  //   return !user
-  // }),
-  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
-  password: vine.string().minLength(8).maxLength(32),
-  // for upload file
-  photoFile: vine.any(),
-  // .file({
-  //   size: '1mb',
-  //   extnames: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-  // })
-  // .optional(),
-  photoUrl: vine.string().optional(),
-  // metadata (any object)
-  metadata: vine.object({}).optional(),
-  // dates
-  emailVerifiedAt: vine.date().optional(),
-  phoneVerifiedAt: vine.date().optional(),
-  verifiedAt: vine.date().optional(),
-  blockedAt: vine.date().optional()
-});
-vine.object({
-  name: vine.string().minLength(2).maxLength(32).optional(),
-  email: vine.string().optional(),
-  phone: vine.string().regex(/^0(5|6|7)\d{8}$|^0(2)\d{7}$/).optional(),
-  password: vine.string().minLength(8).maxLength(32).confirmed().optional(),
-  // for upload file
-  photoFile: vine.any(),
-  photoUrl: vine.string().optional(),
-  // metadata (any object)
-  metadata: vine.object({}).optional(),
-  // dates
-  emailVerifiedAt: vine.date().optional(),
-  phoneVerifiedAt: vine.date().optional(),
-  verifiedAt: vine.string().optional(),
-  blockedAt: vine.date().optional()
-});
-class UserRepository extends ModelRepository {
-  /**
-   * Constructs a new UserRepository instance.
-   * @param client - The AxiosInstance used for making HTTP requests.
-   */
-  constructor(client) {
-    super("users", client);
-    /**
-     * Represents the authentication response.
-     */
-    __publicField(this, "auth", null);
-  }
-  /**
-   * Signs in a user with the provided credentials.
-   * @param credentials - The user credentials.
-   * @returns A promise that resolves to the authentication response.
-   */
-  async signin(credentials) {
-    const validator = vine.compile(SigninSchema);
-    const output = await validator.validate(credentials);
-    const res = await this.client.post(`/${this.resource}/auth/signin`, output);
-    this.auth = res.data;
-    return res.data;
-  }
-  /**
-   * Signs up a new user with the provided credentials.
-   * @param credentials - The user credentials.
-   * @returns A promise that resolves to the authentication response.
-   */
-  async signup(credentials) {
-    const validator = vine.compile(CreateUserSchema);
-    const output = await validator.validate(credentials);
-    const res = await this.client.post(`/${this.resource}/auth/signup`, output);
-    this.auth = res.data;
-    return res.data;
-  }
-  /**
-   * Signs out the currently authenticated user.
-   * @returns A promise that resolves when the user is signed out.
-   */
-  async signout() {
-    this.auth = null;
-  }
-  /**
-   * Updates the authenticated user's data.
-   * @param data - The updated user data.
-   * @returns A promise that resolves to the updated user entity.
-   */
-  async updateMe(data) {
-    const validator = vine.compile(AuthUpdateUserSchema);
-    const output = await validator.validate(data);
-    const res = await this.client.put(`/${this.resource}/auth`, output);
-    return res.data;
-  }
-}
-class FeeeF {
-  /**
-   * Constructs a new instance of the FeeeF class.
-   * @param {FeeeFConfig} config - The configuration object.
-   * @param {string} config.apiKey - The API key used for authentication.
-   * @param {AxiosInstance} config.client - The Axios instance used for making HTTP requests.
-   * @param {boolean | number} config.cache - The caching configuration. Set to `false` to disable caching, or provide a number to set the cache TTL in milliseconds.
-   */
-  constructor({
-    apiKey,
-    client,
-    cache,
-    baseURL = "http://localhost:3333/api/v1"
-  }) {
-    /**
-     * The API key used for authentication.
-     */
-    __publicField(this, "apiKey");
-    /**
-     * The Axios instance used for making HTTP requests.
-     */
-    __publicField(this, "client");
-    /**
-     * The repository for managing stores.
-     */
-    __publicField(this, "stores");
-    /**
-     * The repository for managing products.
-     */
-    __publicField(this, "products");
-    /**
-     * The repository for managing users.
-     */
-    __publicField(this, "users");
-    /**
-     * The repository for managing orders.
-     */
-    __publicField(this, "orders");
-    this.apiKey = apiKey;
-    if (cache === false) {
-      this.client = client || axios;
-    } else {
-      const isInBrowser = typeof window !== "undefined" && typeof localStorage !== "undefined";
-      this.client = setupCache(client || axios, {
-        ttl: cache === void 0 ? 1e3 * 60 * 5 : Math.max(cache, 1e3),
-        //|| 1 * 60 * 1000, // 1 minute by default
-        // for persistent cache use buildWebStorage
-        storage: isInBrowser ? buildWebStorage(localStorage, "ff:") : buildMemoryStorage()
-      });
-    }
-    this.client.defaults.baseURL = baseURL;
-    this.stores = new StoreRepository(this.client);
-    this.products = new ProductRepository(this.client);
-    this.users = new UserRepository(this.client);
-    this.orders = new OrderRepository(this.client);
-  }
-}
 const ff = new FeeeF({
   apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
   baseURL: "https://apis.feeef.net/api/v1",
@@ -3041,8 +2516,13 @@ function getCurrentUrl(path) {
   return `https://${getCurrentHost()}${path}`;
 }
 const generateOrderId = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 12);
+const TRACKING_ID$1 = "G-PHHZC0B2SR";
 function ProductPage() {
   let { product, store } = useLoaderData();
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID$1);
+    ReactGA.send({ hitType: "pageview", page: "/", title: store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "") });
+  }, []);
   let pathname = useLocation().pathname;
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(
@@ -4054,6 +3534,7 @@ async function getProducts(storeId) {
   }
   return products.data;
 }
+const TRACKING_ID = "G-PHHZC0B2SR";
 const routes = [
   {
     path: "/",
@@ -4077,7 +3558,7 @@ const routes = [
       },
       {
         path: "lazy",
-        lazy: () => import("./assets/lazy-46d0baa9.mjs")
+        lazy: () => import("./assets/lazy-bf67a32c.mjs")
       },
       {
         path: "redirect",
@@ -4116,6 +3597,10 @@ async function homeLoader() {
 function Home() {
   var _a;
   let { store, products } = useLoaderData();
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+    ReactGA.send({ hitType: "pageview", page: "/", title: store.name + " | " + store.title });
+  }, []);
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   function filteredProducts() {
@@ -4127,29 +3612,6 @@ function Home() {
     );
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsxs("head", { children: [
-      /* @__PURE__ */ jsx(
-        "script",
-        {
-          async: true,
-          defer: true,
-          src: "https://www.googletagmanager.com/gtag/js?id=G-PHHZC0B2SR"
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        "script",
-        {
-          dangerouslySetInnerHTML: {
-            __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-PHHZC0B2SR', { 'send_page_view': false });
-      `
-          }
-        }
-      )
-    ] }),
     /* @__PURE__ */ jsx(
       SuperSEO,
       {

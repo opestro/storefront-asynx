@@ -5,15 +5,13 @@ import "react";
 import "react-dom/server";
 import "react-router-dom/server.mjs";
 import "@tabler/icons-react";
+import "feeef";
 import "react-sticky-box";
 import "nanoid";
 import "react-markdown";
 import "react-type-animation";
 import "react-player";
 import "react-super-seo";
-import "axios";
-import "axios-cache-interceptor";
-import "@vinejs/vine";
 import "react-ga4";
 const loader = async () => {
   await new Promise((r) => setTimeout(r, 5e3));
