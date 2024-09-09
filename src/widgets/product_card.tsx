@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ProductEntity } from "feeef/src/core/core";
+import { ProductEntity, StoreEntity } from "feeef";
 
 /**
  * ProductCard component displays a card for a product.
@@ -7,8 +7,9 @@ import { ProductEntity } from "feeef/src/core/core";
  * @param {ProductEntity} props.product - The product to display.
  */
 export const ProductCard: React.FunctionComponent<{
+    store: StoreEntity,
     product: ProductEntity;
-}> = ({ product }) => {
+}> = ({ product, store }) => {
     // Calculate total price and discount percentage
     const total = !!product.discount
         ? (product.price - product.discount).toFixed(0)
@@ -31,11 +32,11 @@ export const ProductCard: React.FunctionComponent<{
                 <div>
                     <div className="flex items-center">
                         <span className="rounded-md  text-orange-500 text-lg">
-                            {total} دج
+                            {total} {getCurrencySymbolByStore(store)}
                         </span>
                         {!!product.discount && (
                             <span className="px-1 text-gray-400 line-through text-sm">
-                                {product.price} دج
+                                {product.price} {getCurrencySymbolByStore(store)}
                             </span>
                         )}
                     </div>
@@ -47,7 +48,9 @@ export const ProductCard: React.FunctionComponent<{
                         </p>
                     )}
                     <div className="h-2"></div>
-                    <button type="button" className="btn gb w-full">
+                    <button 
+                        aria-label="اشتري الآن"
+                        type="button" className="btn gb w-full">
                         اشتري الآن
                         {!!product.discount && (
                             <span dir="ltr" className="mx-2 bg-primary text-white rounded-sm px-1">
@@ -60,3 +63,16 @@ export const ProductCard: React.FunctionComponent<{
         </Link>
     );
 };
+
+
+export function getCurrencySymbolByStore(store: StoreEntity) {
+    try {
+        const defaultCurrency = store.configs?.defaultCurrency
+        if (!defaultCurrency) {
+            return "دج"
+        }
+        return store.configs?.currencies[defaultCurrency]?.symbol
+    } catch (error) {
+        return "دج"
+    }
+}

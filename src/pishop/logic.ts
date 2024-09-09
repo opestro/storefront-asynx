@@ -1,4 +1,4 @@
-import { ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef/src/core/core";
+import { ProductEntity, ShippingMethodEntity, StoreEntity } from "feeef";
 import { generateOrderId } from "../pages/product";
 import { ShippingInfo, LocalOrderItem } from "./models";
 
@@ -36,8 +36,8 @@ export function getShippingRateForState(
   var stateIndex = parseInt(state) - 1;
   var rate = shippingMethod?.rates?.[stateIndex] || store.defaultShippingRates?.[stateIndex];
   return {
-    desk: rate?.[0] || null,
-    home: rate?.[1] || null,
+    desk: rate?.[0] === undefined ? null : rate?.[0],
+    home: rate?.[1] === undefined ? null : rate?.[1],
   }
 }
 

@@ -16,7 +16,15 @@
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-dom/index.js?commonjs-module": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-facebook-pixel/dist/fb-pixel.js?commonjs-module": [
-    "/assets/fb-pixel-172ea8a9.js"
+    "/assets/fb-pixel-fd600e03.js"
+  ],
+  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-ga4/dist/format.js?commonjs-exports": [
+  ],
+  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-ga4/dist/ga4.js?commonjs-exports": [
+  ],
+  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-ga4/dist/gtag.js?commonjs-exports": [
+  ],
+  "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-ga4/dist/index.js?commonjs-exports": [
   ],
   "\u0000/Users/mohamad/Desktop/projects/asynx/app/ssr-data-router/node_modules/react-helmet/es/Helmet.js?commonjs-proxy": [
   ],
@@ -165,8 +173,6 @@
   ],
   "node_modules/@vinejs/vine/build/chunk-CSAU5B4Q.js": [
   ],
-  "node_modules/axios-cache-interceptor/dist/index.modern.js": [
-  ],
   "node_modules/axios/lib/adapters/adapters.js": [
   ],
   "node_modules/axios/lib/adapters/fetch.js": [
@@ -267,8 +273,6 @@
   ],
   "node_modules/bail/index.js": [
   ],
-  "node_modules/cache-parser/dist/index.mjs": [
-  ],
   "node_modules/camelcase/index.js": [
   ],
   "node_modules/comma-separated-tokens/index.js": [
@@ -293,35 +297,7 @@
   ],
   "node_modules/extend/index.js": [
   ],
-  "node_modules/fast-defer/dist/index.mjs": [
-  ],
-  "node_modules/feeef/src/core/embadded/contact.ts": [
-  ],
-  "node_modules/feeef/src/core/entities/order.ts": [
-  ],
-  "node_modules/feeef/src/core/entities/product.ts": [
-  ],
-  "node_modules/feeef/src/feeef/feeef.ts": [
-  ],
-  "node_modules/feeef/src/feeef/repositories/orders.ts": [
-  ],
-  "node_modules/feeef/src/feeef/repositories/products.ts": [
-  ],
-  "node_modules/feeef/src/feeef/repositories/repository.ts": [
-  ],
-  "node_modules/feeef/src/feeef/repositories/stores.ts": [
-  ],
-  "node_modules/feeef/src/feeef/repositories/users.ts": [
-  ],
-  "node_modules/feeef/src/feeef/validators/auth.ts": [
-  ],
-  "node_modules/feeef/src/feeef/validators/helpers.ts": [
-  ],
-  "node_modules/feeef/src/feeef/validators/order.ts": [
-  ],
-  "node_modules/feeef/src/feeef/validators/user_stores.ts": [
-  ],
-  "node_modules/feeef/src/feeef/validators/users.ts": [
+  "node_modules/feeef/build/index.js": [
   ],
   "node_modules/hast-util-to-jsx-runtime/lib/index.js": [
   ],
@@ -499,8 +475,6 @@
   ],
   "node_modules/object-assign/index.js": [
   ],
-  "node_modules/object-code/dist/index.mjs": [
-  ],
   "node_modules/prop-types/checkPropTypes.js": [
   ],
   "node_modules/prop-types/factoryWithTypeCheckers.js": [
@@ -554,9 +528,17 @@
   "node_modules/react-dom/index.js": [
   ],
   "node_modules/react-facebook-pixel/dist/fb-pixel.js": [
-    "/assets/fb-pixel-172ea8a9.js"
+    "/assets/fb-pixel-fd600e03.js"
   ],
   "node_modules/react-fast-compare/index.js": [
+  ],
+  "node_modules/react-ga4/dist/format.js": [
+  ],
+  "node_modules/react-ga4/dist/ga4.js": [
+  ],
+  "node_modules/react-ga4/dist/gtag.js": [
+  ],
+  "node_modules/react-ga4/dist/index.js": [
   ],
   "node_modules/react-helmet/es/Helmet.js": [
   ],
@@ -569,7 +551,7 @@
   "node_modules/react-player/lib/Player.js": [
   ],
   "node_modules/react-player/lib/Preview.js": [
-    "/assets/Preview-7d5b84f6.js"
+    "/assets/Preview-b6754c4a.js"
   ],
   "node_modules/react-player/lib/ReactPlayer.js": [
   ],
@@ -578,43 +560,43 @@
   "node_modules/react-player/lib/patterns.js": [
   ],
   "node_modules/react-player/lib/players/DailyMotion.js": [
-    "/assets/DailyMotion-7a44160c.js"
+    "/assets/DailyMotion-da8c8749.js"
   ],
   "node_modules/react-player/lib/players/Facebook.js": [
-    "/assets/Facebook-ab050778.js"
+    "/assets/Facebook-f762b2e2.js"
   ],
   "node_modules/react-player/lib/players/FilePlayer.js": [
-    "/assets/FilePlayer-9959fd98.js"
+    "/assets/FilePlayer-d4b6040d.js"
   ],
   "node_modules/react-player/lib/players/Kaltura.js": [
-    "/assets/Kaltura-c140d719.js"
+    "/assets/Kaltura-5fe6dc62.js"
   ],
   "node_modules/react-player/lib/players/Mixcloud.js": [
-    "/assets/Mixcloud-8656e8cb.js"
+    "/assets/Mixcloud-c0652a1b.js"
   ],
   "node_modules/react-player/lib/players/Mux.js": [
-    "/assets/Mux-c47f0789.js"
+    "/assets/Mux-fbe6ceb0.js"
   ],
   "node_modules/react-player/lib/players/SoundCloud.js": [
-    "/assets/SoundCloud-19deb40c.js"
+    "/assets/SoundCloud-b6601671.js"
   ],
   "node_modules/react-player/lib/players/Streamable.js": [
-    "/assets/Streamable-94d5ee3c.js"
+    "/assets/Streamable-6a6a739b.js"
   ],
   "node_modules/react-player/lib/players/Twitch.js": [
-    "/assets/Twitch-2fb3e0e0.js"
+    "/assets/Twitch-499e1eb7.js"
   ],
   "node_modules/react-player/lib/players/Vidyard.js": [
-    "/assets/Vidyard-52a16ae2.js"
+    "/assets/Vidyard-13872d58.js"
   ],
   "node_modules/react-player/lib/players/Vimeo.js": [
-    "/assets/Vimeo-c53662ab.js"
+    "/assets/Vimeo-574251d4.js"
   ],
   "node_modules/react-player/lib/players/Wistia.js": [
-    "/assets/Wistia-ccb3aa1a.js"
+    "/assets/Wistia-3cb5dfab.js"
   ],
   "node_modules/react-player/lib/players/YouTube.js": [
-    "/assets/YouTube-db7f5f4f.js"
+    "/assets/YouTube-836c4ed4.js"
   ],
   "node_modules/react-player/lib/players/index.js": [
   ],
@@ -759,7 +741,7 @@
   "src/index.css": [
   ],
   "src/lazy.tsx": [
-    "/assets/lazy-cdca9e39.js"
+    "/assets/lazy-527dd464.js"
   ],
   "src/pages/product.tsx": [
   ],
@@ -774,6 +756,8 @@
   "src/resources/parts/footer.tsx": [
   ],
   "src/resources/parts/navbar.tsx": [
+  ],
+  "src/services/cart.ts": [
   ],
   "src/usecases.ts": [
   ],

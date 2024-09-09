@@ -1,9 +1,10 @@
 import Navbar from "./parts/navbar";
-import { StoreEntity } from "feeef/src/core/core";
+import { StoreEntity } from "feeef";
 import Footer from "./parts/footer";
 import { dartColorToCss, initMetaPixel } from "../pishop/helpers";
 import { useEffect } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
+import { cart } from "../services/cart";
 
 
 // import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -31,6 +32,7 @@ export default function Layout() {
     let store = useLoaderData() as StoreEntity;
     useEffect(() => {
         initMetaPixel(store)
+        cart.init()
     }, [])
     return (
         // <CacheProvider value={cacheRtl}>
@@ -41,7 +43,7 @@ export default function Layout() {
                         "--on-p": dartColorToCss(store!.decoration!.onPrimary!),
                     } as React.CSSProperties}
                 >
-                    <Navbar store={store} />
+                    <Navbar store={store} fixed={false} />
                     <Outlet />
                     <Footer store={store} />
                 </div>

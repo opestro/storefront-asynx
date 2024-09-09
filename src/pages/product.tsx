@@ -7,19 +7,22 @@ import Thanks from "./thanks";
 import { customAlphabet } from 'nanoid'
 import Markdown from "react-markdown";
 import { TypeAnimation } from "react-type-animation"
-import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount } from "../pishop/logic";
+import { LocalOrder, getProductPriceAfterDiscount, getProductQuantity, calculateLocalOrderTotal, getProductDiscountPercentage, getProductPriceWithoutVariantsDiscount, getShippingRateForState } from "../pishop/logic";
 import { LocalOrderItem, ShippingInfo } from "../pishop/models";
 import RenderVariantGroup from "../components/variants";
-import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef/src/core/core";
+import { OrderEntity, ProductEntity, StoreEntity, VariantOptionType } from "feeef";
 // import { setAdvancedMatching } from "../main";
 import { ShippingForm } from "../components/shipping_form";
 import { IconShoppingBag } from "@tabler/icons-react";
 import ReactPlayer from 'react-player'
 import { SuperSEO } from "react-super-seo";
-import { dartColorToCss, pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
+import { pageView, track, tryFixPhoneNumber, useInViewport, validatePhoneNumber } from "../pishop/helpers";
 import { ff, getCurrentUrl } from "../feeef";
+import { cart } from "../services/cart";
+import { getCurrencySymbolByStore } from "../widgets/product_card";
+import ReactGA from "react-ga4";
 export const generateOrderId = customAlphabet('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ', 12)
-
+const TRACKING_ID = "G-PHHZC0B2SR"; 
 var _cachedOrders: LocalOrder[] = [];
 export function getOrders() {
     _cachedOrders = JSON.parse(localStorage.orders || '[]')
@@ -33,10 +36,19 @@ export function saveOrder(order: LocalOrder) {
 
 // ProductPage resposible for load the product
 function ProductPage() {
+
     let { product, store } = useLoaderData() as {
         product: ProductEntity,
         store: StoreEntity
     };
+    useEffect(() => {
+        ReactGA.initialize(TRACKING_ID);
+        // Send pageview with a custom path
+
+        ReactGA.send({ hitType: "pageview", page: "/", title: (store.name + " | " + (product.name || "") + (!!product.title ? " - " + product.title : "")) });
+    
+    }, [])
+
     let pathname = useLocation().pathname
     return <>
         <SuperSEO
@@ -69,37 +81,23 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     let location = useLocation()
     const [loading, setLoading] = useState(false);
     const [orderId] = useState(generateOrderId());
-
-    useEffect(() => {
-        // set the title to the product name (only first time)
-        document.title = product?.name || store.title || "";
-    }, [])
-
-    // view page ReactPixel
-    useEffect(() => {
-        pageView();
-        // ViewContent
-        // ReactPixel.track('ViewContent', {
-        //     content_name: product?.name,
-        //     content_category: 'cloth',
-        //     content_ids: [product?.id, product?.slug],
-        //     content_type: 'product',
-        //     value: getPriceWithoutVariantsDiscount(),
-        //     currency: 'DZD'
-        // });
-        // on scrol
-    }, [])
-
-
     const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+    const [mountPlayer, setMountPlayer] = useState(false);
+
+    useEffect(() => {
+        if (product?.media.length) {
+            var media = product.media[selectedMediaIndex];
+            if (getYoutubeVideoIdFromUrl(media) != null) {
+                setMountPlayer(true);
+            }
+        }
+    }, [selectedMediaIndex]);
 
     const [sentOrder, setSentOrder] = useState<OrderEntity | null>(null);
-
     // isSendOrderButtonInView
     const isInView = useInViewport();
     const sendOrderButtonRef = isInView.ref
     const isSendOrderButtonInView = isInView.isInViewport
-
     const [item, setItem] = useState<LocalOrderItem>({
         product: product!,
         quantity: 1,
@@ -109,10 +107,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     const [shipping, setShipping] = useState<ShippingInfo>({
         name: "",
         phone: "",
-        doorShipping: false,
+        doorShipping:
+            store.metadata?.shipping?.mode == "deskOnly" ? false : true,
         address: {
             street: "",
-            city: "01",
+            city: "1",
             location: {
                 geohash: "",
                 lat: 0,
@@ -135,6 +134,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             item.variants
         );
     }
+
     function getPriceAfterDiscount(): number {
         return getProductPriceAfterDiscount(
             product!,
@@ -154,7 +154,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         var index = parseInt(stateCode) - 1;
         shipping!.address.state = stateCode;
         var baladiyat = cities[index];
-        shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
+        // shipping!.address.city = baladiyat?.length ? baladiyat?.[0] : ""
 
         setShipping(Object.assign({}, shipping));
         if (!!shipping.name && !!shipping.phone && !localStorage.addedToCard) {
@@ -170,9 +170,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
     }
 
-    useEffect(() => {
-        updateShippingWilaya(shipping!.address.state);
-    }, [])
 
     function getTotal() {
         var localOrder: LocalOrder = {
@@ -195,6 +192,18 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         return (100 - getProductDiscountPercentage(product!, item.variants) * 100).toFixed(1);
     }
 
+    function getShippingRate(): number | null {
+        var rate = getShippingRateForState({
+            state: shipping.address.state,
+            shippingMethod: product.shippingMethod,
+            store,
+        })
+        if (shipping.doorShipping) {
+            return rate?.home === undefined ? null : rate?.home;
+        }
+        return rate?.desk === undefined ? null : rate?.desk;
+    }
+
     function scrollToShippingForm() {
         var el = document.getElementById("order-form");
         el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
@@ -206,11 +215,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
     }
 
     async function sendOrder(status: "draft" | "pending" = "pending") {
-        console.log("sending...");
+        // console.log("sending...");
         var validationError = validatePhoneNumber(tryFixPhoneNumber(shipping.phone));
         if (validationError) {
             // alert(validationError);
-            console.log("invalid phone number");
+            // console.log("invalid phone number");
             return;
         }
         shipping.phone = tryFixPhoneNumber(shipping.phone);
@@ -230,7 +239,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         }
 
         if (status == 'draft' && olderOrder) {
-            console.log("draft order already exists");
+            // console.log("draft order already exists");
             return;
         }
 
@@ -240,7 +249,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         // fbc?: string | null
         // fbp?: string | null
         // eventSourceUrl?: string | null
-        console.log("xxx...");
+        // console.log("xxx...");
 
         let urlParams = new URLSearchParams(location.search);
         let fbc = urlParams.get('fbclid');
@@ -256,11 +265,13 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             shippingState: shipping.address.state,
             status: status,
             storeId: store.id,
-            items: [{
-                productId: product.id,
-                quantity: item.quantity,
-                variantPath: item.variants.join("/"),
-            }],
+            items: cart.hasProduct(product.id) ? cart.items : [
+                {
+                    productId: product.id,
+                    quantity: item.quantity,
+                    variantPath: item.variants.join("/"),
+                }
+            ],
             metadata: {
                 metaPixel: {
                     fbc: fbc,
@@ -313,10 +324,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
             track('InitiateCheckout', eventData);
         } else {
             track('Purchase', eventData);
+            cart.clear();
         }
         // Purchase
         // ReactPixel.track('Purchase', eventData);
-        console.log("order sent", response);
+        // console.log("order sent", response);
     }
 
 
@@ -328,13 +340,14 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
         ref?: React.LegacyRef<HTMLButtonElement> | undefined
     }): JSX.Element {
         return <button
+            aria-label="إرسال الطلب"
             ref={ref}
             id={"send-order-btn-" + id}
             onClick={(e) => {
                 e.preventDefault();
                 sendOrder("pending")
             }}
-            type="submit" className="relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
+            type="submit" className="h-12 relative w-full text-white bg-primary focus:ring-2 focus:outline-none focus:ring-primary ring-opacity-30 font-medium rounded-lg text-sm px-4 py-2 text-center   ">
             <AsynxWave
                 color="white"
                 width="100%"
@@ -362,18 +375,28 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     x{item.quantity}
                 </span>
             </div>
-            <div className="text-[12px] font-light">المبلغ الكلي مع الشحن:
+            {/* <div className="text-[12px] font-light">المبلغ الكلي مع التوصيل:
                 {
                     shipping?.address.state ?
-                        <b className="px-2 font-extrabold">{getTotal()} دج</b>
+                        <b className="px-2 font-extrabold">{getTotal()} {getCurrencySymbolByStore(store)}</b>
                         :
                         <b className="px-2 font-extrabold">)اختر الولاية(</b>
                 }
-            </div>
+            </div> */}
             {/* the basket icon */}
             <IconShoppingBag size={34} className="absolute end-3 top-0 bottom-0 m-auto" />
         </button>
     }
+
+
+    useEffect(() => {
+        // set the title to the product name (only first time)
+        document.title = product?.name || store.title || "";
+        pageView();
+        updateShippingWilaya(shipping!.address.state);
+    }, [])    // view page ReactPixel
+
+
 
     return (
         <div className="relative">
@@ -402,10 +425,9 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                 maxWidth: '500px',
                                 margin: 'auto',
                             } as React.CSSProperties
-                        }
-                    >
-
+                        }>
                         <button
+                            aria-label="إرسال الطلب"
                             onClick={(e) => {
                                 e.preventDefault();
                                 scrollToShippingForm();
@@ -473,7 +495,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     </div>
                 </div>
             }
-
             {
                 sentOrder && sentOrder.status == "pending" &&
                 <div className="overflow-auto flex items-center justify-center fixed inset-0 bg-white bg-opacity-75 dark:bg-black dark:bg-opacity-50 z-50 backdrop-blur-lg">
@@ -496,12 +517,6 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                     } className="top-0 md:top-[78px]  h-full w-full md:w-1/2">
                         <div className="overflow-hidden slider relative rounded-2xl">
 
-                            {/* <a href="#slide-1">1</a>
-                            <a href="#slide-2">2</a>
-                            <a href="#slide-3">3</a>
-                            <a href="#slide-4">4</a>
-                            <a href="#slide-5">5</a> */}
-
                             <div
                                 className="slides overflow-hidden"
                                 // when scroll update selected media index
@@ -513,9 +528,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                             >
                                 {
                                     product?.media.map((media, index) => (
-                                        <div id={`slide-${index + 1}`} className="overflow-hidden" key={[index,import.meta.env.SSR].join("-")}>
+                                        <div key={index} id={`slide-${index + 1}`} className="overflow-hidden" >
                                             {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
                                                 <div
+                                                    data-playing={selectedMediaIndex === index}
                                                     style={{
                                                         scrollSnapAlign: "center",
                                                         scrollSnapStop: "always",
@@ -527,31 +543,21 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                             selectedMediaIndex > index ? "30deg" : "-30deg",
                                                         // more effacts
                                                         opacity: selectedMediaIndex == index ? 1 : 0,
-                                                    }} className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
-                                                    <ReactPlayer
-                                                        key={[index,import.meta.env.SSR].join("-")}
-                                                        url={
-                                                            `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
-                                                        }
-                                                        width="100%"
-                                                        height="100%"
-                                                        // controls
-                                                        playing={selectedMediaIndex === index}
-                                                    // config={{
-                                                    //     youtube: {
-                                                    //         // hide controls
-                                                    //         playerVars: {
-                                                    //             controls: 0,
-                                                    //             modestbranding: 1,
-                                                    //             showinfo: 0,
-                                                    //             rel: 0,
-                                                    //             loop: selectedMediaIndex == index,
-                                                    //             autoplay: selectedMediaIndex == index,
-                                                    //             // mute: selectedMediaIndex != index,
-                                                    //         }
-                                                    //     }
-                                                    // }}
-                                                    />
+                                                    }}
+                                                    className="bg-black pointer-events-auto absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
+                                                    {
+                                                        mountPlayer &&
+                                                        <ReactPlayer
+                                                            url={
+                                                                `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
+                                                            }
+                                                            width="100%"
+                                                            height="100%"
+                                                            // controls
+                                                            playing={selectedMediaIndex === index}
+                                                        />
+                                                        || <img src={`https://img.youtube.com/vi/${getYoutubeVideoIdFromUrl(media)}/maxresdefault.jpg`} className="object-cover w-full h-full" />
+                                                    }
                                                 </div> :
                                                 <img
                                                     src={media} className={
@@ -576,122 +582,21 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     ))
                                 }
                             </div>
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
-
-                                {product?.media.map((media, index) => (
-                                    <a
-                                        className="pointer-events-auto"
-                                        key={index}
-                                        // onClick={(e) => {
-                                        //     e.preventDefault();
-                                        //     var el = document.getElementById(`pimage-${index}`)
-                                        //     // scroll to element ut only in x
-                                        //     el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                        // }}
-                                        href={`#slide-${index + 1}`}
-                                    >
-                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={'overflow-hidden relative ' +
-                                            (selectedMediaIndex === index ?
-                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
-                                            " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
-                                            <img src={media} className="overflow-hidden w-full h-full object-cover "
-                                                alt={"صورة " + product?.name + " " + index}
-                                            />
-                                        </button>
-                                    </a>
-                                ))}
-
-                            </div>
                         </div>
+                            <div className=" bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
 
-                        {/* image */}
-                        {/* <div className="relative overflow-hidden">
-                            <div
-                                className="relative rounded-xl aspect-square overflow-hidden w-96" style={{
-                                    scrollSnapType: "x mandatory",
-                                    WebkitOverflowScrolling: "touch",
-                                    scrollBehavior: "smooth",
-                                    // box-shadow: inset 0px 0px 60px 60px store_color;
-                                    boxShadow: "inset 0px 0px 60px 60px " + dartColorToCss(store!.decoration!.primary),
-                                }}
-                                // when scroll update selected media index
-                                onScroll={(e) => {
-                                    var el = e.target as HTMLDivElement;
-                                    var index = Math.abs(Math.round(el.scrollLeft / el.clientWidth));
-                                    setSelectedMediaIndex(index);
-                                }}>
-                                {product?.media.map((media, index) => (
-                                    <div
-                                        id={`pimage-${index}`}
-                                        className="aspect-square w-full h-full relative" key={index}
-                                    >
-                                        {getYoutubeVideoIdFromUrl(media) != null && !import.meta.env.SSR ?
-                                            <div className="bg-black pointer-events-none absolute inset-0 xtop-[-500px] xbottom-[-500px] xleft-0 xright-0">
-                                                <ReactPlayer
-                                                    key={[index, selectedMediaIndex].join("-")}
-                                                    url={
-                                                        `https://www.youtube.com/watch?v=${getYoutubeVideoIdFromUrl(media)}`
-                                                    }
-                                                    width="100%"
-                                                    height="100%"
-                                                    // controls
-                                                    playing={selectedMediaIndex === index}
-                                                    // config={{
-                                                    //     youtube: {
-                                                    //         // hide controls
-                                                    //         playerVars: {
-                                                    //             controls: 0,
-                                                    //             modestbranding: 1,
-                                                    //             showinfo: 0,
-                                                    //             rel: 0,
-                                                    //             loop: selectedMediaIndex == index,
-                                                    //             autoplay: selectedMediaIndex == index,
-                                                    //             // mute: selectedMediaIndex != index,
-                                                    //         }
-                                                    //     }
-                                                    // }}
-                                                    style={{
-                                                        scrollSnapAlign: "center",
-                                                        scrollSnapStop: "always",
-                                                        // when this is selected scall to 1 else 0.4
-                                                        transform: selectedMediaIndex == index ? "scale(1)" : "scale(0.5)",
-                                                        transition: "all 0.6s cubic-bezier(.08,.82,.17,1)",
-                                                        borderRadius: selectedMediaIndex == index ? "0" : "100%",
-                                                        rotate: selectedMediaIndex == index ? "0deg" :
-                                                            selectedMediaIndex > index ? "30deg" : "-30deg",
-                                                        // more effacts
-                                                        opacity: selectedMediaIndex == index ? 1 : 0,
-                                                    }}
-                                                />
-                                            </div> :
-                                            <img
-                                                src={media} className={
-                                                    "inset-0 object-contain aspect-square"
-                                                }
-                                                alt={product.name!}
-                                            />
-                                        }
-                                    </div>
-
-                                ))}
-                            </div>
-
-                            <div className="absolute bottom-0 w-full flex justify-center p-2 items-end pointer-events-none">
                                 {product?.media.map((media, index) => (
                                     <a
                                         className="pointer-events-auto"
                                         key={index}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            var el = document.getElementById(`pimage-${index}`)
-                                            // scroll to element ut only in x
-                                            el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                        }}
-                                        href={`#pimage-${index}`}
+                                        href={`#slide-${index + 1}`}
+                                        aria-label={"صورة " + product?.name + " " + index}
                                     >
-                                        <button key={index} onClick={() => setSelectedMediaIndex(index)} className={
+                                        <button
+                                            aria-label={"صورة " + product?.name + " " + index}
+                                        key={index} className={'overflow-hidden relative ' +
                                             (selectedMediaIndex === index ?
-                                                "border-primary border-[2px] w-14" : " w-11 border-[2px] dark:border-white border-white ") +
+                                                "border-primary border-[2px] w-16" : " w-14 border-[2px] dark:border-white border-white ") +
                                             " mx-1  shadow-xl aspect-square rounded-xl bg-white bg-opacity-100 hover:bg-opacity-100 focus:bg-opacity-100 overflow-hidden transition-all duration-500 ease-in-out"}>
                                             <img src={media} className="overflow-hidden w-full h-full object-cover "
                                                 alt={"صورة " + product?.name + " " + index}
@@ -699,8 +604,8 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         </button>
                                     </a>
                                 ))}
+
                             </div>
-                        </div> */}
                     </StickyBox>
                     {/* detail */}
                     <div className="w-4"></div>
@@ -724,12 +629,12 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                     {
                                         getPriceAfterDiscount()
                                     }
-                                    دج
+                                    {getCurrencySymbolByStore(store)}
                                 </span>}
                                 {
                                     getPriceAfterDiscount() !== getPriceWithoutVariantsDiscount() &&
                                     <span className="px-1  text-gray-400 line-through text-lg">
-                                        {getPriceWithoutVariantsDiscount()} دج
+                                        {getPriceWithoutVariantsDiscount()} {getCurrencySymbolByStore(store)}
                                     </span>
                                 }
 
@@ -759,24 +664,26 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             }
                                             item.variants = path
 
+                                            cart.updateVariantPath(product.id, path.join("/"))
+
                                             return setItem({ ...item });
                                         }}
                                         onSelect={(variant) => {
-                                            console.log(variant!.value)
+                                            // console.log(variant!.value)
 
                                             if (variant?.type == VariantOptionType.image) {
                                                 var mediaIndex = product?.media.findIndex((media) => media == variant!.value);
-                                                console.log(variant!.value)
-                                                console.log(product?.media[mediaIndex])
 
-                                                setSelectedMediaIndex(mediaIndex!);
-                                                // scroll to element ut only in x
-                                                var el = document.getElementById(`slide-${mediaIndex!}`)
+
+                                                var el = document.getElementById(`slide-${mediaIndex! + 1}`)
                                                 el?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                                                // href={`#slide-${index + 1}`}
-                                                if (!import.meta.env.SSR) {
-                                                    window.history.pushState({}, "", `#${mediaIndex! + 1}`);
-                                                }
+
+                                                // setSelectedMediaIndex(mediaIndex!);
+
+                                                // if (!import.meta.env.SSR) {
+                                                //     // href={`#slide-${index + 1}`}
+                                                //     window.history.pushState({}, "", `#slide-${mediaIndex}`);
+                                                // }
                                             }
 
                                             // ViewContent
@@ -785,7 +692,7 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                                 // content_category: 'cloth',
                                                 content_ids: [product?.id],
                                                 content_type: 'product',
-                                                value: getPriceWithoutVariantsDiscount(),
+                                                value: getTotal() ?? 0,
                                                 currency: 'DZD'
                                             });
                                         }}
@@ -810,10 +717,11 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             الكمية
                                         </div>
                                         <div className="flex-grow"></div>
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex items-center bg-gray-200 text-gray-700 justify-center border-2 rounded-lg overflow-hidden">
                                             <button
+                                                aria-label="تقليل الكمية"
                                                 onClick={() => {
-                                                    // Decrease quantity
+                                                    cart.updateQuantity(product.id, item.quantity - 1)
                                                     setItem((prevItem) => ({
                                                         ...prevItem,
                                                         quantity: prevItem.quantity > 1 ? prevItem.quantity - 1 : 1,
@@ -823,41 +731,155 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                             >
                                                 -
                                             </button>
-                                            <span className="px-3 py-1 bg-gray-200 text-gray-700">
+                                            <span className="px-3 py-1 ">
                                                 {item.quantity}
                                             </span>
                                             <button
+                                                aria-label="زيادة الكمية"
                                                 onClick={() => {
+                                                    cart.updateQuantity(product.id, item.quantity + 1)
                                                     // Increase quantity
                                                     setItem((prevItem) => ({
                                                         ...prevItem,
                                                         quantity: prevItem.quantity + 1,
                                                     }));
                                                 }}
-                                                className="px-3 py-1 bg-gray-200 text-gray-700 rounded-e-lg"
+                                                className="px-3 py-1 "
                                             >
                                                 +
                                             </button>
                                         </div>
+                                        {/* add to cart */}
+                                        <div className="w-2"></div>
+                                        {
+                                            !cart.canAddProduct(product) ? null :
+                                                !cart.hasProduct(product.id) ?
+                                                    <button
+                                                        aria-label="إضافة الى السلة"
+                                                        onClick={() => {
+                                                            cart.add({
+                                                                quantity: item.quantity,
+                                                                price: getPriceAfterDiscount(),
+                                                                variantPath: item.variants.join("/"),
+                                                                product: product,
+                                                            })
+                                                            // update the ui
+                                                            setItem({ ...item });
+                                                        }}
+                                                        className="px-3 py-1 rounded-lg border-2 border-primary text-primary"
+                                                    >
+                                                        إضافة إلى السلة
+                                                    </button>
+                                                    :
+                                                    <button
+                                                        aria-label="إزالة من السلة"
+                                                        onClick={() => {
+                                                            cart.removeProduct(product.id)
+                                                            // update the ui
+                                                            setItem({ ...item });
+                                                        }}
+                                                        className="px-3 py-1 rounded-lg border-2 border-red-500 text-red-500"
+                                                    >
+                                                        إزالة من السلة
+                                                    </button>
+                                        }
                                     </div>
                                 </div>
                                 {/* divider */}
-                                <div className="h-[1px] bg-gray-200 dark:bg-gray-700"></div>
-                                <div className="p-4">
+                                <div className="flex items-center justify-center">
+                                    <div className="h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow"></div>
+
+                                    <div className="text-gray-600 mx-4">
+                                        ملخص الطلب
+                                    </div>
+                                    <div className="h-[1px] bg-gray-200 dark:bg-gray-700 flex-grow"></div>
+                                </div>
+                                <div className="p-4 pt-1">
+                                    {/* cart.items */}
+                                    {
+                                        cart.canAddProduct(product) && <>
+                                            <table className="w-full"><tbody>
+
+                                                {
+                                                    cart.items.length > 0 ?
+                                                        cart.items.map((_item) => (
+                                                            <tr key={_item.product.id} className="text-gray-600">
+                                                                {/* ({item.productName}){item.variantPath? ` (${item.variantPath})`:``} x{item.quantity} = {item.price}{getCurrencySymbolByStore(store)} */}
+                                                                {/* substring name */}
+                                                                {/* ({item.productName && item.productName.length > 10 ? item.productName.substring(0, 10) + "..." : item.productName}) x{item.quantity} = ({item.price}{getCurrencySymbolByStore(store)}) */}
+                                                                {/* use table looks better */}
+
+                                                                {/* product image */}
+                                                                <td>
+                                                                    <img src={_item.product.media[0]} className="w-8 h-8 rounded-lg border-2 border-gray-200" />
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    {_item.product.name && _item.product.name.length > 10 ? _item.product.name.substring(0, 10) + "..." : _item.product.name}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    x{_item.quantity}
+                                                                </td>
+                                                                <td className="text-gray-600">
+                                                                    {_item.price} {getCurrencySymbolByStore(store)}
+                                                                </td>
+                                                                {/* delete */}
+                                                                <td className="text-end">
+                                                                    <button
+                                                                        aria-label="إزالة"
+                                                                        onClick={() => {
+                                                                            cart.removeProduct(_item.product.id)
+                                                                            // force react to update current componenet
+                                                                            setItem({ ...item });
+                                                                        }}
+                                                                        className="px-2 ms-2 text-sm rounded-full bg-red-500 text-white"
+                                                                    >
+                                                                        إزالة
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                        :
+                                                        <tr className="text-gray-600 text-center">
+                                                            <td colSpan={4} className="text-xs">
+                                                                لا يوجد منتجات في السلة | إضغط على شراء وسترسل هذ المنتج فقط
+                                                            </td>
+                                                        </tr>
+
+                                                }
+                                            </tbody>
+                                            </table>
+                                            <div className="h-2"></div></>
+                                    }
                                     {/* shipping */}
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-600">
-                                            الشحن
+                                            التوصيل
                                         </div>
                                         <div className="flex-grow"></div>
                                         <div className="text-gray-600">
                                             <span className="text-gray-600">{
                                                 shipping?.address.state ?
                                                     <span>{
-                                                        getTotal() &&
-                                                            getTotal()! - getPriceAfterDiscount() > 0 ?
-                                                            getTotal()! - getPriceAfterDiscount() + " دج"
-                                                            : "مجاني"
+                                                        // cart.hasProduct(product.id) ?
+                                                        // cart.getShippingRate(
+                                                        //     shipping,
+                                                        //     store
+                                                        // ) :
+                                                        // (getShippingRate() || 0)
+
+                                                        (() => {
+                                                            var rate: number | null = null;
+                                                            if (false && cart.hasProduct(product.id)) {
+                                                                rate = cart.getShippingRate(
+                                                                    shipping,
+                                                                    store
+                                                                )
+                                                            } else {
+                                                                rate = getShippingRate();
+                                                            }
+                                                            return rate === 0 ? <span className="text-green-500">توصيل مجاني</span> : rate + " " + getCurrencySymbolByStore(store)
+                                                        })()
+
                                                     }</span>
                                                     :
                                                     <span>اختر الولاية</span>
@@ -872,7 +894,10 @@ function Product({ store, product }: { store: StoreEntity, product: ProductEntit
                                         </div>
                                         <div className="flex-grow"></div>
                                         <div className="text-gray-600">
-                                            <span className="text-gray-600">{getTotal()} دج</span>
+                                            <span className="text-gray-600">{
+                                                cart.total > 0 ? cart.total + (getShippingRate() || 0) :
+                                                    getTotal()
+                                            } {getCurrencySymbolByStore(store)}</span>
                                         </div>
                                     </div>
                                 </div>

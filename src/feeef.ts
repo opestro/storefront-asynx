@@ -1,9 +1,9 @@
-import { FeeeF } from "feeef/src/feeef/feeef";
+import { FeeeF } from "feeef";
 
 export const ff = new FeeeF({
     apiKey: "c43Yfd3bgolijJU3b3bx095vlfTrvnL94baZrd1",
     baseURL: "https://apis.feeef.net/api/v1",
-    // cache: 2000,
+    cache: 10,
     // baseURL: "http://localhost:3333/api/v1",
   });
 

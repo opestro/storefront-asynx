@@ -1,4 +1,4 @@
-import { EmbaddedCategory } from "feeef/src/core/core";
+import { EmbaddedCategory } from "feeef";
 
 // it take category form store as praameter
 /**
@@ -20,6 +20,7 @@ const CategoryButton = ({
 }) => {
     return (
         <button
+            aria-label={category.name}
             onClick={onClick}
             className={(selected ? "gb border-transparent" : "") + " border flex items-center justify-start  bg-transparent hover:bg-white hover:bg-opacity-10     focus:bg-opacity-10 font-medium rounded-lg text-sm px-4 py-2 text-center"}>
             {/* slot */}

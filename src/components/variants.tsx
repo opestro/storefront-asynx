@@ -1,4 +1,4 @@
-import { ProductVariant, ProductVariantOption } from "feeef/src/core/core";
+import { ProductVariant, ProductVariantOption } from "feeef";
 import { dartColorToCss } from "../pishop/helpers";
 
 /**
@@ -102,8 +102,8 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
             <h3 className="text-sm font-medium">{variantGroup.name}
                 {
                     getVariant(selected!) &&
-                    <span dir="ltr" className="mx-2 bg-primary text-white rounded-full">
-                        <span className="px-2">{getVariant(selected!)?.name}</span>
+                    <span dir="ltr" className="px-2 bg-primary text-white rounded-full">
+                        <span className="px-1">{getVariant(selected!)?.name}</span>
                     </span>
                 }{
                     getVariant(selected!)?.stock !== undefined &&
@@ -126,16 +126,21 @@ function RenderVariantGroup({ variantGroup, path, onPathChange, onSelect }: {
                         <span className="relative flex items-center justify-center">
                             {
                                 variant.hint &&
-
                                 <span dir="ltr" className={
                                     (selected === variant.name ? "bg-primary" : "bg-gray-600") +
-                                    " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
+                                    " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
                                     <span className="px-1">{variant.hint}</span>
                                 </span>
-                                || variant.type === "color" &&variant.name &&
+                                || variant.type === "color" && variant.name &&
                                 <span dir="ltr" className={
                                     (selected === variant.name ? "bg-primary" : "bg-gray-600") +
-                                    " text-[8px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
+                                    " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
+                                    <span className="px-1">{variant.name}</span>
+                                </span>
+                                || variant.type === "image" && variant.value &&
+                                <span dir="ltr" className={
+                                    (selected === variant.name ? "bg-primary" : "bg-gray-600") +
+                                    " text-[9px] bottom-0 absolute mx-2  text-white rounded-full  pointer-events-none"}>
                                     <span className="px-1">{variant.name}</span>
                                 </span>
                             }
